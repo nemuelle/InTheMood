@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.austin.inthemood.MyMoods">
+
+    <Spinner
+        android:id="@+id/moodFilterSpinner"
+        android:layout_width="247dp"
+        android:layout_height="32dp"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="48dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="212dp"
+        android:layout_height="30dp"
+        android:text="Filter Moods By:"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="18dp" />
+
+    <RadioButton
+        android:id="@+id/emotionalStateFilterButton"
+        android:layout_width="99dp"
+        android:layout_height="40dp"
+        android:text="Emotional State"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="48dp" />
+
+    <RadioButton
+        android:id="@+id/weekFilterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Occured Last Week"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="88dp" />
+
+    <RadioButton
+        android:id="@+id/triggerFilterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trigger"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="120dp" />
+
+    <EditText
+        android:id="@+id/triggerFilterEditText"
+        android:layout_width="276dp"
+        android:layout_height="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textSize="14sp"
+        tools:layout_editor_absoluteX="92dp"
+        tools:layout_editor_absoluteY="120dp" />
+
+    <ListView
+        android:layout_width="353dp"
+        android:layout_height="332dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="163dp" />
+
+</android.support.constraint.ConstraintLayout>
