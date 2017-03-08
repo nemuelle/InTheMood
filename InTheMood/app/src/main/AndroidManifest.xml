@@ -23,6 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainUser"></activity>
+        <activity android:name=".NewUserLogin"
+            android:label="@string/title_activity_new_user_login">
+        </activity>
     </application>
 
 </manifest>
