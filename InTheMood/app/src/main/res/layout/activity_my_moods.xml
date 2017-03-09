@@ -57,9 +57,18 @@
         tools:layout_editor_absoluteY="120dp" />
 
     <ListView
-        android:layout_width="353dp"
-        android:layout_height="332dp"
+        android:id="@+id/myMoodsListView"
+        android:layout_width="351dp"
+        android:layout_height="288dp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="163dp" />
+
+    <Button
+        android:id="@+id/newMoodButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Mood"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="459dp" />
 
 </android.support.constraint.ConstraintLayout>

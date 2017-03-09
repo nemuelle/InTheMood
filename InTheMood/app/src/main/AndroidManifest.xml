@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainUser" />
-        <activity android:name=".MyMoods"></activity>
+        <activity android:name=".MyMoods" />
+        <activity android:name=".addEditMood"></activity>
     </application>
 
 </manifest>

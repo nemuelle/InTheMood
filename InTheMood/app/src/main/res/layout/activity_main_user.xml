@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="My Friends Moods (Inactive)" />
+        android:text="My Friends Moods" />
 
     <Button
         android:id="@+id/myMoodsButton"
@@ -57,11 +57,11 @@
         android:id="@+id/myFriendsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/myMoodsButton"
         android:layout_alignLeft="@+id/myMoodsButton"
+        android:layout_alignRight="@+id/myMoodsButton"
         android:layout_alignStart="@+id/myMoodsButton"
         android:layout_below="@+id/myMoodsButton"
         android:layout_marginTop="21dp"
-        android:text="My Friends (Inactive)"
-        android:layout_alignRight="@+id/myMoodsButton"
-        android:layout_alignEnd="@+id/myMoodsButton" />
+        android:text="My Friends" />
 </RelativeLayout>

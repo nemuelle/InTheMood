@@ -16,16 +16,28 @@
     </string>
 
 
-    <resources>
-        <string-array name="moods">
-            <item>Anger</item>
-            <item>Confusion</item>
-            <item>Disgust</item>
-            <item>Fear</item>
-            <item>Happiness</item>
-            <item>Sadness</item>
-            <item>Shame</item>
-            <item>Surprise</item>
-        </string-array>
-    </resources>
+    <string name="current_mood">Current Mood</string>
+    <string name="trigger">Trigger</string>
+
+
+
+
+    <string-array name="moods">
+        <item>Anger</item>
+        <item>Confusion</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Sadness</item>
+        <item>Shame</item>
+        <item>Surprise</item>
+    </string-array>
+
+    <string-array name="social_situations">
+        <item>Alone</item>
+        <item>With one other person</item>
+        <item>With two to several people</item>
+        <item>With a crowd</item>
+    </string-array>
+
 </resources>
