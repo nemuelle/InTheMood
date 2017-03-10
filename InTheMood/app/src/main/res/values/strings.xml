@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">InTheMood</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_existing_user_login">Sign in</string>
+    <string name="title_activity_new_user_login">New User Registration</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_user">User Name</string>
+    <string name="prompt_password">Password</string>
+    <string name="button_login">Log In</string>
+
+    <!-- Strings related to registration -->
+    <string name="confirm_password">Confirm Password</string>
+    <string name="button_register">Register</string>
+
 </resources>
