@@ -10,4 +10,58 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.austin.inthemood.MainUser">
 
+    <Button
+        android:id="@+id/myFriendsMoodsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="My Friends Moods" />
+
+    <Button
+        android:id="@+id/myMoodsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/myFriendsMoodsButton"
+        android:layout_alignStart="@+id/myFriendsMoodsButton"
+        android:layout_below="@+id/myFriendsMoodsButton"
+        android:layout_marginTop="25dp"
+        android:text="My Moods"
+        android:layout_alignRight="@+id/myFriendsMoodsButton"
+        android:layout_alignEnd="@+id/myFriendsMoodsButton" />
+
+    <Button
+        android:id="@+id/nearbyMoodsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nearby Moods (inactive)"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/myMoodsButton"
+        android:layout_alignStart="@+id/myMoodsButton"
+        android:layout_alignRight="@+id/myMoodsButton"
+        android:layout_alignEnd="@+id/myMoodsButton" />
+
+    <Button
+        android:id="@+id/signOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:text="Sign Out"
+        android:layout_below="@+id/nearbyMoodsButton"
+        android:layout_alignLeft="@+id/nearbyMoodsButton"
+        android:layout_alignStart="@+id/nearbyMoodsButton"
+        android:layout_alignRight="@+id/myMoodsButton"
+        android:layout_alignEnd="@+id/myMoodsButton" />
+
+    <Button
+        android:id="@+id/myFriendsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/myMoodsButton"
+        android:layout_alignLeft="@+id/myMoodsButton"
+        android:layout_alignRight="@+id/myMoodsButton"
+        android:layout_alignStart="@+id/myMoodsButton"
+        android:layout_below="@+id/myMoodsButton"
+        android:layout_marginTop="21dp"
+        android:text="My Friends" />
 </RelativeLayout>

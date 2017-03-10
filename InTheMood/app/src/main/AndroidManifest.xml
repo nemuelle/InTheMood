@@ -22,10 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainUser"></activity>
-        <activity android:name=".NewUserLogin"
-            android:label="@string/title_activity_new_user_login">
-        </activity>
+        <activity
+            android:name=".NewUserLogin"
+            android:label="@string/title_activity_new_user_login" />
+        <activity android:name=".MainUser" />
+        <activity android:name=".MyMoods" />
+        <activity android:name=".addEditMood" />
+        <activity android:name=".MyFriends" />
+        <activity android:name=".FindFriends"></activity>
     </application>
 
 </manifest>

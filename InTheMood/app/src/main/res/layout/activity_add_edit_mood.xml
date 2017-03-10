@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.austin.inthemood.addEditMood">
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="78dp"
+        android:layout_height="25dp"
+        android:text="Scenario"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="53dp"
+        android:layout_height="24dp"
+        android:text="Mood"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <Spinner
+        android:id="@+id/addEditMoodScenarioSpinner"
+        android:layout_width="268dp"
+        android:layout_height="24dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="53dp" />
+
+    <Spinner
+        android:id="@+id/addEditMoodMoodSpinner"
+        android:layout_width="268dp"
+        android:layout_height="24dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="495dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/addEditMoodsTriggerText"
+        android:layout_width="354dp"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:hint="@string/trigger"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="88dp" />
+
+    <Button
+        android:id="@+id/addEditMoodSaveButton"
+        android:layout_width="116dp"
+        android:layout_height="50dp"
+        android:text="Save Mood"
+        tools:layout_editor_absoluteX="134dp"
+        tools:layout_editor_absoluteY="366dp" />
+
+    <Button
+        android:id="@+id/addEditMoodDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Mood"
+        tools:layout_editor_absoluteX="134dp"
+        tools:layout_editor_absoluteY="424dp" />
+</android.support.constraint.ConstraintLayout>
