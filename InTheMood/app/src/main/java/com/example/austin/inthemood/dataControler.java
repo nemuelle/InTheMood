@@ -21,18 +21,22 @@ public class dataControler {
     }
 
     /**
-     * checks to see if a user is registered (is in userList)
+     * checks to see if a user is registered (is in userList) and his corresponding password matches database
      *
-     * @param name name of user being checked for
-     * @return true or false
+     * @param name name being checked for in database
+     * @param password corresponding password being checked for in database
+     * @return User if login successful or null if unsuccessful
      */
-    public boolean verifyUserName(String name){
+    public User verifyLogIn(String name, String password){
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName() == name) {
-                return true;
+                if (userList.get(i).getPassword() == password) {
+                    return userList.get(i);
+
+                }
             }
         }
-        return false;
+        return null;
     }
 
 
@@ -40,13 +44,28 @@ public class dataControler {
     /**public getMoods(String name, Boolean WordFilter, Boolean DateFilter, Boolean MoodFilter, String Mood){
 
     }**/
-    /**public boolean grantFollowPermission(String name,String FollowerName){
 
-     }**/
+    public void grantFollowPermission(User user, String followerName){
+        user.addToMyFollowersList(searchForUserbyName(followerName));
+        user.removeFollowerRequest(searchForUserbyName(followerName));
+        searchForUserbyName(followerName).addToMyFollowRequests(user);
+        searchForUserbyName(followerName).addToMyFollowingList(user);
+    }
 
-    /**public searchForUsers(String SearchString){
-
-    }**/
+    /**
+     * search userList for a user by name, return null if not found
+     *
+     * @param name of user being searched for
+     * @return User with name name, return null if user not in userList
+     */
+    public User searchForUserbyName(String name) {
+        for (int i = 0; i < userList.size(); i++){
+            if (userList.get(i).getName() == name){
+                return userList.get(i);
+            }
+        }
+        return null;
+    }
 
 
 }
