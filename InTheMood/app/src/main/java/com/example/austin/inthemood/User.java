@@ -4,7 +4,6 @@ package com.example.austin.inthemood;
  * Created by Austin on 2017-02-26.
  */
 
-
 import java.util.ArrayList;
 
 /**
@@ -18,6 +17,7 @@ public class User{
     private ArrayList<User> myFollowingList;
     private ArrayList<User> myFollowerRequests;
     private ArrayList<User> myFollowRequests;
+    private ArrayList<Mood> myFollowedMoods;
     private int myMoodCount;
 
     /**
@@ -29,6 +29,14 @@ public class User{
 
         this.name = name;
         this.password = password;
+        myMoodsList = new ArrayList<Mood>();
+        myFollowersList = new ArrayList<User>();
+        myFollowingList = new ArrayList<User>();
+        myFollowerRequests = new ArrayList<User>();
+        myFollowRequests = new ArrayList<User>();
+        myFollowedMoods = new ArrayList<Mood>();
+        myMoodCount = 0;
+
     }
 
     /**
@@ -186,6 +194,22 @@ public class User{
      */
     public void removeFollowerRequest(User requestingUser){
         myFollowerRequests.remove(requestingUser);
+    }
+
+    /**
+     * searches through a user's (owner's) myFollowingList and finds all tweets of those users and adds to
+     * myFollowedMoods. This way it fetches all moods everytime this function is called so myFollowedMoods is always up to date.
+     *
+     * @return myFollowedMoods a list of moods of people im following
+     */
+    public ArrayList<Mood> getMyFollowedMoods(){
+        myFollowedMoods.clear();
+        for (int i = 0; i < myFollowingList.size(); i++){
+            for (int k = 0; k < myFollowingList.get(i).getMyMoodsList().size(); k++){
+                myFollowedMoods.add(myFollowingList.get(i).getMyMoodsList().get(k));
+            }
+        }
+        return myFollowedMoods;
     }
 }
 

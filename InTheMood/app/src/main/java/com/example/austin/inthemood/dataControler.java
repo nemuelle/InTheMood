@@ -1,6 +1,10 @@
 package com.example.austin.inthemood;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by olivier on 2017-03-10.
@@ -10,6 +14,26 @@ public class dataControler {
     private ArrayList<User> userList;
     private int userCount;
 
+    /**
+     * Instantiates a new dataControler. This should be called once. after the first user in the
+     * system has been registered.
+     *
+     * @param firstUser first registered user in our database
+     */
+    public dataControler(User firstUser){
+        userCount = 1;
+        userList = new ArrayList<User>();
+        userList.add(firstUser);
+    }
+
+    /**
+     * gets the list of registered users in the local database
+     *
+     * @return list of users
+     */
+    public ArrayList<User> getUserList() {
+        return userList;
+    }
 
     /**
      * adds user to list of registered users (userList)
@@ -29,8 +53,8 @@ public class dataControler {
      */
     public User verifyLogIn(String name, String password){
         for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i).getName() == name) {
-                if (userList.get(i).getPassword() == password) {
+            if (userList.get(i).getName().equals(name)) {
+                if (userList.get(i).getPassword().equals(password)) {
                     return userList.get(i);
 
                 }
@@ -46,10 +70,10 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void grantFollowPermission(User user, String followerName){
-        user.addToMyFollowersList(searchForUserbyName(followerName));
-        user.removeFollowerRequest(searchForUserbyName(followerName));
-        searchForUserbyName(followerName).removeFollowRequest(user);
-        searchForUserbyName(followerName).addToMyFollowingList(user);
+        user.addToMyFollowersList(searchForUserByName(followerName));
+        user.removeFollowerRequest(searchForUserByName(followerName));
+        searchForUserByName(followerName).removeFollowRequest(user);
+        searchForUserByName(followerName).addToMyFollowingList(user);
     }
 
     /**
@@ -59,8 +83,8 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void denyFollowPermission(User user, String followerName){
-        user.removeFollowerRequest(searchForUserbyName(followerName));
-        searchForUserbyName(followerName).removeFollowRequest(user);
+        user.removeFollowerRequest(searchForUserByName(followerName));
+        searchForUserByName(followerName).removeFollowRequest(user);
     }
 
     /**
@@ -69,9 +93,9 @@ public class dataControler {
      * @param name of user being searched for
      * @return User with name name, return null if user not in userList
      */
-    public User searchForUserbyName(String name) {
+    public User searchForUserByName(String name) {
         for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i).getName() == name){
+            if (userList.get(i).getName().equals(name)){
                 return userList.get(i);
             }
         }
@@ -79,14 +103,78 @@ public class dataControler {
     }
 
     /**
+     * Sort moods in moodsList by date (oldest to newest)
      *
-     * @param UserName
-     * @param WordFilter
-     * @param DateFilter
-     * @param MoodFilter
-     * @param Mood
+     * pulled from http://stackoverflow.com/questions/36727700/sort-a-list-of-objects-by-date on March 11th, 2017
+     *
+     * @param moodsList list of moods to sort
+     * @return sorted list of moods
      */
-    /**public getMoods(string UserName,Boolean WordFilter,Boolean DateFilter,Boolean MoodFilter,string Mood)**/
+    public ArrayList<Mood> sortMoodsByDate(ArrayList<Mood> moodsList){
+        Collections.sort(moodsList, new Comparator<Mood>() {
+            @Override
+            public int compare(Mood mood1, Mood mood2) {
+                return mood1.getMoodDate().compareTo(mood2.getMoodDate());
+            }
+        });
+        return moodsList;
+    }
 
+    /**
+     * searches for moods with String moodName as a moodName and adds them to the filteredMoodList being returned
+     *
+     * @param moodName the name of mood being searched for
+     * @param moodList the list of moods being searched
+     * @return the list of moods filtered by particular mood. this returned list is also sorted by date
+     */
+    public ArrayList<Mood> filterByMood(String moodName, ArrayList<Mood> moodList){
+        ArrayList <Mood> filteredMoodList = new ArrayList<Mood>();
+        for (int i = 0; i < moodList.size(); i++){
+            if (moodList.get(i).getMoodName().equals(moodName)){
+                filteredMoodList.add(moodList.get(i));
+            }
+        }
+        return sortMoodsByDate(filteredMoodList);
+    }
+
+    /**
+     * checks each mood to see if it was recorded in the last week. If so, it is added to the filteredMoodList being returned which is sorted by date
+     * pulled from http://stackoverflow.com/questions/883060/how-can-i-determine-if-a-date-is-between-two-dates-in-java on March 11, 2017
+     *
+     * @param moodList list of moods to be checked if the moods were recorded in the last week
+     * @return a list of moods recorded in the last week. this list is also sorted by date
+     */
+    public ArrayList<Mood> filterByWeek(ArrayList<Mood> moodList){
+        ArrayList <Mood> filteredMoodList = new ArrayList<Mood>();
+
+        Calendar cal = Calendar.getInstance();
+        Date currentDate = new Date();
+        cal.add(Calendar.DATE, -7);
+        Date startWeekDate = cal.getTime();
+
+        for (int i = 0; i < moodList.size(); i++){
+            if (startWeekDate.compareTo(moodList.get(i).getMoodDate()) * moodList.get(i).getMoodDate().compareTo(startWeekDate) >= 0){
+                filteredMoodList.add(moodList.get(i));
+            }
+        }
+        return sortMoodsByDate(filteredMoodList);
+    }
+
+    /**
+     * returns a list of moods from moodList that contains the string moodtrigger in the moodDescription
+     *
+     * @param moodTrigger the mood trigger description being searched for
+     * @param moodList the list of moods that we are searching
+     * @return a list of moods containing moodTrigger in the moodDescription. This list is sorted by date
+     */
+    public ArrayList<Mood> filterByTrigger(String moodTrigger, ArrayList<Mood> moodList){
+        ArrayList <Mood> filteredMoodList = new ArrayList<Mood>();
+        for (int i = 0; i < moodList.size(); i++){
+            if (moodList.get(i).getMoodDescription().contains(moodTrigger)){
+                filteredMoodList.add(moodList.get(i));
+            }
+        }
+        return sortMoodsByDate(filteredMoodList);
+    }
 
 }

@@ -2,6 +2,8 @@ package com.example.austin.inthemood;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 
 /**
@@ -47,5 +49,166 @@ public class UserTest {
         User user = new User("Theodore teh Great", "T123");
         user.setPassword("T123");
         assertEquals("T123", user.getPassword());
+    }
+    /**
+     * Test getMyMoodsList function.
+     */
+    @Test
+    public void testGetMyMoodsList(){
+        User user = new User("Theodore teh Great", "T123");
+        Mood mood1 = new Mood();
+        user.addMood(mood1);
+        assertEquals("Test Description", user.getMyMoodsList().get(0).getMoodDescription());
+    }
+    /**
+     * Test addMood function.
+     */
+    @Test
+    public void testAddMood(){
+        User user = new User("Theodore teh Great", "T123");
+        Mood mood1 = new Mood();
+        user.addMood(mood1);
+        assertEquals(1, user.getMyMoodsList().size());
+    }
+    /**
+     * Test removeMood function.
+     */
+    @Test
+    public void testRemoveMood(){
+        User user = new User("Theodore teh Great", "T123");
+        Mood mood1 = new Mood();
+        user.addMood(mood1);
+        user.removeMood(mood1);
+        assertEquals(0, user.getMyMoodsList().size());
+    }
+    /**
+     * Test getMyFollowersList function.
+     */
+    @Test
+    public void testGetMyFollowersList(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowersList(user2);
+        assertEquals(1, user1.getMyFollowersList().size());
+        assertEquals(user2,user1.getMyFollowersList().get(0));
+    }
+    /**
+     * Test addToMyFollowersList function.
+     */
+    @Test
+    public void testAddToMyFollowersList(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowersList(user2);
+        assertEquals(1, user1.getMyFollowersList().size());
+        assertEquals(user2,user1.getMyFollowersList().get(0));
+    }
+    /**
+     * Test getMyFollowingList function.
+     */
+    @Test
+    public void testGetMyFollowingList(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowingList(user2);
+        assertEquals(1, user1.getMyFollowingList().size());
+        assertEquals(user2,user1.getMyFollowingList().get(0));
+    }
+    /**
+     * Test addToMyFollowingList function.
+     */
+    @Test
+    public void testAddToMyFollowingList(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowersList(user2);
+        assertEquals(1, user1.getMyFollowersList().size());
+        assertEquals(user2,user1.getMyFollowersList().get(0));
+    }
+    /**
+     * Test getMyFollowRequests function.
+     */
+    @Test
+    public void testGetMyFollowRequests(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowRequests(user2);
+        assertEquals(1, user1.getMyFollowRequests().size());
+        assertEquals(user2,user1.getMyFollowRequests().get(0));
+    }
+    /**
+     * Test addToMyFollowRequests function.
+     */
+    @Test
+    public void testAddToMyFollowRequests(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowRequests(user2);
+        assertEquals(1, user1.getMyFollowRequests().size());
+        assertEquals(user2,user1.getMyFollowRequests().get(0));
+    }
+    /**
+     * Test removeFollowRequest function.
+     */
+    @Test
+    public void testRemoveFollowRequest(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowRequests(user2);
+        user1.removeFollowRequest(user2);
+        assertEquals(0, user1.getMyFollowRequests().size());
+    }
+
+    /**
+     * Test getMyFollowerRequests function.
+     */
+    @Test
+    public void testGetMyFollowerRequests(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowerRequests(user2);
+        assertEquals(1, user1.getMyFollowerRequests().size());
+        assertEquals(user2,user1.getMyFollowerRequests().get(0));
+    }
+    /**
+     * Test addToMyFollowerRequests function.
+     */
+    @Test
+    public void testAddToMyFollowerRequests(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowerRequests(user2);
+        assertEquals(1, user1.getMyFollowerRequests().size());
+        assertEquals(user2,user1.getMyFollowerRequests().get(0));
+    }
+    /**
+     * Test removeFollowerRequest function.
+     */
+    @Test
+    public void testRemoveFollowerRequest(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        user1.addToMyFollowerRequests(user2);
+        user1.removeFollowerRequest(user2);
+        assertEquals(0, user1.getMyFollowerRequests().size());
+    }
+    /**
+     * Test getMyFollowedMoods function.
+     */
+    @Test
+    public void testGetMyFollowedMoods(){
+        User user1 = new User("user1", "p1");
+        User user2 = new User("user2", "p2");
+        User user3 = new User("user3", "p3");
+        Mood mood2 = new Mood();
+        Mood mood3 = new Mood();
+        user1.getMyFollowedMoods().clear();
+        user2.addMood(mood2);
+        user3.addMood(mood3);
+        user1.addToMyFollowingList(user2);
+        user1.addToMyFollowingList(user3);
+        assertEquals(mood2, user1.getMyFollowedMoods().get(0));
+        assertEquals(mood3, user1.getMyFollowedMoods().get(1));
+        assertEquals(2, user1.getMyFollowedMoods().size());
     }
 }
