@@ -39,17 +39,28 @@ public class dataControler {
         return null;
     }
 
-
-
-    /**public getMoods(String name, Boolean WordFilter, Boolean DateFilter, Boolean MoodFilter, String Mood){
-
-    }**/
-
+    /**
+     * grant user (followerName) follow permission to follow user (owner)
+     *
+     * @param user user being requested to follow by followerName
+     * @param followerName user requesting to follow user (owner)
+     */
     public void grantFollowPermission(User user, String followerName){
         user.addToMyFollowersList(searchForUserbyName(followerName));
         user.removeFollowerRequest(searchForUserbyName(followerName));
-        searchForUserbyName(followerName).addToMyFollowRequests(user);
+        searchForUserbyName(followerName).removeFollowRequest(user);
         searchForUserbyName(followerName).addToMyFollowingList(user);
+    }
+
+    /**
+     * deny user (followerName) requesting follow permission to follow user (owner)
+     *
+     * @param user user being requested to follow by followerName
+     * @param followerName user requesting to follow user (owner)
+     */
+    public void denyFollowPermission(User user, String followerName){
+        user.removeFollowerRequest(searchForUserbyName(followerName));
+        searchForUserbyName(followerName).removeFollowRequest(user);
     }
 
     /**
@@ -66,6 +77,16 @@ public class dataControler {
         }
         return null;
     }
+
+    /**
+     *
+     * @param UserName
+     * @param WordFilter
+     * @param DateFilter
+     * @param MoodFilter
+     * @param Mood
+     */
+    /**public getMoods(string UserName,Boolean WordFilter,Boolean DateFilter,Boolean MoodFilter,string Mood)**/
 
 
 }
