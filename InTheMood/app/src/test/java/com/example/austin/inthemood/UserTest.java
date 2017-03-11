@@ -15,7 +15,7 @@ public class UserTest {
      */
     @Test
     public void testGetName() {
-        User user = new User("Alice");
+        User user = new User("Alice", "A123");
         assertEquals("Alice", user.getName());
     }
 
@@ -24,8 +24,28 @@ public class UserTest {
      */
     @Test
     public void testSetName() {
-        User user = new User("Theodore teh Great");
+        User user = new User("Theodore teh Great", "T123");
         user.setName("Theodore the Great");
         assertEquals("Theodore the Great", user.getName());
+    }
+
+    /**
+     * Test get password.
+     */
+    @Test
+    public void testGetPassword() {
+        User user = new User("Alice", "A123");
+        assertEquals("A123", user.getPassword());
+
+    }
+
+    /**
+     * Test set password.
+     */
+    @Test
+    public void testSetPassword() {
+        User user = new User("Theodore teh Great", "T123");
+        user.setPassword("T123");
+        assertEquals("T123", user.getPassword());
     }
 }
