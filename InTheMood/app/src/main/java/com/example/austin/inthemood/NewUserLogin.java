@@ -29,9 +29,6 @@ public class NewUserLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user_login);
 
-        // Initialize the data controller.
-        controller = new dataControler();
-
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.user);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -91,7 +88,7 @@ public class NewUserLogin extends AppCompatActivity {
         if (mUserView.getText().toString().equals("")) {
             return -1;
         }
-        else if (controller.searchForUserbyName(mUserView.getText().toString()) != null) {
+        else if (controller.searchForUserByName(mUserView.getText().toString()) != null) {
             return -2;
         } else if (mPasswordView.getText().toString().equals("")) {
             return -4;
