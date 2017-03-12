@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 
 public class dataControler {
-    private ArrayList<User> userList;
+    private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
 
 

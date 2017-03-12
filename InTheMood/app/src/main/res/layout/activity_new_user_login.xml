@@ -52,5 +52,22 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/eUser0"
+        android:id="@+id/eUser"
+        android:layout_toRightOf="@+id/user"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ePass0"
+        android:id="@+id/ePass"
+        android:layout_below="@+id/user"
+        android:layout_toRightOf="@+id/password"
+        />
+
 
 </RelativeLayout>

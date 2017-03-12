@@ -22,6 +22,7 @@ public class ExistingUserLogin extends AppCompatActivity{
      *  To pass in a message to the next activity
      */
     public static final String EXTRA_MESSAGE = "com.example.inthemood.MESSAGE";
+    public dataControler controller;
 
     // UI references.
     private EditText mUserView;
@@ -31,6 +32,9 @@ public class ExistingUserLogin extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_existing_user_login);
+
+        // Initialize the data controller.
+        controller = new dataControler();
 
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.user);
