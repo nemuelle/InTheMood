@@ -11,7 +11,7 @@ import java.util.Date;
  */
 
 public class dataControler {
-    private ArrayList<User> userList;
+    private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
 
     /**
