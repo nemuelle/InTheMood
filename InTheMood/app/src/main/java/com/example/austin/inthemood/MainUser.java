@@ -26,6 +26,9 @@ public class MainUser extends AppCompatActivity {
         myFriendsButton = (Button) findViewById(R.id.myFriendsButton);
         signOutButton = (Button) findViewById(R.id.signOutButton);
 
+        MyApp app = (MyApp)getApplicationContext();
+        dataControler controler = app.getController();
+
         Intent intent = getIntent();
         String message = intent.getStringExtra(ExistingUserLogin.EXTRA_MESSAGE);
         TextView textView = new TextView(this);
