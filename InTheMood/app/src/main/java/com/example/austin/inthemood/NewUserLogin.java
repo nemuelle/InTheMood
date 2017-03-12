@@ -57,8 +57,9 @@ public class NewUserLogin extends AppCompatActivity {
             String password = mPasswordView.getText().toString();
             intent.putExtra(EXTRA_MESSAGE, name);
 
+
             User newUser = new User(name, password);
-            controller.addToUserList(newUser);
+            controller = new dataControler(newUser);
 
             startActivity(intent);
         } else if (validRegistration() == -1) {
