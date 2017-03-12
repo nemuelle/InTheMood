@@ -64,6 +64,17 @@ public class dataControler {
     }
 
     /**
+     * send follow request. followee added to user's (Owner's) followRequests and user added to followee's followerRequests.
+     *
+     * @param user user wishing to follow followee
+     * @param followee person be asked to be followed
+     */
+    public void requestToFollow(User user, String followee){
+        user.addToMyFollowRequests(searchForUserByName(followee));
+        searchForUserByName(followee).addToMyFollowerRequests(user);
+    }
+
+    /**
      * grant user (followerName) follow permission to follow user (owner)
      *
      * @param user user being requested to follow by followerName
@@ -153,7 +164,7 @@ public class dataControler {
         Date startWeekDate = cal.getTime();
 
         for (int i = 0; i < moodList.size(); i++){
-            if (startWeekDate.compareTo(moodList.get(i).getMoodDate()) * moodList.get(i).getMoodDate().compareTo(startWeekDate) >= 0){
+            if (startWeekDate.compareTo(moodList.get(i).getMoodDate()) * moodList.get(i).getMoodDate().compareTo(currentDate) >= 0){
                 filteredMoodList.add(moodList.get(i));
             }
         }
