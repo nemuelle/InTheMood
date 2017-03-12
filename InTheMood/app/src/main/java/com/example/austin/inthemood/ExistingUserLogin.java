@@ -33,8 +33,7 @@ public class ExistingUserLogin extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_existing_user_login);
 
-        // Initialize the data controller.
-        controller = new dataControler();
+
 
         // Set up the login form.
         mUserView = (EditText) findViewById(R.id.user);
