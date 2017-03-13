@@ -20,13 +20,20 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/**
+ * This class is the main menu view. There are 5 buttons in the layout to choose from.
+ * Each button sends the user to a different activity.
+ */
+
 public class MainUser extends AppCompatActivity {
+    private MainUser activity = this;
 
     //UI Elements
     private Button myFriendsMoodsButton;
     private Button myMoodsButton;
     private Button myFriendsButton;
     private Button signOutButton;
+    private Button moodCalendarButton;
 
     private static final String FILENAME = "file.sav";
     public dataControler controller;
@@ -44,17 +51,19 @@ public class MainUser extends AppCompatActivity {
         super.onStart();
         loadFromFile();
     }
-
+    //go to MyMoods activity 
     public void MyMoods(View view){
         Intent intent = new Intent(this, MyMoods.class);
         startActivity(intent);
     }
 
+    //go to myFriendsMoods activity (empty activity at the moment)
     public void MyFriendsMoods(View view){
         Intent intent = new Intent(this, MyFriendsMoods.class);
         startActivity(intent);
     }
 
+    //go back to existing loggin activity and set current user to null
     public void SignOut(View view){
         controller.setCurrentUser(null);
         saveInFile();
@@ -62,11 +71,20 @@ public class MainUser extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //start the myFriends activity
     public void MyFriends(View view){
         Intent intent = new Intent(this, MyFriends.class);
         startActivity(intent);
     }
 
+
+    //start the calendar activity
+    public void MoodCalendar(View view) {
+        Intent intent = new Intent(this, MoodCalendarActivity.class);
+        startActivity(intent);
+    }
+
+    //load the data controller. called at the start of the activity. All data is stored in the controller.
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -83,7 +101,7 @@ public class MainUser extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
-
+    //save the data controller. This function is never called in here for the time being
     private void saveInFile() {
         try {
 

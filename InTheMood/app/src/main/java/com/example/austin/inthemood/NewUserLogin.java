@@ -19,6 +19,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/** This activity takes care of handling registration of a new user of InTheMood.
+ * The user can enter their desired username and password (which is entered twice
+ * as a safety measure), and click the register button, which takes the User to
+ * the main page if registration is successful.
+ */
 public class NewUserLogin extends AppCompatActivity {
 
     /**
@@ -42,10 +47,12 @@ public class NewUserLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user_login);
 
-        // Set up the login form.
+        // Set up the registration field references.
         mUserView = (EditText) findViewById(R.id.user);
         mPasswordView = (EditText) findViewById(R.id.password);
         mConfirmPWView = (EditText) findViewById(R.id.confirm_password);
+
+        // Get the data controller.
         loadFromFile();
 
         // Initialize error messages and hide them by default.
@@ -63,7 +70,13 @@ public class NewUserLogin extends AppCompatActivity {
     }
 
     /**
-     * Called when the register button is clicked.
+     * Called when the register button is clicked. Checks if the username is both
+     * non-empty and unique, and if the password is both non-empty and matches the
+     * confirm password field. If all these conditions are met, a new account is
+     * created and the User is taken to the main menu page. Else, if any of the
+     * conditions are not met, the User remains on the registration page, and an
+     * error message with the respective error will pop up informing the User of
+     * the issue.
      *
      * @param view
      */
@@ -75,11 +88,6 @@ public class NewUserLogin extends AppCompatActivity {
             eP.setVisibility(View.GONE);
             Intent intent = new Intent(this, MainUser.class);
 
-            /**
-            * String name = mUserView.getText().toString();
-            * String password = mPasswordView.getText().toString();
-            * intent.putExtra(EXTRA_MESSAGE, name);
-            */
             User newUser = new User(mUserView.getText().toString(),
                     mPasswordView.getText().toString());
             controller.addToUserList(newUser);
@@ -124,6 +132,8 @@ public class NewUserLogin extends AppCompatActivity {
         return 1;
     }
 
+    // Load the data controller stored in the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -141,6 +151,8 @@ public class NewUserLogin extends AppCompatActivity {
         }
     }
 
+    // Save the data controller into the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void saveInFile() {
         try {
 
