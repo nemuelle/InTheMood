@@ -21,6 +21,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+
+/** This activity handles all of creating, editing, and deletion of a User's Mood.
+ * The activity knows if it is working with an existing mood if it receives a non-
+ * negative (and thus valid) Mood index from from an intent extra. If working with
+ * an existing Mood, the User can change the fields of the Mood (except the date,
+ * which is set in real time for the User), and then save those changes with the
+ * Save button, or delete the Mood with the Delete button. If no existing Mood was
+ * supplied, then the User can only add a new Mood with the values in the text /
+ * dropdown fields.
+ *
+ * TODO: Autofill the values of the existing Mood when editing it.
+ */
 public class addEditMood extends AppCompatActivity {
     private addEditMood activity = this;
     private dataControler controller;
@@ -54,11 +66,12 @@ public class addEditMood extends AppCompatActivity {
 
         //Check if a mood was passed in
         Intent intent = getIntent();
-        //TODO: be able to receive a mood index from caller
+        //TODO: autofill the values of an existing mood into the activity
         moodIndex = intent.getIntExtra("Mood index", -1);
         if (moodIndex != -1) {
             targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
         } else {
+            // Hide the delete button, since you can't delete a Mood that doesn't exist!
             deleteButton.setVisibility(View.GONE);
         }
 
@@ -101,6 +114,7 @@ public class addEditMood extends AppCompatActivity {
                     newMood.setMoodDescription(trigger);
                     controller.getCurrentUser().addMood(newMood);
                 } else {
+                    // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
                     targetMood.setMoodDescription(trigger);
                 }
@@ -110,7 +124,10 @@ public class addEditMood extends AppCompatActivity {
             }
         });
 
-
+        /*
+         * Code that is run when the Delete button is clicked. Deletes the Mood and removes
+         * it from the list of the User's Moods.
+         */
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
@@ -122,6 +139,8 @@ public class addEditMood extends AppCompatActivity {
 
     }
 
+    // Load the data controller stored in the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -139,6 +158,8 @@ public class addEditMood extends AppCompatActivity {
         }
     }
 
+    // Save the data controller into the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void saveInFile() {
         try {
 
