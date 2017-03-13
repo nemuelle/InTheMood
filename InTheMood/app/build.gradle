@@ -30,4 +30,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
+    compile 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
