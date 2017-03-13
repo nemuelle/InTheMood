@@ -21,6 +21,10 @@ import java.util.List;
 
 import static android.provider.Telephony.Mms.Part.FILENAME;
 
+/**
+ * This class displays the current user's Friends and their most recent mood (with date) to the list
+ * view.
+ */
 public class MyFriends extends AppCompatActivity {
 
     private static final String FILENAME = "file.sav";
@@ -43,6 +47,9 @@ public class MyFriends extends AppCompatActivity {
         followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
             ArrayList<Mood> followedUserMoods = followingList.get(i).getMyMoodsList();
+
+            //if the followed user has moods, find his most recent mood and display it. If not,
+            //only display his name
             if (followedUserMoods.size() > 0) {
                 followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
                 String message = followingList.get(i).getName() + " felt " +
@@ -68,6 +75,7 @@ public class MyFriends extends AppCompatActivity {
         loadFromFile();
     }
 
+    //load the data controller. called at the start of the activity. All data is stored in the controller.
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);

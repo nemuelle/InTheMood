@@ -20,6 +20,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/**
+ * This class is the main menu view. There are 5 buttons in the layout to choose from.
+ * Each button sends the user to a different activity.
+ */
+
 public class MainUser extends AppCompatActivity {
 
     //UI Elements
@@ -67,6 +72,7 @@ public class MainUser extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //load the data controller. called at the start of the activity. All data is stored in the controller.
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -83,7 +89,7 @@ public class MainUser extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
-
+    //save the data controller. This function is never called in here for the time being
     private void saveInFile() {
         try {
 
