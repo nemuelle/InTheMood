@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
 public class MainUser extends AppCompatActivity {
+    private MainUser activity = this;
 
     //UI Elements
     private Button myFriendsMoodsButton;

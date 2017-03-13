@@ -27,13 +27,16 @@ import java.lang.reflect.Type;
 
 
 /**
- * A login screen that offers login via username/password.
+ * A login screen that offers login via username/password. This is the default
+ * activity for the InTheMood app. Here, the User may enter their login credentials
+ * to access their InTheMood main page. If the User does not yet have their own
+ * login credentials, they can click the "Register" button to be redirected to the
+ * new user registration screen to make their own account.
  */
 public class ExistingUserLogin extends AppCompatActivity{
     /**
      *  To pass in a message to the next activity
      */
-    public static final String EXTRA_MESSAGE = "com.example.inthemood.MESSAGE";
     private static final String FILENAME = "file.sav";
     public dataControler controller;
 
@@ -41,6 +44,7 @@ public class ExistingUserLogin extends AppCompatActivity{
     private EditText mUserView;
     private EditText mPasswordView;
 
+    // Error message reference.
     private TextView eL;
 
     @Override
@@ -48,6 +52,7 @@ public class ExistingUserLogin extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_existing_user_login);
 
+        // Hide the error message by default.
         eL = (TextView) findViewById(R.id.eLogin);
         eL.setVisibility(View.GONE);
 
@@ -68,6 +73,8 @@ public class ExistingUserLogin extends AppCompatActivity{
         loadFromFile();
     }
 
+    // Load the data controller stored in the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -87,6 +94,8 @@ public class ExistingUserLogin extends AppCompatActivity{
         }
     }
 
+    // Save the data controller into the specified file.
+    // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void saveInFile() {
         try {
 
@@ -105,7 +114,11 @@ public class ExistingUserLogin extends AppCompatActivity{
     }
 
     /**
-     * Called when the log in button is clicked.
+     * Called when the log in button is clicked. First, it verifies the login
+     * credentials. If the credentials match an existing account, the User is
+     * is taken to that accounts respective login page. Else, they remain on
+     * the login screen, which will now display an error message informing the
+     * user that the inputted credentials are incorrect.
      *
      * @param view
      */
@@ -115,9 +128,6 @@ public class ExistingUserLogin extends AppCompatActivity{
         User userLogin = controller.verifyLogIn(name, pass);
         if (userLogin != null) {
             Intent intent = new Intent(this, MainUser.class);
-            //EditText editText = (EditText) findViewById(R.id.user);
-            //String message = editText.getText().toString();
-            //intent.putExtra(EXTRA_MESSAGE, message);
             controller.setCurrentUser(userLogin);
             saveInFile();
 
@@ -127,6 +137,13 @@ public class ExistingUserLogin extends AppCompatActivity{
         }
     }
 
+
+    /**
+     * Called when the register button is clicked. The User is redirected to the
+     * new user registration page.
+     *
+     * @param view
+     */
     public void register(View view) {
         Intent intent = new Intent(this, NewUserLogin.class);
         saveInFile();
