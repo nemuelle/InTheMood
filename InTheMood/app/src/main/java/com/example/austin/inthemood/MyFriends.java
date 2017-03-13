@@ -36,14 +36,8 @@ public class MyFriends extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
-        //test
-        User admin = controller.searchForUserByName("admin");
-        Mood mood1 = new Mood();
-        mood1.setMoodName("Sadness");
-        admin.addMood(mood1);
-        controller.getCurrentUser().addToMyFollowingList(admin);
-
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
+        //just print followeduser name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = controller.getCurrentUser().getMyFollowingList();
         followedUserStringMessage = new ArrayList<String>();
@@ -60,21 +54,11 @@ public class MyFriends extends AppCompatActivity {
                 followedUserStringMessage.add(message);
 
             }
-
         }
         adapter = new ArrayAdapter<String>(this,
                 R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
-        ArrayList<User> myFollowingList = controller.getCurrentUser().getMyFollowingList();
-        ArrayList<String> myFollowingNamesList = new ArrayList<String>();
-        for (int i = 0; i < myFollowingList.size(); i++){
-            myFollowingNamesList.add(myFollowingList.get(i).getName());
-        }
-
-        adapter = new ArrayAdapter<String>(this,
-                R.layout.list_item, myFollowingNamesList);
-        myFriendsListView.setAdapter(adapter);
     }
 
     @Override
