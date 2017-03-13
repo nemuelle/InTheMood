@@ -6,6 +6,7 @@
     <!-- Strings related to login -->
     <string name="prompt_user">User Name</string>
     <string name="button_login">Log In</string>
+    <string name="eLogin0">Username or password is incorrect</string>
 
     <!-- Strings related to registration -->
     <string name="confirm_password">Confirm Password</string>

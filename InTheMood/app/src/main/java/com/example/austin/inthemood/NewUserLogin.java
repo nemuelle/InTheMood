@@ -7,12 +7,25 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+
 public class NewUserLogin extends AppCompatActivity {
 
     /**
      *  To pass in a message to the next activity
      */
     public static final String EXTRA_MESSAGE = "com.example.inthemood.MESSAGE";
+    private static final String FILENAME = "file.sav";
     public dataControler controller;
 
     // UI references.
@@ -34,11 +47,26 @@ public class NewUserLogin extends AppCompatActivity {
         mPasswordView = (EditText) findViewById(R.id.password);
         mConfirmPWView = (EditText) findViewById(R.id.confirm_password);
 
+        // Get the data controller.
+        //MyApp app = (MyApp)getApplicationContext();
+        //dataControler controller = app.getController();
+
+        //controller = new dataControler(new User("admin", "admin"));
+
+        loadFromFile();
+
         // Initialize error messages and hide them by default.
         eU = (TextView) findViewById(R.id.eUser);
         eU.setVisibility(View.GONE);
         eP = (TextView) findViewById(R.id.ePass);
         eP.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        loadFromFile();
     }
 
     /**
@@ -53,15 +81,19 @@ public class NewUserLogin extends AppCompatActivity {
             eP = (TextView) findViewById(R.id.ePass);
             eP.setVisibility(View.GONE);
             Intent intent = new Intent(this, MainUser.class);
-            String name = mUserView.getText().toString();
-            String password = mPasswordView.getText().toString();
-            intent.putExtra(EXTRA_MESSAGE, name);
 
-
-            User newUser = new User(name, password);
-            controller = new dataControler(newUser);
-
+            /**
+            * String name = mUserView.getText().toString();
+            * String password = mPasswordView.getText().toString();
+            * intent.putExtra(EXTRA_MESSAGE, name);
+            */
+            User newUser = new User(mUserView.getText().toString(),
+                    mPasswordView.getText().toString());
+            controller.addToUserList(newUser);
+            controller.setCurrentUser(newUser);
+            saveInFile();
             startActivity(intent);
+
         } else if (validRegistration() == -1) {
             eU.setVisibility(View.VISIBLE);
             eU.setText(getString(R.string.eUser1));
@@ -97,5 +129,39 @@ public class NewUserLogin extends AppCompatActivity {
             return -8;
         }
         return 1;
+    }
+
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            Type objectType = new TypeToken<dataControler>() {}.getType();
+            controller = gson.fromJson(in, objectType);
+        } catch (FileNotFoundException e) {
+            User firstUser = new User("admin", "admin");
+            controller = new dataControler(firstUser);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void saveInFile() {
+        try {
+
+            FileOutputStream fos = openFileOutput(FILENAME,0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(controller, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
     }
 }
