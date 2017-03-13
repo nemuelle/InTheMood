@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.austin.inthemood.decorators.EventDecorator;
 
@@ -22,7 +24,10 @@ import java.util.concurrent.Executors;
 
 public class MoodCalendarActivity extends AppCompatActivity implements OnDateSelectedListener {
 
-    MaterialCalendarView widget;
+    private MaterialCalendarView widget;
+    private ArrayList<Mood> moodListForDay;
+    private ListView moodForDayListView;
+    private ArrayAdapter<Mood> moodArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         setContentView(R.layout.activity_mood_calendar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        moodForDayListView = (ListView) findViewById(R.id.moodListViewForDay);
 
         widget.setOnDateChangedListener(this);
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
@@ -56,6 +62,16 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
         // here i think there should be a view with the moods that happened on that day
         // maybe a listview below the calendar or have another activity to show the moods
+
+        // populate the list view.
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        moodArrayAdapter = new ArrayAdapter<>(this, R.layout.item_mood, moodListForDay);
+        moodForDayListView.setAdapter(moodArrayAdapter);
+        moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
     }
 
     /**
@@ -73,6 +89,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
             }
 
             // this sample code puts a EventDecorator every 5 days
+            // change it to find events that occur though the month.
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, -2);
             ArrayList<CalendarDay> dates = new ArrayList<>();
