@@ -1,5 +1,6 @@
 package com.example.austin.inthemood;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -56,6 +58,13 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
 
         new PutMoodsInMaterialCalendarView().executeOnExecutor(Executors.newSingleThreadExecutor());
+
+        moodForDayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // send to edit mood?
+            }
+        });
     }
 
     @Override
@@ -65,6 +74,8 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
         // populate the list view.
     }
+
+
 
     @Override
     protected void onStart() {
