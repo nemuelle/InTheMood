@@ -11,8 +11,9 @@ import java.util.Date;
  */
 
 public class dataControler {
-    private ArrayList<User> userList;
+    private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
+    private User currentUser;
 
     /**
      * Instantiates a new dataControler. This should be called once. after the first user in the
@@ -24,6 +25,24 @@ public class dataControler {
         userCount = 1;
         userList = new ArrayList<User>();
         userList.add(firstUser);
+    }
+
+    /**
+     * set the current user interacting with the system in the data controler
+     *
+     * @param currentUser user interacting with the system
+     */
+    public void setCurrentUser(User currentUser){
+        this.currentUser = currentUser;
+    }
+
+    /**
+     * get current user interacting with the app
+     *
+     * @return user interacting with app
+     */
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     /**

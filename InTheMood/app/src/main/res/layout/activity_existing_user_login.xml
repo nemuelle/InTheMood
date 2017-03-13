@@ -57,4 +57,12 @@
         android:id="@+id/register"
         android:onClick="register"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/eLogin"
+        android:layout_toRightOf="@+id/user"
+        android:text="@string/eLogin0"
+        />
+
 </RelativeLayout>
