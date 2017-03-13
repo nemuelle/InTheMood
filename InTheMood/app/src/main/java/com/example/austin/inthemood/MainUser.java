@@ -51,17 +51,19 @@ public class MainUser extends AppCompatActivity {
         super.onStart();
         loadFromFile();
     }
-
+    //go to MyMoods activity 
     public void MyMoods(View view){
         Intent intent = new Intent(this, MyMoods.class);
         startActivity(intent);
     }
 
+    //go to myFriendsMoods activity (empty activity at the moment)
     public void MyFriendsMoods(View view){
         Intent intent = new Intent(this, MyFriendsMoods.class);
         startActivity(intent);
     }
 
+    //go back to existing loggin activity and set current user to null
     public void SignOut(View view){
         controller.setCurrentUser(null);
         saveInFile();
@@ -69,13 +71,14 @@ public class MainUser extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //start the myFriends activity
     public void MyFriends(View view){
         Intent intent = new Intent(this, MyFriends.class);
         startActivity(intent);
     }
 
 
-    //load the data controller. called at the start of the activity. All data is stored in the controller.
+    //start the calendar activity
     public void MoodCalendar(View view) {
         Intent intent = new Intent(this, MoodCalendarActivity.class);
         startActivity(intent);
