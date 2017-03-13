@@ -1,8 +1,10 @@
 package com.example.austin.inthemood;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +38,7 @@ public class MyMoods extends AppCompatActivity {
     private Button emotionFilterButton;
     private Button weekFilterButton;
     private Button triggerFilterButton;
+    private Button newMoodButton;
     private EditText triggerText;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
@@ -60,6 +63,7 @@ public class MyMoods extends AppCompatActivity {
         triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         moodsListView = (ListView) findViewById(R.id.myMoodsListView);
+        newMoodButton = (Button) findViewById(R.id.newMoodButton);
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.moods, android.R.layout.simple_spinner_item);
@@ -222,6 +226,15 @@ public class MyMoods extends AppCompatActivity {
 
         });
 
+        newMoodButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                addMood(v);
+            }
+
+        });
+
 
 
     }
@@ -253,8 +266,31 @@ public class MyMoods extends AppCompatActivity {
 
         moodAdapter = new ArrayAdapter<Mood>(this,R.layout.list_item,SortedMoodList);
         moodsListView.setAdapter(moodAdapter);
+        moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView<?> parent,View view, int position,long id){
+                editMood(view,position);
+            }
+        });
     }
 
+
+    //Start edit mood activity
+    private void editMood(View view, int index){
+        Intent editMoodIntent = new Intent(this,addEditMood.class);
+        editMoodIntent.putExtra("Mood index",index);
+        startActivity(editMoodIntent);
+
+
+    }
+    //Start activity to add another mood
+    private void addMood(View view){
+        Intent addMoodIntent = new Intent(this,addEditMood.class);
+        startActivity(addMoodIntent);
+
+
+    }
+
+    //Load data controller
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
