@@ -46,13 +46,6 @@ public class NewUserLogin extends AppCompatActivity {
         mUserView = (EditText) findViewById(R.id.user);
         mPasswordView = (EditText) findViewById(R.id.password);
         mConfirmPWView = (EditText) findViewById(R.id.confirm_password);
-
-        // Get the data controller.
-        //MyApp app = (MyApp)getApplicationContext();
-        //dataControler controller = app.getController();
-
-        //controller = new dataControler(new User("admin", "admin"));
-
         loadFromFile();
 
         // Initialize error messages and hide them by default.

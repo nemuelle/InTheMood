@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="My Friends Moods" />
+        android:text="My Friends Moods"
+        android:onClick="MyFriendsMoods" />
 
     <Button
         android:id="@+id/myMoodsButton"
@@ -28,7 +29,8 @@
         android:layout_marginTop="25dp"
         android:text="My Moods"
         android:layout_alignRight="@+id/myFriendsMoodsButton"
-        android:layout_alignEnd="@+id/myFriendsMoodsButton" />
+        android:layout_alignEnd="@+id/myFriendsMoodsButton"
+        android:onClick="MyMoods" />
 
     <Button
         android:id="@+id/nearbyMoodsButton"
@@ -51,7 +53,8 @@
         android:layout_alignLeft="@+id/nearbyMoodsButton"
         android:layout_alignStart="@+id/nearbyMoodsButton"
         android:layout_alignRight="@+id/myMoodsButton"
-        android:layout_alignEnd="@+id/myMoodsButton" />
+        android:layout_alignEnd="@+id/myMoodsButton"
+        android:onClick="SignOut" />
 
     <Button
         android:id="@+id/myFriendsButton"
@@ -63,5 +66,6 @@
         android:layout_alignStart="@+id/myMoodsButton"
         android:layout_below="@+id/myMoodsButton"
         android:layout_marginTop="21dp"
-        android:text="My Friends" />
+        android:text="My Friends"
+        android:onClick="MyFriends" />
 </RelativeLayout>
