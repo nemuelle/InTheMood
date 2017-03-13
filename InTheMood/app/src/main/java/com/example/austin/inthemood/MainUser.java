@@ -26,12 +26,14 @@ import java.lang.reflect.Type;
  */
 
 public class MainUser extends AppCompatActivity {
+    private MainUser activity = this;
 
     //UI Elements
     private Button myFriendsMoodsButton;
     private Button myMoodsButton;
     private Button myFriendsButton;
     private Button signOutButton;
+    private Button moodCalendarButton;
 
     private static final String FILENAME = "file.sav";
     public dataControler controller;
@@ -69,6 +71,13 @@ public class MainUser extends AppCompatActivity {
 
     public void MyFriends(View view){
         Intent intent = new Intent(this, MyFriends.class);
+        startActivity(intent);
+    }
+
+
+    //load the data controller. called at the start of the activity. All data is stored in the controller.
+    public void MoodCalendar(View view) {
+        Intent intent = new Intent(this, MoodCalendarActivity.class);
         startActivity(intent);
     }
 

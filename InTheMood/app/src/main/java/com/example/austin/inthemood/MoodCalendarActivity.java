@@ -86,6 +86,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        // clear current listview
+        moodListForDay.clear();
+        moodArrayAdapter.notifyDataSetChanged();
 
         // find moods that occur on this day
         for (Mood mood : moodListForMonth) {
