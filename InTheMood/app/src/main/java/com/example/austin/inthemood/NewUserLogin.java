@@ -58,9 +58,6 @@ public class NewUserLogin extends AppCompatActivity {
             intent.putExtra(EXTRA_MESSAGE, name);
 
 
-            User newUser = new User(name, password);
-            controller = new dataControler(newUser);
-
             startActivity(intent);
         } else if (validRegistration() == -1) {
             eU.setVisibility(View.VISIBLE);

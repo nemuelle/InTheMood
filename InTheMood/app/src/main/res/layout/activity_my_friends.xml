@@ -12,8 +12,17 @@
         android:layout_height="24dp"
         android:text="Friends"
         android:textSize="18sp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="16dp" />
+        tools:layout_editor_absoluteX="22dp"
+        app:layout_constraintBottom_toTopOf="@+id/myFriendsListView"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/findFriendsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find Friends"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <ListView
         android:id="@+id/myFriendsListView"
@@ -21,12 +30,4 @@
         android:layout_height="381dp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="52dp" />
-
-    <Button
-        android:id="@+id/findFriendsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Find Friends"
-        tools:layout_editor_absoluteX="120dp"
-        tools:layout_editor_absoluteY="447dp" />
 </android.support.constraint.ConstraintLayout>
