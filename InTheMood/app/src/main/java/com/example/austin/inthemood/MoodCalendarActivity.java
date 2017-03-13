@@ -34,6 +34,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * An acvity that shows the which days the user documented a mood and shows them on
+ * a MaterialCalendarView. When a day is selected, a ListView will be show the which moods happened.
+ *
+ * TODO: When a mood is selected from the list, send the user to addEditMood so the user can edit the mood if they choose.
+ */
 public class MoodCalendarActivity extends AppCompatActivity implements OnDateSelectedListener {
 
     private MaterialCalendarView widget;
@@ -42,7 +48,8 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     private ListView moodForDayListView;
     private MoodAdapter moodArrayAdapter;
     private static final String FILENAME = "file.sav";
-   public dataControler controller;
+
+    public dataControler controller;
     private User user;
 
     @Override
@@ -86,6 +93,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        // clear current listview
+        moodListForDay.clear();
+        moodArrayAdapter.notifyDataSetChanged();
 
         // find moods that occur on this day
         for (Mood mood : moodListForMonth) {
@@ -118,11 +128,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     /**
      * Get moods that have happened and put them in the Calendar as a red circle under the day.
-     * Not quite sure how we get the moods yet
      *
      * Based on
      * https://github.com/prolificinteractive/material-calendarview/tree/master/sample/src/main/java/com/prolificinteractive/materialcalendarview/sample
-     * and is Copyright (c) 2016 Prolific Interactive.
      */
     private class PutMoodsInMaterialCalendarView extends AsyncTask<Void, Void, List<CalendarDay>> {
 
@@ -168,6 +176,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         }
     }
 
+    /**
+     * Load dataControler from FILENAME stored in gson format.
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -185,6 +196,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         }
     }
 
+    /**
+     * save dataControler to file FILENAME in gson format
+     */
     private void saveInFile() {
         try {
 
