@@ -28,8 +28,12 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     private MaterialCalendarView widget;
     private ArrayList<Mood> moodListForDay;
+    private ArrayList<Mood> moodListForMonth; // save from time
     private ListView moodForDayListView;
     private ArrayAdapter<Mood> moodArrayAdapter;
+
+    User user;
+    dataControler dc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,17 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         // here i think there should be a view with the moods that happened on that day
         // maybe a listview below the calendar or have another activity to show the moods
 
-        // populate the list view.
+        // find moods that occur on this day
+        for (Mood mood : moodListForMonth) {
+            Calendar moodDateCalendar = Calendar.getInstance();
+            moodDateCalendar.setTime(mood.getMoodDate());
+            if (moodDateCalendar.get(Calendar.DAY_OF_MONTH) == date.getCalendar().get(Calendar.DAY_OF_MONTH)) {
+                moodListForDay.add(mood);
+            }
+        }
+
+        // update adapter
+        moodArrayAdapter.notifyDataSetChanged();
     }
 
 
@@ -80,14 +94,23 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     @Override
     protected void onStart() {
         super.onStart();
+        moodListForDay = new ArrayList<>();
+        moodListForMonth = new ArrayList<>();
+
         moodArrayAdapter = new ArrayAdapter<>(this, R.layout.item_mood, moodListForDay);
         moodForDayListView.setAdapter(moodArrayAdapter);
         moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
+
+        // init user and dataControler
     }
 
     /**
      * Get moods that have happened and put them in the Calendar as a red circle under the day.
      * Not quite sure how we get the moods yet
+     *
+     * Based on
+     * https://github.com/prolificinteractive/material-calendarview/tree/master/sample/src/main/java/com/prolificinteractive/materialcalendarview/sample
+     * and is Copyright (c) 2016 Prolific Interactive.
      */
     private class PutMoodsInMaterialCalendarView extends AsyncTask<Void, Void, List<CalendarDay>> {
 
@@ -99,15 +122,23 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
                 e.printStackTrace();
             }
 
-            // this sample code puts a EventDecorator every 5 days
-            // change it to find events that occur though the month.
+
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MONTH, -2);
+
+            ArrayList<Mood> moods = user.getMyMoodsList();
             ArrayList<CalendarDay> dates = new ArrayList<>();
-            for (int i = 0; i < 30; i++) {
-                CalendarDay day = CalendarDay.from(calendar);
-                dates.add(day);
-                calendar.add(Calendar.DATE, 5);
+
+
+            // if the mood has the same month as current date show the moods
+            // this needs to be changed to allow if the user changes the month
+            // but there isn't time to figure that out right now
+            for (Mood mood : moods) {
+                Calendar moodDateCalendar = Calendar.getInstance();
+                moodDateCalendar.setTime(mood.getMoodDate());
+                if (calendar.get(Calendar.MONTH) == moodDateCalendar.get(Calendar.MONTH)) {
+                    dates.add(CalendarDay.from(moodDateCalendar));
+                    moodListForMonth.add(mood); // for when a user selects a date
+                }
             }
 
             return dates;
@@ -123,5 +154,6 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
             widget.addDecorator(new EventDecorator(Color.RED, calendarDays));
         }
+
     }
 }
