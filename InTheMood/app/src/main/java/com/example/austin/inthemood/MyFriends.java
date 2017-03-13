@@ -26,7 +26,7 @@ public class MyFriends extends AppCompatActivity {
     public dataControler controller;
     private ListView myFriendsListView;
     private ArrayList<User> followingList;
-    private ArrayList<String> followingNamesList;
+    private ArrayList<String> followedUserStringMessage;
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -34,14 +34,35 @@ public class MyFriends extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
+
+        //test
+        User admin = controller.searchForUserByName("admin");
+        Mood mood1 = new Mood();
+        mood1.setMoodName("Sadness");
+        admin.addMood(mood1);
+        controller.getCurrentUser().addToMyFollowingList(admin);
+
+        //Print to list view. For each followed user, print his name and his most recent mood with mood date
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = controller.getCurrentUser().getMyFollowingList();
-        followingNamesList = new ArrayList<String>();
+        followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
-            followingNamesList.add(followingList.get(i).getName());
+            ArrayList<Mood> followedUserMoods = followingList.get(i).getMyMoodsList();
+            if (followedUserMoods.size() > 0) {
+                followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
+                String message = followingList.get(i).getName() + " felt " +
+                        followedUserMoods.get(followedUserMoods.size() - 1).getMoodName() + " on " +
+                        followedUserMoods.get(followedUserMoods.size() - 1).getMoodDate();
+                followedUserStringMessage.add(message);
+            } else {
+                String message = followingList.get(i).getName();
+                followedUserStringMessage.add(message);
+
+            }
+
         }
         adapter = new ArrayAdapter<String>(this,
-                R.layout.list_item, followingNamesList);
+                R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
     }
