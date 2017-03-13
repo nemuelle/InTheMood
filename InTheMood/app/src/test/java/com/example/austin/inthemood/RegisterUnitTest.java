@@ -10,12 +10,10 @@ import static org.junit.Assert.*;
 public class RegisterUnitTest {
     @Test
     public void testRegisterFirstUser() {
-        dataControler controller = new dataControler();
         String firstName = "first";
         String firstPass = "wow";
         User firstUser = new User(firstName, firstPass);
-
-        controller.addToUserList(firstUser);
+        dataControler controller = new dataControler(firstUser);
         User addedUser = controller.verifyLogIn(firstName, firstPass);
 
         assertEquals(addedUser.getName(), firstName);
@@ -23,11 +21,4 @@ public class RegisterUnitTest {
 
     }
 
-    @Test
-    public void testValidRegistration() {
-        dataControler controller = new dataControler();
-        String inputName = "";
-        String inputPass = "";
-
-    }
 }

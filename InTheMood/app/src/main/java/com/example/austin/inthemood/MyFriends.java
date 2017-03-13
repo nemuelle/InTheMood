@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,10 +24,10 @@ import static android.provider.Telephony.Mms.Part.FILENAME;
 public class MyFriends extends AppCompatActivity {
 
     private static final String FILENAME = "file.sav";
-    public dataControler controller;
     private ListView myFriendsListView;
     private ArrayList<User> followingList;
     private ArrayList<String> followedUserStringMessage;
+    private dataControler controller;
     private ArrayAdapter<String> adapter;
 
     @Override
@@ -65,6 +66,15 @@ public class MyFriends extends AppCompatActivity {
                 R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
+        ArrayList<User> myFollowingList = controller.getCurrentUser().getMyFollowingList();
+        ArrayList<String> myFollowingNamesList = new ArrayList<String>();
+        for (int i = 0; i < myFollowingList.size(); i++){
+            myFollowingNamesList.add(myFollowingList.get(i).getName());
+        }
+
+        adapter = new ArrayAdapter<String>(this,
+                R.layout.list_item, myFollowingNamesList);
+        myFriendsListView.setAdapter(adapter);
     }
 
     @Override
