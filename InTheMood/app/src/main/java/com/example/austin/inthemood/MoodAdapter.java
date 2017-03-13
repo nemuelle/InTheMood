@@ -15,12 +15,24 @@ import java.util.ArrayList;
  * based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  * accessed march 12 2017
  */
-
 public class MoodAdapter extends ArrayAdapter<Mood> {
+    /**
+     * Instantiates a new Mood adapter.
+     *
+     * @param context  the context
+     * @param moodList the mood list
+     */
     public MoodAdapter(Context context, ArrayList<Mood> moodList) {
         super(context, 0, moodList);
     }
 
+    /**
+     *
+     * @param position, the position of the mood selected
+     * @param convertView, the view inside the ListView
+     * @param parent, parent view
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
