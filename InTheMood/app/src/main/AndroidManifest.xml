@@ -29,7 +29,12 @@
         <activity android:name=".MyMoods" />
         <activity android:name=".addEditMood" />
         <activity android:name=".MyFriends" />
-        <activity android:name=".FindFriends"></activity>
+        <activity android:name=".FindFriends" />
+        <activity android:name=".MyFriendsMoods"></activity>
+        <activity
+            android:name=".MoodCalendarActivity"
+            android:label="@string/title_activity_mood_calendar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

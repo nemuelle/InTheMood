@@ -28,6 +28,7 @@ public class MainUser extends AppCompatActivity {
     private Button myMoodsButton;
     private Button myFriendsButton;
     private Button signOutButton;
+    private Button moodCalendarButton;
 
     private static final String FILENAME = "file.sav";
     public dataControler controller;
@@ -36,23 +37,7 @@ public class MainUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
-
-        //Initialize UI Elements
-        myFriendsMoodsButton = (Button) findViewById(R.id.myFriendsMoodsButton);
-        myMoodsButton = (Button) findViewById(R.id.myMoodsButton);
-        myFriendsButton = (Button) findViewById(R.id.myFriendsButton);
-        signOutButton = (Button) findViewById(R.id.signOutButton);
-
         loadFromFile();
-        String message = controller.getCurrentUser().getName();
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-        textView.setText(message);
-
-
-
-        ViewGroup layout = (ViewGroup) findViewById(R.id.activity_main_user);
-        layout.addView(textView);
     }
 
     @Override
@@ -60,6 +45,33 @@ public class MainUser extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+    }
+
+    public void MyMoods(View view){
+        Intent intent = new Intent(this, MyMoods.class);
+        startActivity(intent);
+    }
+
+    public void MyFriendsMoods(View view){
+        Intent intent = new Intent(this, MyFriendsMoods.class);
+        startActivity(intent);
+    }
+
+    public void SignOut(View view){
+        controller.setCurrentUser(null);
+        saveInFile();
+        Intent intent = new Intent(this, ExistingUserLogin.class);
+        startActivity(intent);
+    }
+
+    public void MyFriends(View view){
+        Intent intent = new Intent(this, MyFriends.class);
+        startActivity(intent);
+    }
+
+    public void MoodCalendar(View view) {
+        Intent intent = new Intent(this, MoodCalendarActivity.class);
+        startActivity(intent);
     }
 
     private void loadFromFile() {

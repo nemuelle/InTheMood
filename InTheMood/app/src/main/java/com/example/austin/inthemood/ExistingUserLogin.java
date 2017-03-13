@@ -86,7 +86,9 @@ public class ExistingUserLogin extends AppCompatActivity{
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
+            System.out.println("before");
             controller = new dataControler(firstUser);
+            System.out.println("after");
         } catch (IOException e) {
             throw new RuntimeException();
         }
