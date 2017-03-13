@@ -246,19 +246,6 @@ public class MyMoods extends AppCompatActivity {
         currentUser = controller.getCurrentUser();
         SortedMoodList = currentUser.getMyMoodsList();
 
-        //Populate user with 3 moods for demonstration purposes
-        Mood testMood = new Mood();
-        testMood.setMoodName("Happiness");
-        Mood testMood2 = new Mood();
-        testMood2.setMoodName("Anger");
-        Mood testMood3 = new Mood();
-        testMood3.setMoodName("Happiness");
-        testMood2.setMoodDescription("New description");
-        testMood3.setMoodDescription("New description");
-        currentUser.addMood(testMood);
-        currentUser.addMood(testMood2);
-        currentUser.addMood(testMood3);
-
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));

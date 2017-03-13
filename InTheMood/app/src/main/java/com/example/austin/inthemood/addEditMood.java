@@ -32,7 +32,6 @@ import java.lang.reflect.Type;
  * dropdown fields.
  *
  * TODO: Get the scenario of an existing mood
- * TODO: DONT CRASH WHEN OPENING TEST MOOD (actual moods are fine though)
  */
 public class addEditMood extends AppCompatActivity {
     private addEditMood activity = this;
@@ -89,7 +88,7 @@ public class addEditMood extends AppCompatActivity {
 
         //Check if a mood was passed in
         Intent intent = getIntent();
-        //TODO: get the scenario of a mood somehow, and NOT CRASH WHEN OPENING TEST MOOD
+        //TODO: get the scenario of a mood
         moodIndex = intent.getIntExtra("Mood index", -1);
         if (moodIndex != -1) {
             targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
