@@ -25,6 +25,7 @@ public class addEditMood extends AppCompatActivity {
     private addEditMood activity = this;
     private dataControler controller;
     private String FILENAME = "file.sav";
+    private Mood targetMood;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -54,9 +55,11 @@ public class addEditMood extends AppCompatActivity {
         //Check if a mood was passed in
         Intent intent = getIntent();
         //TODO: be able to receive a mood index from caller
-        //moodIndex = intent.getIntExtra(MyMoods.edit_mood, -1);
+        moodIndex = intent.getIntExtra("Mood index", -1);
         if (moodIndex != -1) {
-            //TODO: grab respective mood
+            targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
+        } else {
+            deleteButton.setVisibility(View.GONE);
         }
 
 
@@ -90,27 +93,33 @@ public class addEditMood extends AppCompatActivity {
                 String moodName = moodSpinner.getSelectedItem().toString();
                 String scenario = scenarioSpinner.getSelectedItem().toString();
                 String trigger = triggerText.getText().toString();
-                Mood newMood = new Mood();
-                newMood.setMoodName(moodName);
-                newMood.setMoodDescription(trigger);
-                controller.getCurrentUser().addMood(newMood);
+
+                //If making a new Mood:
+                if (moodIndex == -1) {
+                    Mood newMood = new Mood();
+                    newMood.setMoodName(moodName);
+                    newMood.setMoodDescription(trigger);
+                    controller.getCurrentUser().addMood(newMood);
+                } else {
+                    targetMood.setMoodName(moodName);
+                    targetMood.setMoodDescription(trigger);
+                }
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
                 startActivity(intent);
             }
         });
 
-        //TODO: be able to delete a mood
-        /*
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                controller.getCurrentUser().removeMood();
+                controller.getCurrentUser().removeMood(targetMood);
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
                 startActivity(intent);
             }
         });
-        */
+
     }
 
     private void loadFromFile() {
