@@ -42,7 +42,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     private ListView moodForDayListView;
     private MoodAdapter moodArrayAdapter;
     private static final String FILENAME = "file.sav";
-+   public dataControler controller;
+   public dataControler controller;
     private User user;
 
     @Override
