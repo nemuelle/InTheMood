@@ -98,4 +98,9 @@ public class Mood {
 
     }
 
+    public String toString(){
+        return  "Mood on " + this.moodDate + " was " + this.moodName + " because " +
+                this.moodDescription;
+    }
+
 }
