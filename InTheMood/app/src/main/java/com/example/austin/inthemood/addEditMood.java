@@ -31,7 +31,8 @@ import java.lang.reflect.Type;
  * supplied, then the User can only add a new Mood with the values in the text /
  * dropdown fields.
  *
- * TODO: Autofill the values of the existing Mood when editing it.
+ * TODO: Get the scenario of an existing mood
+ * TODO: DONT CRASH WHEN OPENING TEST MOOD (actual moods are fine though)
  */
 public class addEditMood extends AppCompatActivity {
     private addEditMood activity = this;
@@ -64,16 +65,7 @@ public class addEditMood extends AppCompatActivity {
         //Grab the data controller
         loadFromFile();
 
-        //Check if a mood was passed in
-        Intent intent = getIntent();
-        //TODO: autofill the values of an existing mood into the activity
-        moodIndex = intent.getIntExtra("Mood index", -1);
-        if (moodIndex != -1) {
-            targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
-        } else {
-            // Hide the delete button, since you can't delete a Mood that doesn't exist!
-            deleteButton.setVisibility(View.GONE);
-        }
+
 
 
         /*
@@ -94,6 +86,20 @@ public class addEditMood extends AppCompatActivity {
         socialAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         scenarioSpinner.setAdapter(socialAdapter);
+
+        //Check if a mood was passed in
+        Intent intent = getIntent();
+        //TODO: get the scenario of a mood somehow, and NOT CRASH WHEN OPENING TEST MOOD
+        moodIndex = intent.getIntExtra("Mood index", -1);
+        if (moodIndex != -1) {
+            targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
+            moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
+            //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
+            triggerText.setText(targetMood.getMoodDescription());
+        } else {
+            // Hide the delete button, since you can't delete a Mood that doesn't exist!
+            deleteButton.setVisibility(View.GONE);
+        }
 
         /*
          * Code that is run when the Save button is clicked. Saves the user input and creates a mood
