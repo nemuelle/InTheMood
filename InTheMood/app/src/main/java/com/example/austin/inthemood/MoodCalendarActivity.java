@@ -15,10 +15,20 @@ import android.widget.ListView;
 
 import com.example.austin.inthemood.decorators.EventDecorator;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,9 +41,9 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     private ArrayList<Mood> moodListForMonth; // save from time
     private ListView moodForDayListView;
     private MoodAdapter moodArrayAdapter;
-
-    User user;
-    dataControler dc;
+    private static final String FILENAME = "file.sav";
++   public dataControler controller;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +53,15 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         setSupportActionBar(toolbar);
         moodForDayListView = (ListView) findViewById(R.id.moodListViewForDay);
 
+        widget = (MaterialCalendarView) findViewById(R.id.calendarView);
         widget.setOnDateChangedListener(this);
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
         Calendar instance = Calendar.getInstance();
         widget.setSelectedDate(instance.getTime());
 
+
+        // set the range of the calendar. should be changed to be dynamic or maybe removed completely.
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
 
@@ -73,8 +86,6 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        // here i think there should be a view with the moods that happened on that day
-        // maybe a listview below the calendar or have another activity to show the moods
 
         // find moods that occur on this day
         for (Mood mood : moodListForMonth) {
@@ -101,7 +112,8 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         moodForDayListView.setAdapter(moodArrayAdapter);
         moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
 
-        // init user and dataControler
+        loadFromFile();
+        user = controller.getCurrentUser();
     }
 
     /**
@@ -154,6 +166,39 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
             widget.addDecorator(new EventDecorator(Color.RED, calendarDays));
         }
+    }
 
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            Type objectType = new TypeToken<dataControler>() {}.getType();
+            controller = gson.fromJson(in, objectType);
+        } catch (FileNotFoundException e) {
+            User firstUser = new User("admin", "admin");
+            controller = new dataControler(firstUser);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void saveInFile() {
+        try {
+
+            FileOutputStream fos = openFileOutput(FILENAME,0);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            Gson gson = new Gson();
+            gson.toJson(controller, writer);
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
     }
 }
