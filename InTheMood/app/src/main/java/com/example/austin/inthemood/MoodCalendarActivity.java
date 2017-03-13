@@ -30,7 +30,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     private ArrayList<Mood> moodListForDay;
     private ArrayList<Mood> moodListForMonth; // save from time
     private ListView moodForDayListView;
-    private ArrayAdapter<Mood> moodArrayAdapter;
+    private MoodAdapter moodArrayAdapter;
 
     User user;
     dataControler dc;
@@ -97,7 +97,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         moodListForDay = new ArrayList<>();
         moodListForMonth = new ArrayList<>();
 
-        moodArrayAdapter = new ArrayAdapter<>(this, R.layout.item_mood, moodListForDay);
+        moodArrayAdapter = new MoodAdapter(this, moodListForDay);
         moodForDayListView.setAdapter(moodArrayAdapter);
         moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
 

@@ -12,10 +12,12 @@ import java.util.ArrayList;
 /**
  * Created by nemuelle on 2017-03-12.
  * Define an adapter to populate the listview in MoodCalendarActivity
+ * based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
+ * accessed march 12 2017
  */
 
-public class MoodAdpater extends ArrayAdapter {
-    public MoodAdpater(Context context, ArrayList<Mood> moodList) {
+public class MoodAdapter extends ArrayAdapter<Mood> {
+    public MoodAdapter(Context context, ArrayList<Mood> moodList) {
         super(context, 0, moodList);
     }
 
