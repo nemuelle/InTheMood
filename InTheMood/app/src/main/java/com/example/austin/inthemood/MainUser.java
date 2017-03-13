@@ -27,6 +27,7 @@ public class MainUser extends AppCompatActivity {
     private Button myMoodsButton;
     private Button myFriendsButton;
     private Button signOutButton;
+    private Button moodCalendarButton;
 
     private static final String FILENAME = "file.sav";
     public dataControler controller;
@@ -64,6 +65,11 @@ public class MainUser extends AppCompatActivity {
 
     public void MyFriends(View view){
         Intent intent = new Intent(this, MyFriends.class);
+        startActivity(intent);
+    }
+
+    public void MoodCalendar(View view) {
+        Intent intent = new Intent(this, MoodCalendarActivity.class);
         startActivity(intent);
     }
 
