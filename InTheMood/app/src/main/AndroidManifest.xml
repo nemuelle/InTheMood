@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -30,11 +31,11 @@
         <activity android:name=".addEditMood" />
         <activity android:name=".MyFriends" />
         <activity android:name=".FindFriends" />
-        <activity android:name=".MyFriendsMoods"></activity>
+        <activity android:name=".MyFriendsMoods" />
         <activity
             android:name=".MoodCalendarActivity"
             android:label="@string/title_activity_mood_calendar"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
