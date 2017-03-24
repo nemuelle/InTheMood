@@ -128,4 +128,14 @@
         tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="39dp"
         app:layout_constraintLeft_toLeftOf="@+id/addEditMoodSaveButton" />
+
+    <Switch
+        android:id="@+id/locationSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="Location"
+        tools:checked="false"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="144dp" />
 </android.support.constraint.ConstraintLayout>
