@@ -1,6 +1,8 @@
 package com.example.austin.inthemood;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,7 +38,8 @@ import java.lang.reflect.Type;
  *
  * TODO: Get the scenario of an existing mood
  */
-public class addEditMood extends AppCompatActivity {
+public class addEditMood extends AppCompatActivity  implements
+        GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
     private addEditMood activity = this;
     private dataControler controller;
     private String FILENAME = "file.sav";
@@ -45,6 +51,7 @@ public class addEditMood extends AppCompatActivity {
     private EditText triggerText;
     private Button saveButton;
     private Button deleteButton;
+    private GoogleApiClient mGoogleApiClient;
 
     //Mood Index
     int moodIndex = -1;
@@ -64,8 +71,14 @@ public class addEditMood extends AppCompatActivity {
         //Grab the data controller
         loadFromFile();
 
-
-
+        // Create an instance of GoogleAPIClient
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -144,6 +157,18 @@ public class addEditMood extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
     // Load the data controller stored in the specified file.
     // Taken from: the CMPUT301 lonelyTwitter lab examples
     private void loadFromFile() {
@@ -180,5 +205,20 @@ public class addEditMood extends AppCompatActivity {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
