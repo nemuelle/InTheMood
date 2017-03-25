@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 /* My moods activity displays the list of all moods a user inputs and allows filtering the list to
     show only relevant moods.
 
@@ -244,7 +247,15 @@ public class MyMoods extends AppCompatActivity {
         super.onStart();
         loadFromFile();
         currentUser = controller.getCurrentUser();
-        SortedMoodList = currentUser.getMyMoodsList();
+        //SortedMoodList = currentUser.getMyMoodsList();
+        ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
+        getMoodsTask.execute("");
+
+        try {
+            SortedMoodList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error","Failed to get Moods from async controller");
+        }
 
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
