@@ -37,7 +37,8 @@ public class ElasticSearchController {
 
                 try {
                     // where is the client?
-                    DocumentResult result = client.execute(new Index.Builder(mood).index("InTheMood").type("Mood").build());
+                    DocumentResult result = client.execute(new Index.Builder(mood).index("testing").type("mood").build());
+                    Log.i("Error", "We sent the moods!");
                     if (result.isSucceeded() == false) {
                         Log.i("Error", "Elastic search couldn't add mood");
                     }

@@ -44,9 +44,7 @@ public class MainUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
         loadFromFile();
-        Mood test = new Mood();
-        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
-        addMoods.execute(test);
+
     }
 
     @Override
