@@ -38,11 +38,15 @@ public class MainUser extends AppCompatActivity {
     private static final String FILENAME = "file.sav";
     public dataControler controller;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
         loadFromFile();
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
     }
 
     @Override
