@@ -145,9 +145,6 @@ public class ExistingUserLogin extends AppCompatActivity{
      * @param view
      */
     public void register(View view) {
-        Mood test = new Mood();
-        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
-        addMoods.execute(test);
         Intent intent = new Intent(this, NewUserLogin.class);
         saveInFile();
         startActivity(intent);

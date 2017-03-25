@@ -28,7 +28,12 @@ public class ElasticSearchController {
 
     // TODO we need a function which adds moods to elastic search
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
-
+        /*
+        USAGE:
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
+         */
 
 
         @Override
@@ -61,6 +66,19 @@ public class ElasticSearchController {
 
     // TODO we need a function which gets moods for a given user from elastic search
     public static class GetMoodsForUser extends AsyncTask<String, Void, ArrayList<Mood>> {
+
+        /*
+        USAGE:
+        ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
+        getMoodsTask.execute("");
+
+        try {
+            SortedMoodList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error","Failed to get Moods from async controller");
+        }
+         */
+
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();

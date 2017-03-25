@@ -247,15 +247,8 @@ public class MyMoods extends AppCompatActivity {
         super.onStart();
         loadFromFile();
         currentUser = controller.getCurrentUser();
-        //SortedMoodList = currentUser.getMyMoodsList();
-        ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
-        getMoodsTask.execute("");
+        SortedMoodList = currentUser.getMyMoodsList();
 
-        try {
-            SortedMoodList = getMoodsTask.get();
-        } catch (Exception e) {
-            Log.i("Error","Failed to get Moods from async controller");
-        }
 
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
