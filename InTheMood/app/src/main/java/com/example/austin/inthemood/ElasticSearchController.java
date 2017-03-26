@@ -24,6 +24,7 @@ import io.searchbox.core.SearchResult;
 
 public class ElasticSearchController {
     private static JestDroidClient client;
+    private static String index = "cmput301w17t15";
     private String query;
 
     // TODO we need a function which adds moods to elastic search
@@ -46,8 +47,43 @@ public class ElasticSearchController {
 
                 try {
                     // where is the client?
-                    DocumentResult result = client.execute(new Index.Builder(mood).index("testing").type("mood").build());
+                    DocumentResult result = client.execute(new Index.Builder(mood).index(index).type("mood").build());
                     Log.i("Error", "We sent the moods!");
+                    if (result.isSucceeded() == false) {
+                        Log.i("Error", "Elastic search couldn't add mood");
+                    }
+
+
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the moods");
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public static class AddUserTask extends AsyncTask<User, Void, Void> {
+        /*
+        USAGE:
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
+         */
+
+        @Override
+        protected Void doInBackground(User... users) {
+            verifySettings();
+
+
+            for (User user : users) {
+
+
+                try {
+                    // where is the client?
+                    DocumentResult result = client.execute(new Index.Builder(user).index(index).type("user").build());
+                    Log.i("Error", "We sent the user");
                     if (result.isSucceeded() == false) {
                         Log.i("Error", "Elastic search couldn't add mood");
                     }
@@ -94,7 +130,7 @@ public class ElasticSearchController {
             }
             System.out.print(query);
             Search search = new Search.Builder(query)
-                    .addIndex("testing")
+                    .addIndex(index)
                     .addType("Mood")
                     .build();
 

@@ -103,6 +103,8 @@ public class UserTest {
         assertEquals(1, user1.getMyFollowersList().size());
         assertEquals(user2,user1.getMyFollowersList().get(0));
     }
+
+
     /**
      * Test getMyFollowingList function.
      */

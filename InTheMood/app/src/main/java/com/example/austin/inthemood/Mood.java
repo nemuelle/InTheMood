@@ -16,6 +16,7 @@ public class Mood {
 //    Color moodColor;
     String moodName;
 
+
     /**
      * Instantiates a new Mood.
      *
