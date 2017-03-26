@@ -29,13 +29,13 @@ public class User{
 
         this.name = name;
         this.password = password;
-        myMoodsList = new ArrayList<Mood>();
-        myFollowersList = new ArrayList<User>();
-        myFollowingList = new ArrayList<User>();
-        myFollowerRequests = new ArrayList<User>();
-        myFollowRequests = new ArrayList<User>();
-        myFollowedMoods = new ArrayList<Mood>();
-        myMoodCount = 0;
+        this.myMoodsList = new ArrayList<Mood>();
+        this.myFollowersList = new ArrayList<User>();
+        this.myFollowingList = new ArrayList<User>();
+        this.myFollowerRequests = new ArrayList<User>();
+        this.myFollowRequests = new ArrayList<User>();
+        this.myFollowedMoods = new ArrayList<Mood>();
+        this.myMoodCount = 0;
 
     }
 
@@ -92,8 +92,8 @@ public class User{
      * @param mood a mood to add to list
      */
     public void addMood(Mood mood){
-        myMoodsList.add(mood);
-        myMoodCount += 1;
+        this.myMoodsList.add(mood);
+        this.myMoodCount += 1;
     }
 
     /**
@@ -102,8 +102,8 @@ public class User{
      * @param mood a mood to remove from list
      */
     public void removeMood(Mood mood){
-        myMoodsList.remove(mood);
-        myMoodCount -= 1;
+        this.myMoodsList.remove(mood);
+        this.myMoodCount -= 1;
     }
 
     /**

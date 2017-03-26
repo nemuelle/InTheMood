@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -118,6 +119,7 @@ public class addEditMood extends AppCompatActivity {
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
                     controller.getCurrentUser().addMood(newMood);
+
                 } else {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
@@ -172,6 +174,7 @@ public class addEditMood extends AppCompatActivity {
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
             gson.toJson(controller, writer);
+            Log.i("gsonToJson", gson.toJson(controller));
             writer.flush();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

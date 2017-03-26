@@ -16,6 +16,8 @@ import android.widget.Spinner;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -249,7 +251,6 @@ public class MyMoods extends AppCompatActivity {
         currentUser = controller.getCurrentUser();
         SortedMoodList = currentUser.getMyMoodsList();
 
-
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
@@ -291,6 +292,7 @@ public class MyMoods extends AppCompatActivity {
 
             Type objectType = new TypeToken<dataControler>() {}.getType();
             controller = gson.fromJson(in, objectType);
+
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
             controller = new dataControler(firstUser);

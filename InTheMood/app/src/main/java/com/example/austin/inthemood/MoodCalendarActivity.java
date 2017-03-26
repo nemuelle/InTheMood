@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -206,6 +207,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
             gson.toJson(controller, writer);
+            Log.i("gson toJson", gson.toJson(controller));
             writer.flush();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

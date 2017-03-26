@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -160,6 +161,7 @@ public class NewUserLogin extends AppCompatActivity {
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
             gson.toJson(controller, writer);
+            Log.i("gson toJson", gson.toJson(controller));
             writer.flush();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

@@ -13,7 +13,7 @@ import java.util.Date;
 public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
-    private User currentUser;
+    private int currentUserIndex;
 
     /**
      * Instantiates a new dataControler. This should be called once. after the first user in the
@@ -23,8 +23,8 @@ public class dataControler {
      */
     public dataControler(User firstUser){
         userCount = 1;
-        userList = new ArrayList<User>();
-        userList.add(firstUser);
+        this.userList = new ArrayList<User>();
+        this.userList.add(firstUser);
     }
 
     /**
@@ -33,7 +33,11 @@ public class dataControler {
      * @param currentUser user interacting with the system
      */
     public void setCurrentUser(User currentUser){
-        this.currentUser = currentUser;
+        for (int i = 0; i < userList.size(); i++){
+            if (userList.get(i) == currentUser){
+                this.currentUserIndex = i;
+            }
+        }
     }
 
     /**
@@ -42,7 +46,8 @@ public class dataControler {
      * @return user interacting with app
      */
     public User getCurrentUser() {
-        return currentUser;
+
+        return userList.get(currentUserIndex);
     }
 
     /**
