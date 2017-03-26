@@ -15,6 +15,7 @@ public class Mood {
     String moodDescription;
 //    Color moodColor;
     String moodName;
+    String ownerName;
 
     /**
      * Instantiates a new Mood.
@@ -22,15 +23,16 @@ public class Mood {
      * @param moodDate        the mood date
      * @param moodDescription the mood description
      */
-    public Mood(Date moodDate, String moodDescription) {
+    public Mood(Date moodDate, String moodDescription, String ownerName) {
         this.moodDate = moodDate;
         this.moodDescription = moodDescription;
+        this.ownerName = ownerName;
     }
 
     /**
      * Instantiates a new Mood.
      */
-    public Mood() {
+    public Mood(String ownerName) {
         this.moodDate = new Date();
         this.moodDescription = "Test Description";
     }
@@ -52,6 +54,10 @@ public class Mood {
     public void setMoodName(String moodName) {
 
         this.moodName = moodName;
+    }
+
+    public String getOwnerName(){
+        return ownerName;
     }
 
     /**

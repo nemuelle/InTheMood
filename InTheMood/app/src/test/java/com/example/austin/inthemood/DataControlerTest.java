@@ -123,8 +123,8 @@ public class DataControlerTest {
     public void testSortMoodsByDate(){
         User user1 = new User("user1", "p1");
         dataControler controler = new dataControler(user1);
-        Mood mood1 = new Mood();
-        Mood mood2 = new Mood();
+        Mood mood1 = new Mood("user1");
+        Mood mood2 = new Mood("user1");
         Date date = new Date(97, 1, 23);
         mood2.setMoodDate(date);
         user1.addMood(mood1);
@@ -143,8 +143,8 @@ public class DataControlerTest {
     public void testFilterByMood(){
         User user1 = new User("user1", "p1");
         dataControler controler = new dataControler(user1);
-        Mood mood1 = new Mood();
-        Mood mood2 = new Mood();
+        Mood mood1 = new Mood("user1");
+        Mood mood2 = new Mood("user1");
         mood1.setMoodName("happy");
         mood2.setMoodName("grumpy");
         user1.addMood(mood1);
@@ -160,21 +160,16 @@ public class DataControlerTest {
     public void testFilterByWeek(){
         User user1 = new User("user1", "p1");
         dataControler controler = new dataControler(user1);
-        Mood mood1 = new Mood();
-        Mood mood2 = new Mood();
-        Mood mood3 = new Mood();
-        Date dateWithinWeek = new Date(117, 2, 8);
+        Mood mood1 = new Mood("user1");
+        Mood mood3 = new Mood("user1");
         Date dateOld = new Date(98, 3, 8);
-        mood2.setMoodDate(dateWithinWeek);
         mood1.setMoodDate(dateOld);
         user1.addMood(mood3);
-        user1.addMood(mood2);
         user1.addMood(mood1);
-        assertEquals(user1.getMyMoodsList().size(), 3);
+        assertEquals(user1.getMyMoodsList().size(), 2);
         ArrayList<Mood> filteredList = controler.filterByWeek(user1.getMyMoodsList());
-        assertEquals(filteredList.size(), 2);
-        assertEquals(filteredList.get(0), mood2);
-        assertEquals(filteredList.get(1), mood3);
+        assertEquals(filteredList.size(), 1);
+        assertEquals(filteredList.get(0), mood3);
     }
 
     /**
@@ -184,8 +179,8 @@ public class DataControlerTest {
     public void testFilterByTrigger(){
         User user1 = new User("user1", "p1");
         dataControler controler = new dataControler(user1);
-        Mood mood1 = new Mood();
-        Mood mood2 = new Mood();
+        Mood mood1 = new Mood("user1");
+        Mood mood2 = new Mood("user1");
         mood2.setMoodDescription("grumpy");
         user1.addMood(mood1);
         user1.addMood(mood2);
