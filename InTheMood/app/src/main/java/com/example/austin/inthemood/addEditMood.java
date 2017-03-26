@@ -115,7 +115,7 @@ public class addEditMood extends AppCompatActivity {
 
                 //If making a new Mood:
                 if (moodIndex == -1) {
-                    Mood newMood = new Mood();
+                    Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
                     controller.getCurrentUser().addMood(newMood);

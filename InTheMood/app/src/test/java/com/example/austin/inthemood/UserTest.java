@@ -56,7 +56,7 @@ public class UserTest {
     @Test
     public void testGetMyMoodsList(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         assertEquals("Test Description", user.getMyMoodsList().get(0).getMoodDescription());
     }
@@ -66,7 +66,7 @@ public class UserTest {
     @Test
     public void testAddMood(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         assertEquals(1, user.getMyMoodsList().size());
     }
@@ -76,7 +76,7 @@ public class UserTest {
     @Test
     public void testRemoveMood(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         user.removeMood(mood1);
         assertEquals(0, user.getMyMoodsList().size());
@@ -202,8 +202,8 @@ public class UserTest {
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
         User user3 = new User("user3", "p3");
-        Mood mood2 = new Mood();
-        Mood mood3 = new Mood();
+        Mood mood2 = new Mood("user2");
+        Mood mood3 = new Mood("user3");
         user1.getMyFollowedMoods().clear();
         user2.addMood(mood2);
         user3.addMood(mood3);
