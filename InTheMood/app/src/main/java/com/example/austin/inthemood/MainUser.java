@@ -99,7 +99,7 @@ public class MainUser extends AppCompatActivity {
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new dataControler(firstUser, this);
         } catch (IOException e) {
             throw new RuntimeException();
         }

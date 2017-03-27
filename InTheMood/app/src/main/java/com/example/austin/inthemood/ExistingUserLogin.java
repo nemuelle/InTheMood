@@ -88,7 +88,7 @@ public class ExistingUserLogin extends AppCompatActivity{
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
             System.out.println("before");
-            controller = new dataControler(firstUser);
+            controller = new dataControler(firstUser, this);
             System.out.println("after");
         } catch (IOException e) {
             throw new RuntimeException();

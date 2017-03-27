@@ -13,6 +13,7 @@ public class User{
     private String name;
     private String password;
     private ArrayList<Mood> myMoodsList;
+    private ArrayList<Mood> myMoodCache;
     private ArrayList<User> myFollowersList;
     private ArrayList<User> myFollowingList;
     private ArrayList<User> myFollowerRequests;
@@ -30,6 +31,7 @@ public class User{
         this.name = name;
         this.password = password;
         this.myMoodsList = new ArrayList<Mood>();
+        this.myMoodCache = new ArrayList<Mood>();
         this.myFollowersList = new ArrayList<User>();
         this.myFollowingList = new ArrayList<User>();
         this.myFollowerRequests = new ArrayList<User>();
@@ -94,6 +96,7 @@ public class User{
     public void addMood(Mood mood){
         this.myMoodsList.add(mood);
         this.myMoodCount += 1;
+        this.myMoodCache.add(mood);
     }
 
     /**
@@ -104,6 +107,27 @@ public class User{
     public void removeMood(Mood mood){
         this.myMoodsList.remove(mood);
         this.myMoodCount -= 1;
+        for (int i = 0; i < myMoodCache.size(); i++) {
+            if (myMoodCache.get(i) == mood) {
+                this.myMoodCache.remove(i);
+            }
+        }
+    }
+
+    /**
+     * empties the mood cache (after elasticSearch has been synched with local storage)
+     */
+    public void emptyMyMoodCache(){
+        this.myMoodCache.clear();
+    }
+
+    /**
+     * gets array list myMoodCache
+     *
+     * @return myMoodCache an array list of locally stored moods
+     */
+    public ArrayList<Mood> getMyMoodCache(){
+        return myMoodCache;
     }
 
     /**

@@ -1,5 +1,9 @@
 package com.example.austin.inthemood;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -14,10 +18,24 @@ public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
     private int currentUserIndex;
+    Context context;
 
     /**
      * Instantiates a new dataControler. This should be called once. after the first user in the
      * system has been registered.
+     *
+     * @param firstUser first registered user in our database
+     * @param myContext
+     */
+    public dataControler(User firstUser, Context myContext){
+        userCount = 1;
+        this.userList = new ArrayList<User>();
+        this.userList.add(firstUser);
+        this.context = myContext;
+    }
+
+    /**
+     * Instantiates a new dataControler without context. (used for JUnit testing)
      *
      * @param firstUser first registered user in our database
      */
@@ -212,4 +230,36 @@ public class dataControler {
         return sortMoodsByDate(filteredMoodList);
     }
 
+    /**
+     * This method checks wether device is online or not
+     *
+     * pulled from http://stackoverflow.com/questions/30343011/how-to-check-if-an-android-device-is-online on March 27, 2017
+     *
+     * @return online a boolean indicating whether device is online or not
+     */
+
+    public boolean isOnline(){
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        boolean online = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            online = true;
+        }
+        return online;
+    }
+
+    /**
+     * updates elasticSearch with the new moods stored locally in myMoodCache if device online
+     */
+    public void syncElasticSearch(){
+        if (!getCurrentUser().getMyMoodCache().isEmpty()) {
+            if (isOnline()) {
+                for (int i = 0; i < getCurrentUser().getMyMoodCache().size(); i++) {
+                    ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+                    addMoods.execute(getCurrentUser().getMyMoodCache().get(i));
+                }
+                getCurrentUser().emptyMyMoodCache();
+            }
+        }
+    }
 }
