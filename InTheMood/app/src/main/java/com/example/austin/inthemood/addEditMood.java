@@ -1,19 +1,34 @@
 package com.example.austin.inthemood;
 
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,11 +54,16 @@ import java.lang.reflect.Type;
  * TODO: Get the scenario of an existing mood
  */
 public class addEditMood extends AppCompatActivity  implements
-        GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = -1;
+    private static final long MILLISECONDS_PER_SECOND = 1000;
     private addEditMood activity = this;
     private dataControler controller;
     private String FILENAME = "file.sav";
     private Mood targetMood;
+    private LocationRequest mLocationRequest;
+    private Location mLastLocation;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -52,6 +72,7 @@ public class addEditMood extends AppCompatActivity  implements
     private Button saveButton;
     private Button deleteButton;
     private GoogleApiClient mGoogleApiClient;
+    private Switch locationSwitch;
 
     //Mood Index
     int moodIndex = -1;
@@ -67,6 +88,7 @@ public class addEditMood extends AppCompatActivity  implements
         triggerText = (EditText) findViewById(R.id.addEditMoodsTriggerText);
         saveButton = (Button) findViewById(R.id.addEditMoodSaveButton);
         deleteButton = (Button) findViewById(R.id.addEditMoodDeleteButton);
+        locationSwitch = (Switch) findViewById(R.id.locationSwitch);
 
         //Grab the data controller
         loadFromFile();
@@ -79,6 +101,12 @@ public class addEditMood extends AppCompatActivity  implements
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        // create LocationRequest Object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+                .setInterval(MILLISECONDS_PER_SECOND * 20)
+                .setFastestInterval(MILLISECONDS_PER_SECOND * 1);
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -155,6 +183,60 @@ public class addEditMood extends AppCompatActivity  implements
             }
         });
 
+        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    return;
+                }
+                Toast.makeText(getBaseContext(), "switch on", Toast.LENGTH_LONG).show();
+                // get location
+                checkLocationSettings();
+            }
+        });
+    }
+
+    private void checkLocationSettings() {
+        if (mGoogleApiClient != null) {
+
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(mLocationRequest);
+
+            //**************************
+            builder.setAlwaysShow(true); //this is the key ingredient
+            //**************************
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+            result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+                @Override
+                public void onResult(LocationSettingsResult result) {
+                    final Status status = result.getStatus();
+                    final LocationSettingsStates state = result.getLocationSettingsStates();
+                    switch (status.getStatusCode()) {
+                        case LocationSettingsStatusCodes.SUCCESS:
+                            // All location settings are satisfied. The client can initialize location
+                            // requests here.
+                            break;
+                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            // Location settings are not satisfied. But could be fixed by showing the user
+                            // a dialog.
+                            try {
+                                // Show the dialog by calling startResolutionForResult(),
+                                // and check the result in onActivityResult().
+                                status.startResolutionForResult(activity, 1000);
+                            } catch (IntentSender.SendIntentException e) {
+                                // Ignore the error.
+                            }
+                            break;
+                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            // Location settings are not satisfied. However, we have no way to fix the
+                            // settings so we won't show the dialog.
+                            break;
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -167,6 +249,23 @@ public class addEditMood extends AppCompatActivity  implements
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
     }
 
     // Load the data controller stored in the specified file.
@@ -209,7 +308,18 @@ public class addEditMood extends AppCompatActivity  implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+//        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//
+//        if (location == null) {
+//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+//                    mLocationRequest, this);
+//        } else {
+//            handleNewLocation(location);
+//        }
+    }
 
+    private void handleNewLocation(Location location) {
+        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -219,6 +329,22 @@ public class addEditMood extends AppCompatActivity  implements
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                Toast.makeText(getBaseContext(), "failed in on connected",Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        } else {
+            Log.i(addEditMood.class.getSimpleName(), "Location services connection failed with code "
+                    + connectionResult.getErrorCode());
+        }
 
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        handleNewLocation(location);
     }
 }
