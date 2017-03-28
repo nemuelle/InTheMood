@@ -1,10 +1,15 @@
 package com.example.austin.inthemood;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.Manifest;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,6 +63,10 @@ public class addEditMood extends AppCompatActivity  implements
         LocationListener {
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = -1;
     private static final long MILLISECONDS_PER_SECOND = 1000;
+    private static final int PERMISSION_ACCESS_FINE_LOCATION_REQUEST = 1;
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+    private boolean locationPermission;
+    private boolean highAccuracyLocationSettings;
     private addEditMood activity = this;
     private dataControler controller;
     private String FILENAME = "file.sav";
@@ -105,7 +114,7 @@ public class addEditMood extends AppCompatActivity  implements
         // create LocationRequest Object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setInterval(MILLISECONDS_PER_SECOND * 20)
+                .setInterval(MILLISECONDS_PER_SECOND * 5)
                 .setFastestInterval(MILLISECONDS_PER_SECOND * 1);
 
         /*
@@ -155,9 +164,13 @@ public class addEditMood extends AppCompatActivity  implements
 
                 //If making a new Mood:
                 if (moodIndex == -1) {
+                    if (mLastLocation == null) {
+                        getLocation();
+                    }
                     Mood newMood = new Mood();
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+                    // add location to mood here
                     controller.getCurrentUser().addMood(newMood);
                 } else {
                     // Edit the existing Mood with the changes supplied.
@@ -189,18 +202,72 @@ public class addEditMood extends AppCompatActivity  implements
                 if (!isChecked) {
                     return;
                 }
-                Toast.makeText(getBaseContext(), "switch on", Toast.LENGTH_LONG).show();
                 // get location
+                if (!checkLocationPermision()) {
+                    requestLocationPermission();
+                }
+
                 checkLocationSettings();
+
+                // location might be null on first call. check at mood creation
+                if (locationPermission && highAccuracyLocationSettings) {
+                    getLocation();
+                }
             }
         });
     }
 
+
+    /*
+     * get the device location. the location permission must be granted to the app
+     * and the settings must be modified before calling this method or else the app will crash.
+     */
+    private void getLocation() {
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                        mLocationRequest, this);
+            } else {
+                handleNewLocation(location);
+            }
+        } catch (SecurityException e) {
+            checkLocationSettings();
+        }
+    }
+
+    private boolean checkLocationPermision() {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermission = true;
+            return true;
+        } else {
+            locationPermission = false;
+            return false;
+        }
+    }
+
+    /*
+     * request the location permission from the user.
+     */
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION_REQUEST);
+    }
+
+    /*
+     * ask the user if they want to change the location settings
+     * based on http://blog.teamtreehouse.com/beginners-guide-location-android
+     * accessed on March 27, 2017
+     */
     private void checkLocationSettings() {
         if (mGoogleApiClient != null) {
-
+            LocationRequest locationRequest = LocationRequest.create();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setInterval(5 * 1000);
+            locationRequest.setFastestInterval(1 * 1000);
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                    .addLocationRequest(mLocationRequest);
+                    .addLocationRequest(locationRequest);
 
             //**************************
             builder.setAlwaysShow(true); //this is the key ingredient
@@ -215,8 +282,7 @@ public class addEditMood extends AppCompatActivity  implements
                     final LocationSettingsStates state = result.getLocationSettingsStates();
                     switch (status.getStatusCode()) {
                         case LocationSettingsStatusCodes.SUCCESS:
-                            // All location settings are satisfied. The client can initialize location
-                            // requests here.
+                            highAccuracyLocationSettings = true;
                             break;
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             // Location settings are not satisfied. But could be fixed by showing the user
@@ -224,18 +290,39 @@ public class addEditMood extends AppCompatActivity  implements
                             try {
                                 // Show the dialog by calling startResolutionForResult(),
                                 // and check the result in onActivityResult().
-                                status.startResolutionForResult(activity, 1000);
+                                status.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
                             } catch (IntentSender.SendIntentException e) {
-                                // Ignore the error.
+                                highAccuracyLocationSettings = false;
                             }
                             break;
                         case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            // Location settings are not satisfied. However, we have no way to fix the
-                            // settings so we won't show the dialog.
+                            highAccuracyLocationSettings = false;
                             break;
                     }
                 }
             });
+        }
+    }
+
+    /*
+     * check the result from requesting the location permission
+     * from https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0
+     * accessed on March 27, 2017
+     */
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ACCESS_FINE_LOCATION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermission = true;
+
+                } else {
+                    locationPermission = false;
+                }
+                return;
+            }
         }
     }
 
@@ -265,6 +352,20 @@ public class addEditMood extends AppCompatActivity  implements
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        highAccuracyLocationSettings = true;
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        highAccuracyLocationSettings = false;
+                }
         }
     }
 
@@ -308,18 +409,20 @@ public class addEditMood extends AppCompatActivity  implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-//        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-//
-//        if (location == null) {
-//            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-//                    mLocationRequest, this);
-//        } else {
-//            handleNewLocation(location);
-//        }
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                        mLocationRequest, this);
+            } else {
+                handleNewLocation(location);
+            }
+        } catch (SecurityException e) {}
     }
 
     private void handleNewLocation(Location location) {
-        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_LONG).show();
+        mLastLocation = location;
+//        Toast.makeText(activity, mLastLocation.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -333,7 +436,6 @@ public class addEditMood extends AppCompatActivity  implements
             try {
                 connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
             } catch (IntentSender.SendIntentException e) {
-                Toast.makeText(getBaseContext(), "failed in on connected",Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         } else {
