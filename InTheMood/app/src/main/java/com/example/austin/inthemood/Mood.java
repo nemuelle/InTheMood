@@ -17,6 +17,7 @@ public class Mood {
     String moodName;
     String ownerName;
 
+
     /**
      * Instantiates a new Mood.
      *
