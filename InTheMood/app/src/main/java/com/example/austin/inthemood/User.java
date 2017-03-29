@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class User{
     private String name;
     private String password;
+    private String elasticSearchID;
     private ArrayList<Mood> myMoodsList;
     private ArrayList<String> myFollowersList;
     private ArrayList<String> myFollowingList;
@@ -28,6 +29,7 @@ public class User{
 
         this.name = name;
         this.password = password;
+        this.elasticSearchID = new String();
         this.myMoodsList = new ArrayList<Mood>();
         this.myFollowersList = new ArrayList<String >();
         this.myFollowingList = new ArrayList<String>();
@@ -73,6 +75,20 @@ public class User{
     public void setPassword(String password){
 
         this.password = password;
+    }
+
+    /**
+     * gets users elastic search ID
+     * @return user's elastic search ID
+     */
+    public String getElasticSearchID() {return elasticSearchID;}
+
+    /**
+     * Sets users elastic search ID. Should be called after adding a user to the server
+     * @param esID String containing the user's unique elastic search id from the server
+     */
+    public void setElasticSearchID(String esID) {
+        this.elasticSearchID = esID;
     }
 
     /**

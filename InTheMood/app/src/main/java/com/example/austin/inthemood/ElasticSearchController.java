@@ -38,11 +38,11 @@ public class ElasticSearchController {
 
 
     // TODO we need a function which adds moods to elastic search
-    public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
+    public static class AddMoodTask extends AsyncTask<Mood, Void, Void> {
         /*
         USAGE:
         Mood test = new Mood();
-        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+        ElasticSearchController.AddMoodTask addMoods = new ElasticSearchController.AddMoodsTask();
         addMoods.execute(test);
          */
 
@@ -68,16 +68,25 @@ public class ElasticSearchController {
         }
     }
 
-    public static class AddUserTask extends AsyncTask<User, Void, Void> {
+
+
+    public static class AddUserTask extends AsyncTask<User, Void, String> {
         /*
         USAGE:
-        Mood test = new Mood();
-        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
-        addMoods.execute(test);
+        User test = new User("Test","test");
+        ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
+        addUser.execute(test);
+         */
+
+        /**
+         * Adds user to Server
+         * @param users the user you want to add to the server
+         * @return returns a string containing the unique id generated for the user by the server
          */
         @Override
-        protected Void doInBackground(User... users) {
+        protected String doInBackground(User... users) {
             verifySettings();
+            String userID = new String();
             for (User user : users) {
                 try {
                     // where is the client?
@@ -85,10 +94,41 @@ public class ElasticSearchController {
                     Log.i("Error", "We sent the user");
                     if (result.isSucceeded() == false) {
                         Log.i("Error", "Elastic search couldn't add mood");
+                    }else {
+                        userID = result.getId();
                     }
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the moods");
+                }
+            }
+            return userID;
+        }
+    }
+
+    public static class SyncUserTask extends AsyncTask<User, Void, Void> {
+        /*
+        USAGE:
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
+         */
+        @Override
+        protected Void doInBackground(User... users) {
+            verifySettings();
+
+            for (User user : users) {
+                try {
+                    // where is the client?
+                    String userID = user.getElasticSearchID();
+                    DocumentResult result = client.execute(new Index.Builder(user).index(index).type(user_type).id(userID).build());
+                    Log.i("Error", "We synced the user!");
+                    if (result.isSucceeded() == false) {
+                        Log.i("Error", "Elastic search couldn't sync the user");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to sync the user");
                 }
             }
             return null;
@@ -100,8 +140,9 @@ public class ElasticSearchController {
     public static class GetMoodsForUser extends AsyncTask<String, Void, ArrayList<Mood>> {
         /*
         USAGE:
+        String userName = "test";
         ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
-        getMoodsTask.execute("");
+        getMoodsTask.execute(userName);
 
         try {
             SortedMoodList = getMoodsTask.get();
@@ -109,8 +150,14 @@ public class ElasticSearchController {
             Log.i("Error","Failed to get Moods from async controller");
         }
          */
+
+        /**
+         * Gets moods for a user by their username
+         * @param username
+         * @return list of moods logged by the user
+         */
         @Override
-        protected ArrayList<Mood> doInBackground(String... search_parameters) {
+        protected ArrayList<Mood> doInBackground(String... username) {
             verifySettings();
             ArrayList<Mood> moods = new ArrayList<Mood>();
             // TODO Build the query
@@ -118,15 +165,11 @@ public class ElasticSearchController {
                     "    \"query\": {\n" +
                     "        \"match\" : {\n" +
                     "            \"ownerName\" : \n" +
-                    "                \""+search_parameters[0]+"\"\n" +
+                    "                \""+username[0]+"\"\n" +
                     "            }\n" +
                     "    }\n" +
                     "}";
 
-            // TODO Build the query
-            if (search_parameters[0] == ""){
-                query = "";
-            }
             System.out.print(query);
             Search search = new Search.Builder(query)
                     .addIndex(index)
@@ -151,11 +194,12 @@ public class ElasticSearchController {
         }
     }
 
-    public static class GetUserByName extends AsyncTask<String, Void, ArrayList<User>> {
+    public static class GetUserByName extends AsyncTask<String, Void, User> {
         /*
         USAGE:
-        ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
-        getMoodsTask.execute("");
+        String userName = "test";
+        ElasticSearchController.GetUserByName getUserTask = new ElasticSearchController.GetUserByName();
+        getUserTask.execute(userName);
 
         try {
             SortedMoodList = getMoodsTask.get();
@@ -163,22 +207,29 @@ public class ElasticSearchController {
             Log.i("Error","Failed to get Moods from async controller");
         }
          */
+
+        /**
+         * Gets the User object from server by their name
+         * @param username
+         * @return User object
+         */
         @Override
-        protected ArrayList<User> doInBackground(String... search_parameters) {
+        protected User doInBackground(String... username) {
             verifySettings();
-            ArrayList<User> users = new ArrayList<User>();
+            //ArrayList<User> users = new ArrayList<User>();
+            User user = new User("","");
             // TODO Build the query
             String query = "{\n" +
                     "    \"query\": {\n" +
                     "        \"match\" : {\n" +
                     "            \"name\" : \n" +
-                    "                \""+search_parameters[0]+"\"\n" +
+                    "                \""+username[0]+"\"\n" +
                     "            }\n" +
                     "    }\n" +
                     "}";
 
             // TODO Build the query
-            if (search_parameters[0] == ""){
+            if (username[0] == ""){
                 query = "";
             }
             System.out.print(query);
@@ -190,8 +241,10 @@ public class ElasticSearchController {
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()){
-                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
-                    users.addAll(foundUsers);
+                    ///List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    //users.addAll(foundUsers);
+                    user = result.getSourceAsObject(User.class);
+                    Log.i("Error", "We got the user!");
                 }
                 else {
                     Log.i("Error", "The search query failed to find any users that matched");
@@ -200,10 +253,11 @@ public class ElasticSearchController {
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
-
-            return users;
+            //user = users.get(0);
+            return user;
         }
     }
+
 
 
 
