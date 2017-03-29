@@ -17,7 +17,6 @@ public class User{
     private ArrayList<String> myFollowingList;
     private ArrayList<String> myFollowerRequests;
     private ArrayList<String> myFollowRequests;
-    private ArrayList<Mood> myFollowedMoods;
     private int myMoodCount;
 
     /**
@@ -34,7 +33,6 @@ public class User{
         this.myFollowingList = new ArrayList<String>();
         this.myFollowerRequests = new ArrayList<String>();
         this.myFollowRequests = new ArrayList<String>();
-        this.myFollowedMoods = new ArrayList<Mood>();
         this.myMoodCount = 0;
 
     }
