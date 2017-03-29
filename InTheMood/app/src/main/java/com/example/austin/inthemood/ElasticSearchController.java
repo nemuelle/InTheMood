@@ -1,5 +1,8 @@
 package com.example.austin.inthemood;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -9,6 +12,9 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +30,12 @@ import io.searchbox.core.SearchResult;
 
 public class ElasticSearchController {
     private static JestDroidClient client;
-    private String query;
+    private static String index = "cmput301w17t15";
+    private static String user_type = "user";
+    private static String mood_type = "mood";
+
+
+
 
     // TODO we need a function which adds moods to elastic search
     public static class AddMoodsTask extends AsyncTask<Mood, Void, Void> {
@@ -40,25 +51,46 @@ public class ElasticSearchController {
         protected Void doInBackground(Mood... moods) {
             verifySettings();
 
-
             for (Mood mood : moods) {
-
-
                 try {
                     // where is the client?
-                    DocumentResult result = client.execute(new Index.Builder(mood).index("testing").type("mood").build());
+                    DocumentResult result = client.execute(new Index.Builder(mood).index(index).type(mood_type).build());
                     Log.i("Error", "We sent the moods!");
                     if (result.isSucceeded() == false) {
                         Log.i("Error", "Elastic search couldn't add mood");
                     }
-
-
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the moods");
                 }
             }
+            return null;
+        }
+    }
 
+    public static class AddUserTask extends AsyncTask<User, Void, Void> {
+        /*
+        USAGE:
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
+         */
+        @Override
+        protected Void doInBackground(User... users) {
+            verifySettings();
+            for (User user : users) {
+                try {
+                    // where is the client?
+                    DocumentResult result = client.execute(new Index.Builder(user).index(index).type(user_type).build());
+                    Log.i("Error", "We sent the user");
+                    if (result.isSucceeded() == false) {
+                        Log.i("Error", "Elastic search couldn't add mood");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the moods");
+                }
+            }
             return null;
         }
     }
@@ -66,7 +98,6 @@ public class ElasticSearchController {
 
     // TODO we need a function which gets moods for a given user from elastic search
     public static class GetMoodsForUser extends AsyncTask<String, Void, ArrayList<Mood>> {
-
         /*
         USAGE:
         ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
@@ -78,15 +109,19 @@ public class ElasticSearchController {
             Log.i("Error","Failed to get Moods from async controller");
         }
          */
-
         @Override
         protected ArrayList<Mood> doInBackground(String... search_parameters) {
             verifySettings();
-
             ArrayList<Mood> moods = new ArrayList<Mood>();
-
             // TODO Build the query
-            String query = "{\n    \"query\" : {\n        \"term\" : { \"message\" : \"" + search_parameters[0] +"\" }\n    }\n}";
+            String query = "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : {\n" +
+                    "            \"ownerName\" : \n" +
+                    "                \""+search_parameters[0]+"\"\n" +
+                    "            }\n" +
+                    "    }\n" +
+                    "}";
 
             // TODO Build the query
             if (search_parameters[0] == ""){
@@ -94,12 +129,9 @@ public class ElasticSearchController {
             }
             System.out.print(query);
             Search search = new Search.Builder(query)
-                    .addIndex("testing")
-                    .addType("Mood")
+                    .addIndex(index)
+                    .addType(mood_type)
                     .build();
-
-
-
             try {
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
@@ -116,6 +148,60 @@ public class ElasticSearchController {
             }
 
             return moods;
+        }
+    }
+
+    public static class GetUserByName extends AsyncTask<String, Void, ArrayList<User>> {
+        /*
+        USAGE:
+        ElasticSearchController.GetMoodsForUser getMoodsTask = new ElasticSearchController.GetMoodsForUser();
+        getMoodsTask.execute("");
+
+        try {
+            SortedMoodList = getMoodsTask.get();
+        } catch (Exception e) {
+            Log.i("Error","Failed to get Moods from async controller");
+        }
+         */
+        @Override
+        protected ArrayList<User> doInBackground(String... search_parameters) {
+            verifySettings();
+            ArrayList<User> users = new ArrayList<User>();
+            // TODO Build the query
+            String query = "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : {\n" +
+                    "            \"name\" : \n" +
+                    "                \""+search_parameters[0]+"\"\n" +
+                    "            }\n" +
+                    "    }\n" +
+                    "}";
+
+            // TODO Build the query
+            if (search_parameters[0] == ""){
+                query = "";
+            }
+            System.out.print(query);
+            Search search = new Search.Builder(query)
+                    .addIndex(index)
+                    .addType(user_type)
+                    .build();
+            try {
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    users.addAll(foundUsers);
+                }
+                else {
+                    Log.i("Error", "The search query failed to find any users that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return users;
         }
     }
 

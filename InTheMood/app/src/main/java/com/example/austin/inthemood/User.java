@@ -195,6 +195,5 @@ public class User{
     public void removeFollowerRequest(String requestingUserName){
         myFollowerRequests.remove(requestingUserName);
     }
-
 }
 
