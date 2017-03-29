@@ -1,6 +1,11 @@
 package com.example.austin.inthemood;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,12 +13,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,13 +47,15 @@ public class addEditMood extends AppCompatActivity {
     private dataControler controller;
     private String FILENAME = "file.sav";
     private Mood targetMood;
-
+    private Bitmap imageBitMap;
     //UI Elements
     private Spinner moodSpinner;
     private Spinner scenarioSpinner;
     private EditText triggerText;
     private Button saveButton;
     private Button deleteButton;
+    private Button imageButton;
+    private ImageView pictureView;
 
     //Mood Index
     int moodIndex = -1;
@@ -61,11 +71,19 @@ public class addEditMood extends AppCompatActivity {
         triggerText = (EditText) findViewById(R.id.addEditMoodsTriggerText);
         saveButton = (Button) findViewById(R.id.addEditMoodSaveButton);
         deleteButton = (Button) findViewById(R.id.addEditMoodDeleteButton);
+        imageButton = (Button) findViewById(R.id.imageButton);
+        pictureView = (ImageView) findViewById(R.id.imageView);
 
         //Grab the data controller
         loadFromFile();
 
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                takePhoto();
+            }
+        });
 
 
         /*
@@ -96,6 +114,8 @@ public class addEditMood extends AppCompatActivity {
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
             //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
             triggerText.setText(targetMood.getMoodDescription());
+            pictureView.setImageBitmap(targetMood.getMoodImg());
+
         } else {
             // Hide the delete button, since you can't delete a Mood that doesn't exist!
             deleteButton.setVisibility(View.GONE);
@@ -118,7 +138,9 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+                    newMood.setMoodImg(imageBitMap);
                     controller.getCurrentUser().addMood(newMood);
+
 
                 } else {
                     // Edit the existing Mood with the changes supplied.
@@ -184,4 +206,49 @@ public class addEditMood extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
+
+    //Start intent to take a photo
+    //Adapted from https://developer.android.com/training/camera/photobasics.html
+    // and https://github.com/alisajedi/MyCameraTest1
+    private void takePhoto()
+    {
+        /*
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/InTheMood";
+        File folder = new File(path);
+        if (!folder.exists()){
+            folder.mkdir();
+        }
+
+        String imagePathAndFileName = path + File.separator + String.valueOf(System.currentTimeMillis() + ".jpg");
+        File imageFile = new File(imagePathAndFileName);
+        imageFileUri = Uri.fromFile(imageFile);
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,imageFileUri);
+
+        if (takePictureIntent.resolveActivity(getPackageManager())!= null) {
+            startActivityForResult(takePictureIntent, 12345);
+        }
+        */
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, 1);
+        }
+
+    }
+    // Retrieve photo thumbnail that was taken
+    //Adapted from same code as takePhoto
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitMap = (Bitmap) extras.get("data");
+            pictureView.setImageBitmap(imageBitMap);
+        }
+
+
+    }
 }
+
+

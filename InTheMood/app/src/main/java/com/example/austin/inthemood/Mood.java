@@ -1,5 +1,6 @@
 package com.example.austin.inthemood;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import java.util.Date;
@@ -13,9 +14,10 @@ import java.util.Date;
 public class Mood {
     Date moodDate;
     String moodDescription;
-//    Color moodColor;
+    Color moodColor;
     String moodName;
     String ownerName;
+    Bitmap moodImg;
 
     /**
      * Instantiates a new Mood.
@@ -102,6 +104,14 @@ public class Mood {
             this.moodDescription = moodDescription;
         }
 
+    }
+
+    public Bitmap getMoodImg() {
+        return moodImg;
+    }
+
+    public void setMoodImg(Bitmap moodImg) {
+        this.moodImg = moodImg;
     }
 
     public String toString(){
