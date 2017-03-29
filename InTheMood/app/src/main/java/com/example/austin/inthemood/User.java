@@ -13,11 +13,10 @@ public class User{
     private String name;
     private String password;
     private ArrayList<Mood> myMoodsList;
-    private ArrayList<Mood> myMoodCache;
-    private ArrayList<User> myFollowersList;
-    private ArrayList<User> myFollowingList;
-    private ArrayList<User> myFollowerRequests;
-    private ArrayList<User> myFollowRequests;
+    private ArrayList<String> myFollowersList;
+    private ArrayList<String> myFollowingList;
+    private ArrayList<String> myFollowerRequests;
+    private ArrayList<String> myFollowRequests;
     private ArrayList<Mood> myFollowedMoods;
     private int myMoodCount;
 
@@ -31,11 +30,10 @@ public class User{
         this.name = name;
         this.password = password;
         this.myMoodsList = new ArrayList<Mood>();
-        this.myMoodCache = new ArrayList<Mood>();
-        this.myFollowersList = new ArrayList<User>();
-        this.myFollowingList = new ArrayList<User>();
-        this.myFollowerRequests = new ArrayList<User>();
-        this.myFollowRequests = new ArrayList<User>();
+        this.myFollowersList = new ArrayList<String >();
+        this.myFollowingList = new ArrayList<String>();
+        this.myFollowerRequests = new ArrayList<String>();
+        this.myFollowRequests = new ArrayList<String>();
         this.myFollowedMoods = new ArrayList<Mood>();
         this.myMoodCount = 0;
 
@@ -96,7 +94,6 @@ public class User{
     public void addMood(Mood mood){
         this.myMoodsList.add(mood);
         this.myMoodCount += 1;
-        this.myMoodCache.add(mood);
     }
 
     /**
@@ -107,27 +104,6 @@ public class User{
     public void removeMood(Mood mood){
         this.myMoodsList.remove(mood);
         this.myMoodCount -= 1;
-        for (int i = 0; i < myMoodCache.size(); i++) {
-            if (myMoodCache.get(i) == mood) {
-                this.myMoodCache.remove(i);
-            }
-        }
-    }
-
-    /**
-     * empties the mood cache (after elasticSearch has been synched with local storage)
-     */
-    public void emptyMyMoodCache(){
-        this.myMoodCache.clear();
-    }
-
-    /**
-     * gets array list myMoodCache
-     *
-     * @return myMoodCache an array list of locally stored moods
-     */
-    public ArrayList<Mood> getMyMoodCache(){
-        return myMoodCache;
     }
 
     /**
@@ -135,17 +111,17 @@ public class User{
      *
      * @return list of followers following user (owner)
      */
-    public ArrayList<User> getMyFollowersList(){
+    public ArrayList<String> getMyFollowersList(){
         return myFollowersList;
     }
 
     /**
      *adds a follower to user's (owner's) followers list
      *
-     * @param follower person following the user (owner)
+     * @param followerName person following the user (owner)
      */
-    public void addToMyFollowersList(User follower){
-        myFollowersList.add(follower);
+    public void addToMyFollowersList(String followerName){
+        myFollowersList.add(followerName);
     }
 
     /**
@@ -153,17 +129,17 @@ public class User{
      *
      * @return list of people the user is following
      */
-    public ArrayList<User> getMyFollowingList(){
+    public ArrayList<String> getMyFollowingList(){
         return myFollowingList;
     }
 
     /**
      * adds a followed user that the user (owner) is following to user's (owner's) list
      *
-     * @param followedUser user being followed by user (owner)
+     * @param followedUserName user being followed by user (owner)
      */
-    public void addToMyFollowingList(User followedUser){
-        myFollowingList.add(followedUser);
+    public void addToMyFollowingList(String followedUserName){
+        myFollowingList.add(followedUserName);
     }
 
     /**
@@ -171,26 +147,26 @@ public class User{
      *
      * @return the list of user's a user (owner) is requesting to follow
      */
-    public ArrayList<User> getMyFollowRequests(){
+    public ArrayList<String> getMyFollowRequests(){
         return myFollowRequests;
     }
 
     /**
      * adds a user being requested to be follow by user (owner) to user's (owner's) list of follow requests
      *
-     * @param userBeingRequestedToFollow a user being requested to be followed by user (owner)
+     * @param userNameBeingRequestedToFollow a user being requested to be followed by user (owner)
      */
-    public void addToMyFollowRequests(User userBeingRequestedToFollow) {
-        myFollowRequests.add(userBeingRequestedToFollow);
+    public void addToMyFollowRequests(String userNameBeingRequestedToFollow) {
+        myFollowRequests.add(userNameBeingRequestedToFollow);
     }
 
     /**
      * User (owner) removes one of the users he wished to follow from his myFollowRequests list
      *
-     * @param userBeingRequestedToFollow user that user (owner) wished to follow
+     * @param userNameBeingRequestedToFollow user that user (owner) wished to follow
      */
-    public void removeFollowRequest(User userBeingRequestedToFollow){
-        myFollowRequests.remove(userBeingRequestedToFollow);
+    public void removeFollowRequest(String userNameBeingRequestedToFollow){
+        myFollowRequests.remove(userNameBeingRequestedToFollow);
     }
 
     /**
@@ -198,42 +174,27 @@ public class User{
      *
      * @return the list of users requesting to follow user (owner)
      */
-    public ArrayList<User> getMyFollowerRequests(){
+    public ArrayList<String> getMyFollowerRequests(){
         return myFollowerRequests;
     }
 
     /**
      * adds a requesting follower to user's (owner's) myFollowerRequests list
      *
-     * @param requestingUser user requesting to follow user (owner)
+     * @param requestingUserName user name of user requesting to follow user (owner)
      */
-    public void addToMyFollowerRequests(User requestingUser){
-        myFollowerRequests.add(requestingUser);
+    public void addToMyFollowerRequests(String requestingUserName){
+        myFollowerRequests.add(requestingUserName);
     }
 
     /**
      * remove a user requesting to follow user (owner) from myFollowerRequests list
      *
-     * @param requestingUser a user requesting to follow user (owner)
+     * @param requestingUserName a user requesting to follow user (owner)
      */
-    public void removeFollowerRequest(User requestingUser){
-        myFollowerRequests.remove(requestingUser);
+    public void removeFollowerRequest(String requestingUserName){
+        myFollowerRequests.remove(requestingUserName);
     }
 
-    /**
-     * searches through a user's (owner's) myFollowingList and finds all tweets of those users and adds to
-     * myFollowedMoods. This way it fetches all moods everytime this function is called so myFollowedMoods is always up to date.
-     *
-     * @return myFollowedMoods a list of moods of people im following
-     */
-    public ArrayList<Mood> getMyFollowedMoods(){
-        myFollowedMoods.clear();
-        for (int i = 0; i < myFollowingList.size(); i++){
-            for (int k = 0; k < myFollowingList.get(i).getMyMoodsList().size(); k++){
-                myFollowedMoods.add(myFollowingList.get(i).getMyMoodsList().get(k));
-            }
-        }
-        return myFollowedMoods;
-    }
 }
 

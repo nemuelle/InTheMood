@@ -112,8 +112,8 @@ public class dataControler {
      * @param followee person be asked to be followed
      */
     public void requestToFollow(User user, String followee){
-        user.addToMyFollowRequests(searchForUserByName(followee));
-        searchForUserByName(followee).addToMyFollowerRequests(user);
+        user.addToMyFollowRequests(followee);
+        searchForUserByName(followee).addToMyFollowerRequests(user.getName());
     }
 
     /**
@@ -123,10 +123,10 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void grantFollowPermission(User user, String followerName){
-        user.addToMyFollowersList(searchForUserByName(followerName));
-        user.removeFollowerRequest(searchForUserByName(followerName));
-        searchForUserByName(followerName).removeFollowRequest(user);
-        searchForUserByName(followerName).addToMyFollowingList(user);
+        user.addToMyFollowersList(followerName);
+        user.removeFollowerRequest(followerName);
+        searchForUserByName(followerName).removeFollowRequest(user.getName());
+        searchForUserByName(followerName).addToMyFollowingList(user.getName());
     }
 
     /**
@@ -136,8 +136,8 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void denyFollowPermission(User user, String followerName){
-        user.removeFollowerRequest(searchForUserByName(followerName));
-        searchForUserByName(followerName).removeFollowRequest(user);
+        user.removeFollowerRequest(followerName);
+        searchForUserByName(followerName).removeFollowRequest(user.getName());
     }
 
     /**
@@ -246,20 +246,5 @@ public class dataControler {
             online = true;
         }
         return online;
-    }
-
-    /**
-     * updates elasticSearch with the new moods stored locally in myMoodCache if device online
-     */
-    public void syncElasticSearch(){
-        if (!getCurrentUser().getMyMoodCache().isEmpty()) {
-            if (isOnline()) {
-                for (int i = 0; i < getCurrentUser().getMyMoodCache().size(); i++) {
-                    ElasticSearchController.AddMoodsTask addMoods = new ElasticSearchController.AddMoodsTask();
-                    addMoods.execute(getCurrentUser().getMyMoodCache().get(i));
-                }
-                getCurrentUser().emptyMyMoodCache();
-            }
-        }
     }
 }
