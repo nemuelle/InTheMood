@@ -17,7 +17,7 @@ import java.util.Date;
 public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
-    private int currentUserIndex;
+    private String currentUserName;
     Context context;
 
     /**
@@ -51,11 +51,7 @@ public class dataControler {
      * @param currentUser user interacting with the system
      */
     public void setCurrentUser(User currentUser){
-        for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i) == currentUser){
-                this.currentUserIndex = i;
-            }
-        }
+        this.currentUserName = currentUser.getName();
     }
 
     /**
@@ -65,7 +61,7 @@ public class dataControler {
      */
     public User getCurrentUser() {
 
-        return userList.get(currentUserIndex);
+        return searchForUserByName(currentUserName);
     }
 
     /**
