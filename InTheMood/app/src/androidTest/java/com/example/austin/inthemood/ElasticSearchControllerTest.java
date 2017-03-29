@@ -31,7 +31,7 @@ public class ElasticSearchControllerTest extends ActivityInstrumentationTestCase
         getUser.execute(testman.getName());
         User newman = null;
         try {
-            newman = getUser.get().get(0);
+            newman = getUser.get();
             assert(true);
         } catch (Exception e) {
             Log.i("Error", "Failed to get user by name");
