@@ -114,7 +114,9 @@ public class addEditMood extends AppCompatActivity {
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
             //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
             triggerText.setText(targetMood.getMoodDescription());
-            pictureView.setImageBitmap(targetMood.getMoodImg());
+            if(targetMood.getMoodImg() !=null) {
+                pictureView.setImageBitmap(targetMood.getMoodImg());
+            }
 
         } else {
             // Hide the delete button, since you can't delete a Mood that doesn't exist!
@@ -138,7 +140,10 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
-                    newMood.setMoodImg(imageBitMap);
+                    if(imageBitMap != null){
+                        newMood.setMoodImg(imageBitMap);
+
+                    }
                     controller.getCurrentUser().addMood(newMood);
 
 
@@ -146,6 +151,7 @@ public class addEditMood extends AppCompatActivity {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
                     targetMood.setMoodDescription(trigger);
+                    if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
@@ -212,24 +218,7 @@ public class addEditMood extends AppCompatActivity {
     // and https://github.com/alisajedi/MyCameraTest1
     private void takePhoto()
     {
-        /*
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/InTheMood";
-        File folder = new File(path);
-        if (!folder.exists()){
-            folder.mkdir();
-        }
 
-        String imagePathAndFileName = path + File.separator + String.valueOf(System.currentTimeMillis() + ".jpg");
-        File imageFile = new File(imagePathAndFileName);
-        imageFileUri = Uri.fromFile(imageFile);
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,imageFileUri);
-
-        if (takePictureIntent.resolveActivity(getPackageManager())!= null) {
-            startActivityForResult(takePictureIntent, 12345);
-        }
-        */
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, 1);
@@ -243,8 +232,11 @@ public class addEditMood extends AppCompatActivity {
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            imageBitMap = (Bitmap) extras.get("data");
-            pictureView.setImageBitmap(imageBitMap);
+            if(extras.get("data") != null){
+                imageBitMap = (Bitmap) extras.get("data");
+                pictureView.setImageBitmap(imageBitMap);
+            }
+
         }
 
 

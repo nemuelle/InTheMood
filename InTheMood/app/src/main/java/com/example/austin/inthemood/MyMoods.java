@@ -32,8 +32,6 @@ import java.util.concurrent.ExecutionException;
 
     For project part 5:
         Still need to change each mood item's color based on what mood it is
-        Still need to connect new mood button to add/edit mood activity
-        Still need to make clicking a mood take you to its edit screen.
         Still need to make the buttons appear unselected upon 2nd click
  */
 public class MyMoods extends AppCompatActivity {
