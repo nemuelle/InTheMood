@@ -53,5 +53,7 @@
     </string-array>
     <string name="title_activity_mood_calendar">Mood Calendar</string>
 
+    <!-- Strings related to friends -->
+    <string name="find_friends">Find Friends</string>
 
 </resources>

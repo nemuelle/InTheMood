@@ -1,7 +1,9 @@
 package com.example.austin.inthemood;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -76,6 +78,12 @@ public class MyFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+    }
+
+    //Called when the Find Friends button is clicked.
+    public void findFriend(View view){
+        Intent intent = new Intent(this, FindFriends.class);
+        startActivity(intent);
     }
 
     //load the data controller. called at the start of the activity. All data is stored in the controller.
