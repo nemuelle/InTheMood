@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,6 +72,19 @@ public class dataControler {
      */
     public ArrayList<User> getUserList() {
         return userList;
+    }
+
+    /**
+     * update user in userList
+     *
+     * @param user the updated user replacing old user
+     */
+    public void updateUserList(User user) {
+        for (int i = 0; i < userList.size(); i++){
+            if (userList.get(i).getName() == user.getName()){
+                userList.set(i, user);
+            }
+        }
     }
 
     /**
@@ -242,5 +256,25 @@ public class dataControler {
             online = true;
         }
         return online;
+    }
+
+    /**
+     * gets a user from elasticSearch using username
+     *
+     * @param username string username of user being looked for in elasticSearch
+     * @return User being looked for if found or null if found
+     */
+    public User getElasticSearchUser(String username) {
+        ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
+        getUser.execute(username);
+        User locatedUser = null;
+        try {
+            locatedUser = getUser.get();
+            assert (true);
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get user by name");
+            return null;
+        }
+        return locatedUser;
     }
 }

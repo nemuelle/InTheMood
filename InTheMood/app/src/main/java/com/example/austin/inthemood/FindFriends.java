@@ -2,6 +2,7 @@ package com.example.austin.inthemood;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 public class FindFriends extends AppCompatActivity {
 
     private EditText searchableUserName;
+    private TextView searchedUserName;
 
     private User locatedUser;
     private dataControler controller;
@@ -37,7 +39,8 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
     }
 
     @Override
@@ -47,38 +50,52 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
     }
 
+    /**
+     * onclick search for a user by name
+     *
+     * @param view
+     */
     public void searchFriends(View view){
         searchableUserName = (EditText) findViewById(R.id.searchEditText);
-        String searchableUserNameString = searchableUserName.toString();
+        searchedUserName = (TextView) findViewById(R.id.searchResultTextView);
+        String searchableUserNameString = searchableUserName.getText().toString();
+        controller.getElasticSearchUser(searchableUserNameString);
+        searchableUserName.setText("");
+        if (locatedUser == null){
+            searchedUserName.setText("Name not found");
+        } else {
+            searchedUserName.setText(locatedUser.getName());
+        }
 
-        ElasticSearchController.GetUserByName getUserByName = new ElasticSearchController.GetUserByName();
-        getUserByName.execute(searchableUserNameString);
-        locatedUser =
     }
 
     public void followUser(View view){
 
-        //check if request is already pending
-        if (!controller.getCurrentUser().getMyFollowRequests().contains(locatedUser.getName())){
+        if (locatedUser != null) {
+            //check if request is already pending
+            if (!controller.getCurrentUser().getMyFollowRequests().contains(locatedUser.getName())) {
 
-            //check if the located user is already being followed
-            if (!controller.getCurrentUser().getMyFollowingList().contains(locatedUser.getName())){
-                controller.requestToFollow(controller.getCurrentUser(), locatedUser.getName());
-            } else {
+                //check if the located user is already being followed
+                if (!controller.getCurrentUser().getMyFollowingList().contains(locatedUser.getName())) {
+                    controller.requestToFollow(controller.getCurrentUser(), locatedUser.getName());
+
+                    //upload current user and located user to elasticSearch
+                    ElasticSearchController.SyncUserTask syncCurrentUserTask = new ElasticSearchController.SyncUserTask();
+                    syncCurrentUserTask.execute(controller.getCurrentUser());
+                    ElasticSearchController.SyncUserTask syncLocatedUserTask = new ElasticSearchController.SyncUserTask();
+                    syncLocatedUserTask.execute(locatedUser);
+
+                    //update current user locally
+                    controller.updateUserList(controller.getCurrentUser());
+                    saveInFile();
+                }
 
             }
-
-        } else {
-
         }
-
-
-        //upload current user and located user to elasticSearch
-        saveInFile();
-
     }
 
     //save the data controller. This function is never called in here for the time being
