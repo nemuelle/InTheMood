@@ -2,17 +2,9 @@ package com.example.austin.inthemood;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.Manifest;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,18 +14,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -58,9 +39,7 @@ import java.lang.reflect.Type;
  *
  * TODO: Get the scenario of an existing mood
  */
-public class addEditMood extends AppCompatActivity  implements
-        GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, ResultCallback<LocationSettingsResult> {
+public class addEditMood extends AppCompatActivity {
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = -1;
     private static final long MILLISECONDS_PER_SECOND = 1000;
     private static final int PERMISSION_ACCESS_FINE_LOCATION_REQUEST = 1;
@@ -72,9 +51,7 @@ public class addEditMood extends AppCompatActivity  implements
     private dataControler controller;
     private String FILENAME = "file.sav";
     private Mood targetMood;
-    private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
-    private LocationSettingsRequest mLocationSettingsRequest;
+    private LocationControllor locationControllor;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -104,25 +81,9 @@ public class addEditMood extends AppCompatActivity  implements
         //Grab the data controller
         loadFromFile();
 
-        // Create an instance of GoogleAPIClient
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-
-        // create LocationRequest Object
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mLocationRequest.setInterval(MILLISECONDS_PER_SECOND * 5);
-        mLocationRequest.setFastestInterval(MILLISECONDS_PER_SECOND * 1);
-
-        // build location settings request
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
+        locationControllor = new LocationControllor(mGoogleApiClient, activity);
+        // constructor builds the mGoogleApiClient we need to reset the reference
+        mGoogleApiClient = locationControllor.getGoogleApiClient();
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -174,7 +135,13 @@ public class addEditMood extends AppCompatActivity  implements
                     Mood newMood = new Mood();
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
-                    // add location to mood here
+
+                    Location location = locationControllor.getCurrentLocation();
+
+                    if (location == null) {
+                        Toast.makeText(activity, "null", Toast.LENGTH_SHORT).show();
+                    }
+
                     controller.getCurrentUser().addMood(newMood);
                 } else {
                     // Edit the existing Mood with the changes supplied.
@@ -204,70 +171,19 @@ public class addEditMood extends AppCompatActivity  implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
+                    locationControllor.stopLocationUpdates();
                     return;
                 }
-                // get location
-                if (!checkLocationPermission()) {
-                    requestLocationPermission();
+
+                if (!locationControllor.checkLocationPermission()) {
+                    locationControllor.requestLocationPermission();
                 }
-                checkLocationSettings();
+
+
             }
         });
     }
 
-
-    private boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermission = true;
-            return true;
-        } else {
-            locationPermission = false;
-            return false;
-        }
-    }
-
-    /*
-     * request the location permission from the user.
-     */
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(activity,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION_REQUEST);
-    }
-
-    /*
-     * ask the user if they want to change the location settings
-     * based on http://blog.teamtreehouse.com/beginners-guide-location-android
-     * accessed on March 27, 2017
-     */
-    private void checkLocationSettings() {
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(
-                        mGoogleApiClient, mLocationSettingsRequest
-                );
-        result.setResultCallback(this);
-    }
-
-    /*
-     * check the result from requesting the location permission
-     * from https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0
-     * accessed on March 27, 2017
-     */
-
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_ACCESS_FINE_LOCATION_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermission = true;
-                } else {
-                    locationPermission = false;
-                }
-                return;
-            }
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -278,8 +194,8 @@ public class addEditMood extends AppCompatActivity  implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
+        if (mGoogleApiClient.isConnected()) {
+            locationControllor.startLocationUpdates();
         }
     }
 
@@ -287,7 +203,7 @@ public class addEditMood extends AppCompatActivity  implements
     protected void onPause() {
         super.onPause();
         if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
+            locationControllor.stopLocationUpdates();
         }
     }
 
@@ -300,13 +216,15 @@ public class addEditMood extends AppCompatActivity  implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
+            case LocationControllor.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        highAccuracyLocationSettings = true;
+                        // todo make sure its high accuracy
+                        locationControllor.setCanGetLocation(true);
+                        locationControllor.startLocationUpdates();
                         break;
                     case Activity.RESULT_CANCELED:
-                        highAccuracyLocationSettings = false;
+                        locationControllor.setCanGetLocation(false);
                 }
         }
     }
@@ -347,94 +265,5 @@ public class addEditMood extends AppCompatActivity  implements
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i(addEditMood.class.getSimpleName(), "Connection suspended");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.i(addEditMood.class.getSimpleName(), "Location services connection failed with code "
-                    + connectionResult.getErrorCode());
-        }
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        Toast.makeText(activity, "new location" + location.toString(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
-        final Status status = locationSettingsResult.getStatus();
-        switch (status.getStatusCode()) {
-            case LocationSettingsStatusCodes.SUCCESS:
-                Log.i(addEditMood.class.getSimpleName(), "All location settings are satisfied.");
-                startLocationUpdates();
-                break;
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                Log.i(addEditMood.class.getSimpleName(), "Location settings are not satisfied. Show the user a dialog to" +
-                        "upgrade location settings ");
-
-                try {
-                    // Show the dialog by calling startResolutionForResult(), and check the result
-                    // in onActivityResult().
-                    status.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
-                } catch (IntentSender.SendIntentException e) {
-                    Log.i(addEditMood.class.getSimpleName(), "PendingIntent unable to execute request.");
-                }
-                break;
-            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                Log.i(addEditMood.class.getSimpleName(), "Location settings are inadequate, and cannot be fixed here. Dialog " +
-                        "not created.");
-                break;
-        }
-    }
-
-    private void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient,
-                mLocationRequest,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(Status status) {
-                mRequestingLocationUpdates = true;
-            }
-        });
-    }
-
-    private void stopLocationUpdates() {
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(Status status) {
-                mRequestingLocationUpdates = false;
-            }
-        });
     }
 }
