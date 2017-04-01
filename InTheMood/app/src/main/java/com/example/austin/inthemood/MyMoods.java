@@ -255,7 +255,8 @@ public class MyMoods extends AppCompatActivity {
 
             public void onClick(View v) {
                 // send moods to the new activity
-
+                Intent intent = new Intent(MyMoods.this ,MapActivity.class);
+                startActivity(intent);
             }
 
         });
