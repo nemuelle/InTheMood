@@ -140,6 +140,9 @@ public class addEditMood extends AppCompatActivity {
 
                     if (location == null) {
                         Toast.makeText(activity, "null", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(activity, String.valueOf(location.getLatitude()), Toast.LENGTH_SHORT).show();
+
                     }
 
                     controller.getCurrentUser().addMood(newMood);

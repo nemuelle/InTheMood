@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -77,7 +76,7 @@ public class LocationControllor implements
         return mCurrentLocation;
     }
 
-    private void buildGoogleApiClient() {
+    protected void buildGoogleApiClient() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(activity)
                     .addConnectionCallbacks(this)
@@ -85,6 +84,19 @@ public class LocationControllor implements
                     .addApi(LocationServices.API)
                     .build();
         }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void buildLocationSettingsRequest() {
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
     }
 
     public boolean checkLocationPermission() {
@@ -95,6 +107,7 @@ public class LocationControllor implements
         return false;
     }
 
+
     /*
      * request the location permission from the user.
      */
@@ -102,7 +115,6 @@ public class LocationControllor implements
         ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION_PERMISSION);
     }
-
 
     /*
      * ask the user if they want to change the location settings
@@ -123,6 +135,7 @@ public class LocationControllor implements
      * accessed on March 27, 2017
      */
 
+
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_ACCESS_FINE_LOCATION_PERMISSION: {
@@ -139,31 +152,19 @@ public class LocationControllor implements
         }
     }
 
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    protected void buildLocationSettingsRequest() {
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
-    }
-
     public void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient,
-                mLocationRequest,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(Status status) {
-                mRequestingLocationUpdates = true;
-            }
-        });
+        if (checkLocationPermission()) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient,
+                    mLocationRequest,
+                    this
+            ).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(Status status) {
+                    mRequestingLocationUpdates = true;
+                }
+            });
+        }
     }
 
     public void stopLocationUpdates() {
@@ -214,13 +215,17 @@ public class LocationControllor implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        Toast.makeText(activity, location.toString() +  LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString(), Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (mCurrentLocation == null) {
+        if (checkLocationPermission()) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            // might be null if there is no last location so poll for a new one.
+            if (mCurrentLocation == null) {
+                mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            }
         }
     }
 
