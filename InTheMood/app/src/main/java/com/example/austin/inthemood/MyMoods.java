@@ -8,10 +8,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -38,8 +40,10 @@ public class MyMoods extends AppCompatActivity {
     private Button emotionFilterButton;
     private Button weekFilterButton;
     private Button triggerFilterButton;
-    private Button newMoodButton;
     private EditText triggerText;
+    private ImageButton newMoodButton;
+    private ImageButton calendarButton;
+    private ImageButton mapButton;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
     public dataControler controller;
@@ -63,7 +67,9 @@ public class MyMoods extends AppCompatActivity {
         triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         moodsListView = (ListView) findViewById(R.id.myMoodsListView);
-        newMoodButton = (Button) findViewById(R.id.newMoodButton);
+        newMoodButton = (ImageButton) findViewById(R.id.newMoodImg);
+        calendarButton = (ImageButton) findViewById(R.id.calendarImg);
+        mapButton = (ImageButton) findViewById(R.id.mapImg);
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.moods, android.R.layout.simple_spinner_item);
@@ -226,11 +232,30 @@ public class MyMoods extends AppCompatActivity {
 
         });
 
+
         newMoodButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
                 addMood(v);
+            }
+
+        });
+
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+
+            }
+
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+
             }
 
         });
