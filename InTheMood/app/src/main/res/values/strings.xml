@@ -32,7 +32,7 @@
 
     <string name="current_mood">Current Mood</string>
     <string name="trigger">Trigger</string>
-    <string name="search_by_email">Search by Email</string>
+    <string name="search_by_email">Search by Name</string>
 
     <string-array name="moods">
         <item>Anger</item>

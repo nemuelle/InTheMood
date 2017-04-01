@@ -56,7 +56,7 @@ public class UserTest {
     @Test
     public void testGetMyMoodsList(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         assertEquals("Test Description", user.getMyMoodsList().get(0).getMoodDescription());
     }
@@ -66,7 +66,7 @@ public class UserTest {
     @Test
     public void testAddMood(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         assertEquals(1, user.getMyMoodsList().size());
     }
@@ -76,7 +76,7 @@ public class UserTest {
     @Test
     public void testRemoveMood(){
         User user = new User("Theodore teh Great", "T123");
-        Mood mood1 = new Mood();
+        Mood mood1 = new Mood("Theodore teh Great");
         user.addMood(mood1);
         user.removeMood(mood1);
         assertEquals(0, user.getMyMoodsList().size());
@@ -88,9 +88,9 @@ public class UserTest {
     public void testGetMyFollowersList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowersList(user2);
+        user1.addToMyFollowersList("user2");
         assertEquals(1, user1.getMyFollowersList().size());
-        assertEquals(user2,user1.getMyFollowersList().get(0));
+        assertEquals("user2",user1.getMyFollowersList().get(0));
     }
     /**
      * Test addToMyFollowersList function.
@@ -99,10 +99,12 @@ public class UserTest {
     public void testAddToMyFollowersList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowersList(user2);
+        user1.addToMyFollowersList("user2");
         assertEquals(1, user1.getMyFollowersList().size());
-        assertEquals(user2,user1.getMyFollowersList().get(0));
+        assertEquals("user2",user1.getMyFollowersList().get(0));
     }
+
+
     /**
      * Test getMyFollowingList function.
      */
@@ -110,9 +112,9 @@ public class UserTest {
     public void testGetMyFollowingList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowingList(user2);
+        user1.addToMyFollowingList("user2");
         assertEquals(1, user1.getMyFollowingList().size());
-        assertEquals(user2,user1.getMyFollowingList().get(0));
+        assertEquals("user2",user1.getMyFollowingList().get(0));
     }
     /**
      * Test addToMyFollowingList function.
@@ -121,9 +123,9 @@ public class UserTest {
     public void testAddToMyFollowingList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowersList(user2);
+        user1.addToMyFollowersList("user2");
         assertEquals(1, user1.getMyFollowersList().size());
-        assertEquals(user2,user1.getMyFollowersList().get(0));
+        assertEquals("user2",user1.getMyFollowersList().get(0));
     }
     /**
      * Test getMyFollowRequests function.
@@ -132,9 +134,9 @@ public class UserTest {
     public void testGetMyFollowRequests(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowRequests(user2);
+        user1.addToMyFollowRequests("user2");
         assertEquals(1, user1.getMyFollowRequests().size());
-        assertEquals(user2,user1.getMyFollowRequests().get(0));
+        assertEquals("user2",user1.getMyFollowRequests().get(0));
     }
     /**
      * Test addToMyFollowRequests function.
@@ -143,9 +145,9 @@ public class UserTest {
     public void testAddToMyFollowRequests(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowRequests(user2);
+        user1.addToMyFollowRequests("user2");
         assertEquals(1, user1.getMyFollowRequests().size());
-        assertEquals(user2,user1.getMyFollowRequests().get(0));
+        assertEquals("user2",user1.getMyFollowRequests().get(0));
     }
     /**
      * Test removeFollowRequest function.
@@ -154,8 +156,8 @@ public class UserTest {
     public void testRemoveFollowRequest(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowRequests(user2);
-        user1.removeFollowRequest(user2);
+        user1.addToMyFollowRequests("user2");
+        user1.removeFollowRequest("user2");
         assertEquals(0, user1.getMyFollowRequests().size());
     }
 
@@ -166,9 +168,9 @@ public class UserTest {
     public void testGetMyFollowerRequests(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowerRequests(user2);
+        user1.addToMyFollowerRequests("user2");
         assertEquals(1, user1.getMyFollowerRequests().size());
-        assertEquals(user2,user1.getMyFollowerRequests().get(0));
+        assertEquals("user2",user1.getMyFollowerRequests().get(0));
     }
     /**
      * Test addToMyFollowerRequests function.
@@ -177,9 +179,9 @@ public class UserTest {
     public void testAddToMyFollowerRequests(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowerRequests(user2);
+        user1.addToMyFollowerRequests("user2");
         assertEquals(1, user1.getMyFollowerRequests().size());
-        assertEquals(user2,user1.getMyFollowerRequests().get(0));
+        assertEquals("user2",user1.getMyFollowerRequests().get(0));
     }
     /**
      * Test removeFollowerRequest function.
@@ -188,27 +190,8 @@ public class UserTest {
     public void testRemoveFollowerRequest(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        user1.addToMyFollowerRequests(user2);
-        user1.removeFollowerRequest(user2);
+        user1.addToMyFollowerRequests("user2");
+        user1.removeFollowerRequest("user2");
         assertEquals(0, user1.getMyFollowerRequests().size());
-    }
-    /**
-     * Test getMyFollowedMoods function.
-     */
-    @Test
-    public void testGetMyFollowedMoods(){
-        User user1 = new User("user1", "p1");
-        User user2 = new User("user2", "p2");
-        User user3 = new User("user3", "p3");
-        Mood mood2 = new Mood();
-        Mood mood3 = new Mood();
-        user1.getMyFollowedMoods().clear();
-        user2.addMood(mood2);
-        user3.addMood(mood3);
-        user1.addToMyFollowingList(user2);
-        user1.addToMyFollowingList(user3);
-        assertEquals(mood2, user1.getMyFollowedMoods().get(0));
-        assertEquals(mood3, user1.getMyFollowedMoods().get(1));
-        assertEquals(2, user1.getMyFollowedMoods().size());
     }
 }

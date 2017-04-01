@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -132,7 +133,7 @@ public class addEditMood extends AppCompatActivity {
 
                 //If making a new Mood:
                 if (moodIndex == -1) {
-                    Mood newMood = new Mood();
+                    Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
 
@@ -146,12 +147,15 @@ public class addEditMood extends AppCompatActivity {
                     }
 
                     controller.getCurrentUser().addMood(newMood);
+
                 } else {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
                     targetMood.setMoodDescription(trigger);
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
+                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Log.i("SyncSuccess", syncSuccess.toString());
                 saveInFile();
                 startActivity(intent);
             }
@@ -164,6 +168,8 @@ public class addEditMood extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
+                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Log.i("SyncSuccess", syncSuccess.toString());
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
                 startActivity(intent);
@@ -260,6 +266,7 @@ public class addEditMood extends AppCompatActivity {
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
             gson.toJson(controller, writer);
+            Log.i("gsonToJson", gson.toJson(controller));
             writer.flush();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

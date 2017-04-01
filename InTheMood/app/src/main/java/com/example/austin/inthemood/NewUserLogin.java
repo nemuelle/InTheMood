@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -90,6 +91,8 @@ public class NewUserLogin extends AppCompatActivity {
 
             User newUser = new User(mUserView.getText().toString(),
                     mPasswordView.getText().toString());
+            newUser = controller.ElasticSearchaddUser(newUser);
+            Log.i("New User's ES id", newUser.getElasticSearchID());
             controller.addToUserList(newUser);
             controller.setCurrentUser(newUser);
             saveInFile();
@@ -119,10 +122,11 @@ public class NewUserLogin extends AppCompatActivity {
      * -8 if the password and confirm fields do not match up, 1 if registration is valid.
      */
     public int validRegistration() {
+
         if (mUserView.getText().toString().equals("")) {
             return -1;
         }
-        else if (controller.searchForUserByName(mUserView.getText().toString()) != null) {
+        else if (controller.getElasticSearchUser(mUserView.getText().toString()) != null) {
             return -2;
         } else if (mPasswordView.getText().toString().equals("")) {
             return -4;
@@ -160,6 +164,7 @@ public class NewUserLogin extends AppCompatActivity {
             OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
             gson.toJson(controller, writer);
+            Log.i("gson toJson", gson.toJson(controller));
             writer.flush();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block

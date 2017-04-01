@@ -3,6 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,8 @@ import com.google.android.gms.ads.formats.NativeAd;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 /* My moods activity displays the list of all moods a user inputs and allows filtering the list to
     show only relevant moods.
 
@@ -272,6 +277,37 @@ public class MyMoods extends AppCompatActivity {
         currentUser = controller.getCurrentUser();
         SortedMoodList = currentUser.getMyMoodsList();
 
+        //Testing Elastic Search Functionality
+//        Mood test = new Mood("This is the first mood");
+//        User testman = new User("testman4", "testman");
+//        testman.addMood(test);
+//        ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
+//        addUser.execute(testman);
+//        String userID = new String();
+//        try {
+//            userID = addUser.get();
+//        } catch (Exception e) {
+//            Log.i("Error","Getting the id from the user didn't work");
+//        }
+//        testman.setElasticSearchID(userID);
+//        Mood test2 = new Mood("This is the NEW second mood");
+//        Mood test3 = new Mood("This is the NEW third mood");
+//        testman.addMood(test2);
+//        testman.addMood(test3);
+//        ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
+//        syncUser.execute(testman);
+//        User newguy = new User("new","new");
+//        ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
+//        getUser.execute(testman.getName());
+//        try {
+//            newguy = getUser.get();
+//        } catch (Exception e) {
+//            Log.i("Error", "Failed to get user by name");
+//        }
+//        SortedMoodList = newguy.getMyMoodsList();
+
+
+
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
@@ -294,12 +330,13 @@ public class MyMoods extends AppCompatActivity {
         startActivity(editMoodIntent);
 
 
+
     }
     //Start activity to add another mood
     private void addMood(View view){
         Intent addMoodIntent = new Intent(this,addEditMood.class);
         startActivity(addMoodIntent);
-
+        finish();
 
     }
 
@@ -313,6 +350,7 @@ public class MyMoods extends AppCompatActivity {
 
             Type objectType = new TypeToken<dataControler>() {}.getType();
             controller = gson.fromJson(in, objectType);
+
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
             controller = new dataControler(firstUser);

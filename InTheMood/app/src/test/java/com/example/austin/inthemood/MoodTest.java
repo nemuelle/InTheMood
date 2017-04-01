@@ -13,7 +13,7 @@ public class MoodTest {
 
     @Test
     public void testMoodName() {
-        Mood testMood = new Mood();
+        Mood testMood = new Mood("user1");
         testMood.setMoodName("Happy");
         assertEquals("Happy", testMood.getMoodName());
         testMood.setMoodName("Mad");
@@ -22,7 +22,7 @@ public class MoodTest {
 
     @Test
     public void testMoodDate() {
-        Mood testMood = new Mood();
+        Mood testMood = new Mood("user1");
         Date testDate = new Date();
 
         testMood.setMoodDate(testDate);
@@ -32,7 +32,7 @@ public class MoodTest {
 
     @Test
     public void testMoodDescription() {
-        Mood testMood = new Mood();
+        Mood testMood = new Mood("user1");
 
         assertEquals("Test Description",testMood.getMoodDescription());
         testMood.setMoodDescription("Updated Mood description over 20 chars");
