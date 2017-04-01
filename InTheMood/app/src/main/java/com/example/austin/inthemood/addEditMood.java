@@ -114,7 +114,7 @@ public class addEditMood extends AppCompatActivity {
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
             //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
             triggerText.setText(targetMood.getMoodDescription());
-            if(targetMood.getMoodImg() !=null) {
+            if(targetMood.getMoodImg() != null) {
                 pictureView.setImageBitmap(targetMood.getMoodImg());
             }
 

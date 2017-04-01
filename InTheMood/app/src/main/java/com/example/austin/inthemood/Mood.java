@@ -14,7 +14,7 @@ import java.util.Date;
 public class Mood {
     Date moodDate;
     String moodDescription;
-    Color moodColor;
+    String colorHexCode;
     String moodName;
     String ownerName;
     Bitmap moodImg;
@@ -56,6 +56,7 @@ public class Mood {
     public void setMoodName(String moodName) {
 
         this.moodName = moodName;
+        this.inferMoodColor();
     }
 
     public String getOwnerName(){
@@ -106,6 +107,11 @@ public class Mood {
 
     }
 
+    public String getColorHexCode() {
+        return colorHexCode;
+    }
+
+
     public Bitmap getMoodImg() {
         return moodImg;
     }
@@ -119,4 +125,35 @@ public class Mood {
                 this.moodDescription;
     }
 
+    private void inferMoodColor(){
+        if (this.moodName.equals("Anger")){
+            this.colorHexCode = "#f0391c";
+
+        }
+        else if(this.moodName.equals("Confusion")) {
+            this.colorHexCode = "#cecece";
+
+        }
+        else if (this.moodName.equals("Disgust")){
+            this.colorHexCode = "#9ae343";
+        }
+        else if (this.moodName.equals("Fear")){
+            this.colorHexCode = "#8383a9";
+        }
+        else if (this.moodName.equals("Happiness")){
+            this.colorHexCode = "#e8ef02";
+        }
+        else if (this.moodName.equals("Sadness")){
+            this.colorHexCode = "#03acca";
+        }
+        else if (this.moodName.equals("Shame")){
+            this.colorHexCode = "#cd00ff";
+
+        }
+        else if (this.moodName.equals("Surprise")){
+            this.colorHexCode = "#ff006c";
+
+        }
+
+    }
 }

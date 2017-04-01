@@ -47,7 +47,7 @@ public class MyMoods extends AppCompatActivity {
     private ListView moodsListView;
     public dataControler controller;
     private static final String FILENAME = "file.sav";
-    private ArrayAdapter<Mood> moodAdapter;
+    private MoodAdapter moodAdapter;
     private User currentUser;
     private ArrayList<Mood> SortedMoodList = new ArrayList<Mood>();
     private ArrayList<Mood> NewMoodList = new ArrayList<Mood>();
@@ -254,7 +254,7 @@ public class MyMoods extends AppCompatActivity {
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
         }
 
-        moodAdapter = new ArrayAdapter<Mood>(this,R.layout.list_item,SortedMoodList);
+        moodAdapter = new MoodAdapter(this,SortedMoodList);
         moodsListView.setAdapter(moodAdapter);
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent,View view, int position,long id){
