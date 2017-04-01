@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -51,10 +52,38 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
         // Lookup view for data population
         TextView moodString = (TextView) convertView.findViewById(R.id.moodString);
         TextView moodComment = (TextView) convertView.findViewById(R.id.moodComment);
+        ImageView moodEmote = (ImageView) convertView.findViewById(R.id.img);
         // Populate the data into the template view using the data object
         moodString.setText(mood.getMoodName() + "     " + mood.getMoodDate().toString());
         moodComment.setText(mood.getMoodDescription());
         convertView.setBackgroundColor(Color.parseColor(mood.getColorHexCode()));
+
+        //set emoticon
+        if (mood.getMoodName().equals("Anger")) {
+            moodEmote.setImageResource(R.drawable.anger);
+        }
+        else if (mood.getMoodName().equals("Confusion")) {
+            moodEmote.setImageResource(R.drawable.confusion);
+        }
+        else if (mood.getMoodName().equals("Disgust")) {
+            moodEmote.setImageResource(R.drawable.disgust);
+        }
+        else if (mood.getMoodName().equals("Fear")) {
+            moodEmote.setImageResource(R.drawable.fear);
+        }
+        else if (mood.getMoodName().equals("Happiness")) {
+            moodEmote.setImageResource(R.drawable.happy);
+        }
+        else if (mood.getMoodName().equals("Sadness")) {
+            moodEmote.setImageResource(R.drawable.sad);
+        }
+        else if (mood.getMoodName().equals("Shame")) {
+            moodEmote.setImageResource(R.drawable.shame);
+        }
+        else if (mood.getMoodName().equals("Surprise")) {
+            moodEmote.setImageResource(R.drawable.surprise);
+        }
+
 
         // Return the completed view to render on screen
         return convertView;
