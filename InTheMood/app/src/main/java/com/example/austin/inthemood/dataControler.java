@@ -1,5 +1,10 @@
 package com.example.austin.inthemood;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -13,11 +18,11 @@ import java.util.Date;
 public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
     private int userCount;
-    private int currentUserIndex;
+    private String currentUserName;
+    Context context;
 
     /**
-     * Instantiates a new dataControler. This should be called once. after the first user in the
-     * system has been registered.
+     * Instantiates a new dataControler without context. (used for JUnit testing)
      *
      * @param firstUser first registered user in our database
      */
@@ -33,11 +38,7 @@ public class dataControler {
      * @param currentUser user interacting with the system
      */
     public void setCurrentUser(User currentUser){
-        for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i) == currentUser){
-                this.currentUserIndex = i;
-            }
-        }
+        this.currentUserName = currentUser.getName();
     }
 
     /**
@@ -47,7 +48,7 @@ public class dataControler {
      */
     public User getCurrentUser() {
 
-        return userList.get(currentUserIndex);
+        return searchForUserByName(currentUserName);
     }
 
     /**
@@ -57,6 +58,19 @@ public class dataControler {
      */
     public ArrayList<User> getUserList() {
         return userList;
+    }
+
+    /**
+     * update user in userList
+     *
+     * @param user the updated user replacing old user
+     */
+    public void updateUserList(User user) {
+        for (int i = 0; i < userList.size(); i++){
+            if (userList.get(i).getName() == user.getName()){
+                userList.set(i, user);
+            }
+        }
     }
 
     /**
@@ -94,8 +108,8 @@ public class dataControler {
      * @param followee person be asked to be followed
      */
     public void requestToFollow(User user, String followee){
-        user.addToMyFollowRequests(searchForUserByName(followee));
-        searchForUserByName(followee).addToMyFollowerRequests(user);
+        user.addToMyFollowRequests(followee);
+        searchForUserByName(followee).addToMyFollowerRequests(user.getName());
     }
 
     /**
@@ -105,10 +119,10 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void grantFollowPermission(User user, String followerName){
-        user.addToMyFollowersList(searchForUserByName(followerName));
-        user.removeFollowerRequest(searchForUserByName(followerName));
-        searchForUserByName(followerName).removeFollowRequest(user);
-        searchForUserByName(followerName).addToMyFollowingList(user);
+        user.addToMyFollowersList(followerName);
+        user.removeFollowerRequest(followerName);
+        searchForUserByName(followerName).removeFollowRequest(user.getName());
+        searchForUserByName(followerName).addToMyFollowingList(user.getName());
     }
 
     /**
@@ -118,8 +132,8 @@ public class dataControler {
      * @param followerName user requesting to follow user (owner)
      */
     public void denyFollowPermission(User user, String followerName){
-        user.removeFollowerRequest(searchForUserByName(followerName));
-        searchForUserByName(followerName).removeFollowRequest(user);
+        user.removeFollowerRequest(followerName);
+        searchForUserByName(followerName).removeFollowRequest(user.getName());
     }
 
     /**
@@ -212,4 +226,69 @@ public class dataControler {
         return sortMoodsByDate(filteredMoodList);
     }
 
+    /**
+     * This method checks wether device is online or not
+     *
+     * pulled from http://stackoverflow.com/questions/30343011/how-to-check-if-an-android-device-is-online on March 27, 2017
+     *
+     * @return online a boolean indicating whether device is online or not
+     */
+
+    /*public boolean isOnline(){
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        boolean online = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            online = true;
+        }
+        return online;
+    }*/
+
+    /**
+     * gets a user from elasticSearch using username
+     *
+     * @param username string username of user being looked for in elasticSearch
+     * @return User being looked for if found or null if found
+     */
+    public User getElasticSearchUser(String username) {
+        ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
+        getUser.execute(username);
+        User locatedUser = null;
+        try {
+            locatedUser = getUser.get();
+            assert (true);
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get user by name");
+            return null;
+        }
+        return locatedUser;
+    }
+
+    public User addUser(User user) {
+
+        ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
+        String userID = new String();
+        addUser.execute(user);
+        try {
+            userID = addUser.get();
+            user.setElasticSearchID(userID);
+            return user;
+        } catch (Exception e) {
+            Log.i("Error", "Failed to add user to Elastic Search");
+            return null;
+        }
+    }
+    public boolean syncUser(User user) {
+        ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
+        Boolean syncSuccess = new Boolean(false);
+        syncUser.execute(user);
+        try {
+            syncSuccess = syncUser.get();
+            return syncSuccess;
+        } catch (Exception e) {
+            Log.i("Error", "Failed to sync user");
+            return false;
+        }
+
+    }
 }

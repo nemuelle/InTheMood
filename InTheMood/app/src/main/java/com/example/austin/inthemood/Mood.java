@@ -20,6 +20,7 @@ public class Mood {
     String ownerName;
     Bitmap moodImg;
 
+
     /**
      * Instantiates a new Mood.
      *
@@ -35,9 +36,9 @@ public class Mood {
     /**
      * Instantiates a new Mood.
      */
-    public Mood(String ownerName) {
+    public Mood(String moodDescription) {
         this.moodDate = new Date();
-        this.moodDescription = "Test Description";
+        this.moodDescription = moodDescription;
     }
 
     /**

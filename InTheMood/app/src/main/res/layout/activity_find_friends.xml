@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_person"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.austin.inthemood.FindFriends">
+    android:weightSum="1">
 
     <EditText
-        android:id="@+id/emailSearchEditText"
-        android:layout_width="343dp"
-        android:layout_height="42dp"
-        android:ems="10"
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
         android:hint="@string/search_by_email"
-        android:inputType="textPersonName"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:scrollbars="horizontal"
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scrollbars="horizontal"
         android:text="Search"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="65dp" />
-
-    <Button
-        android:id="@+id/followButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Follow"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="434dp" />
+        android:onClick="searchFriends"/>
 
     <TextView
         android:id="@+id/searchResultTextView"
-        android:layout_width="351dp"
-        android:layout_height="56dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="292dp" />
-</android.support.constraint.ConstraintLayout>
+        android:scrollbars="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/followButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal"
+        android:text="Follow"
+        android:onClick="followUser" />
+</LinearLayout>

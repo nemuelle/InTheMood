@@ -249,6 +249,37 @@ public class MyMoods extends AppCompatActivity {
         currentUser = controller.getCurrentUser();
         SortedMoodList = currentUser.getMyMoodsList();
 
+        //Testing Elastic Search Functionality
+//        Mood test = new Mood("This is the first mood");
+//        User testman = new User("testman4", "testman");
+//        testman.addMood(test);
+//        ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
+//        addUser.execute(testman);
+//        String userID = new String();
+//        try {
+//            userID = addUser.get();
+//        } catch (Exception e) {
+//            Log.i("Error","Getting the id from the user didn't work");
+//        }
+//        testman.setElasticSearchID(userID);
+//        Mood test2 = new Mood("This is the NEW second mood");
+//        Mood test3 = new Mood("This is the NEW third mood");
+//        testman.addMood(test2);
+//        testman.addMood(test3);
+//        ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
+//        syncUser.execute(testman);
+//        User newguy = new User("new","new");
+//        ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
+//        getUser.execute(testman.getName());
+//        try {
+//            newguy = getUser.get();
+//        } catch (Exception e) {
+//            Log.i("Error", "Failed to get user by name");
+//        }
+//        SortedMoodList = newguy.getMyMoodsList();
+
+
+
         //store a copy of original mood list to allow easier unapplying of filters
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));

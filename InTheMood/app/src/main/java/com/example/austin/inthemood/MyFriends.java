@@ -1,7 +1,9 @@
 package com.example.austin.inthemood;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -43,7 +45,10 @@ public class MyFriends extends AppCompatActivity {
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
         //just print followeduser name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
-        followingList = controller.getCurrentUser().getMyFollowingList();
+        followingList = new ArrayList<User>();
+        for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
+            followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+        }
         followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
             ArrayList<Mood> followedUserMoods = followingList.get(i).getMyMoodsList();
@@ -73,6 +78,11 @@ public class MyFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+    }
+
+    public void findFriends(View view){
+        Intent intent = new Intent(this, FindFriends.class);
+        startActivity(intent);
     }
 
     //load the data controller. called at the start of the activity. All data is stored in the controller.
