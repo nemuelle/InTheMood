@@ -107,7 +107,6 @@ public class addEditMood extends AppCompatActivity {
 
         //Check if a mood was passed in
         Intent intent = getIntent();
-        //TODO: get the scenario of a mood
         moodIndex = intent.getIntExtra("Mood index", -1);
         if (moodIndex != -1) {
             targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
@@ -143,7 +142,6 @@ public class addEditMood extends AppCompatActivity {
                     newMood.setmoodScenario(scenario);
                     if(imageBitMap != null){
                         newMood.setMoodImg(imageBitMap);
-
                     }
                     controller.getCurrentUser().addMood(newMood);
 

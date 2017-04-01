@@ -1,8 +1,11 @@
 package com.example.austin.inthemood;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 
@@ -18,7 +21,8 @@ public class Mood {
     String moodScenario;
     String moodName;
     String ownerName;
-    Bitmap moodImg;
+    //Bitmap moodImg;
+    String moodImgStringForm;
 
 
     /**
@@ -120,13 +124,28 @@ public class Mood {
         return colorHexCode;
     }
 
-
+    //getMoodImg takes the encoded String form of the bitmap Img and returns its Bitmap form
+    //Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
     public Bitmap getMoodImg() {
-        return moodImg;
+        if (moodImgStringForm != null){
+            byte [] decodedString = Base64.decode(moodImgStringForm,Base64.DEFAULT);
+            Bitmap decodedMap = BitmapFactory.decodeByteArray(decodedString,0,decodedString.length);
+            return decodedMap;
+        }
+        return null;
     }
 
+    // takes a BitMap and encodes it into a string to store in the mood class to allow easier
+    //Saving with jSon & elastic search
+    //Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
     public void setMoodImg(Bitmap moodImg) {
-        this.moodImg = moodImg;
+
+        //this.moodImg = moodImg;
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        moodImg.compress(Bitmap.CompressFormat.PNG,100,byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        moodImgStringForm = Base64.encodeToString(b,Base64.DEFAULT);
+
     }
 
 
