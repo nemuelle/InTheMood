@@ -112,7 +112,7 @@ public class addEditMood extends AppCompatActivity {
         if (moodIndex != -1) {
             targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
-            //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
+            scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.getMoodScenario()));
             triggerText.setText(targetMood.getMoodDescription());
             if(targetMood.getMoodImg() != null) {
                 pictureView.setImageBitmap(targetMood.getMoodImg());
@@ -140,6 +140,7 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+                    newMood.setmoodScenario(scenario);
                     if(imageBitMap != null){
                         newMood.setMoodImg(imageBitMap);
 
@@ -151,6 +152,7 @@ public class addEditMood extends AppCompatActivity {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
                     targetMood.setMoodDescription(trigger);
+                    targetMood.setmoodScenario(scenario);
                     if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);

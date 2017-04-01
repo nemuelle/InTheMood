@@ -15,6 +15,7 @@ public class Mood {
     Date moodDate;
     String moodDescription;
     String colorHexCode;
+    String moodScenario;
     String moodName;
     String ownerName;
     Bitmap moodImg;
@@ -107,6 +108,13 @@ public class Mood {
 
     }
 
+    public String getMoodScenario() {
+        return moodScenario;
+    }
+
+    public void setmoodScenario(String scenario) {
+        moodScenario = scenario;
+    }
     public String getColorHexCode() {
         return colorHexCode;
     }
@@ -119,6 +127,7 @@ public class Mood {
     public void setMoodImg(Bitmap moodImg) {
         this.moodImg = moodImg;
     }
+
 
     public String toString(){
         return  "Mood on " + this.moodDate + " was " + this.moodName + " because " +
