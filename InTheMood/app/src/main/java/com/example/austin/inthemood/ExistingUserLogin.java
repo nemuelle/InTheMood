@@ -59,6 +59,7 @@ public class ExistingUserLogin extends AppCompatActivity{
 
         // Initialize the data controller.
         loadFromFile();
+        saveInFile();
 
 
         // Set up the login form.
@@ -72,6 +73,7 @@ public class ExistingUserLogin extends AppCompatActivity{
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+        saveInFile();
     }
 
     // Load the data controller stored in the specified file.
@@ -82,17 +84,17 @@ public class ExistingUserLogin extends AppCompatActivity{
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
 
             Gson gson = new Gson();
-
             Type objectType = new TypeToken<dataControler>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
             System.out.println("before");
-            controller = new dataControler(firstUser, this);
+            controller = new dataControler(firstUser);
             System.out.println("after");
         } catch (IOException e) {
             throw new RuntimeException();
         }
+
     }
 
     // Save the data controller into the specified file.

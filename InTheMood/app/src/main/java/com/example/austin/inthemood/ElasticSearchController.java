@@ -106,36 +106,6 @@ public class ElasticSearchController {
         }
     }
 
-    public static class SyncUserTask extends AsyncTask<User, Void, Void> {
-        /*
-        USAGE:
-        Mood test = new Mood();
-        ElasticSearchController.AddMoodTask addMoods = new ElasticSearchController.AddMoodsTask();
-        addMoods.execute(test);
-         */
-        @Override
-        protected Void doInBackground(User... users) {
-            verifySettings();
-
-            for (User user : users) {
-                try {
-                    // where is the client?
-                    String userID = user.getElasticSearchID();
-                    DocumentResult result = client.execute(new Index.Builder(user).index(index).type(user_type).id(userID).build());
-                    Log.i("Error", "We synced the user!");
-                    if (result.isSucceeded() == false) {
-                        Log.i("Error", "Elastic search couldn't sync the user");
-                    }
-                }
-                catch (Exception e) {
-                    Log.i("Error", "The application failed to sync the user");
-                }
-            }
-            return null;
-        }
-    }
-
-
     // TODO we need a function which gets moods for a given user from elastic search
     public static class GetMoodsForUser extends AsyncTask<String, Void, ArrayList<Mood>> {
         /*
@@ -258,7 +228,37 @@ public class ElasticSearchController {
         }
     }
 
-
+    public static class SyncUserTask extends AsyncTask<User, Void, Boolean> {
+        /*
+        USAGE:
+        Mood test = new Mood();
+        ElasticSearchController.AddMoodTask addMoods = new ElasticSearchController.AddMoodsTask();
+        addMoods.execute(test);
+         */
+        @Override
+        protected Boolean doInBackground(User... users) {
+            verifySettings();
+            Boolean wasSuccess = new Boolean(false);
+            for (User user : users) {
+                try {
+                    // where is the client?
+                    String userID = user.getElasticSearchID();
+                    DocumentResult result = client.execute(new Index.Builder(user).index(index).type(user_type).id(userID).build());
+                    wasSuccess = result.isSucceeded();
+                    Log.i("Error", "We synced the user!");
+                    if (result.isSucceeded() == false) {
+                        Log.i("Error", "Elastic search couldn't sync the user");
+                    }
+                    return result.isSucceeded();
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to sync the user");
+                    return false;
+                }
+            }
+            return wasSuccess;
+        }
+    }
 
 
 

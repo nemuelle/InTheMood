@@ -191,7 +191,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser, this);
+            controller = new dataControler(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

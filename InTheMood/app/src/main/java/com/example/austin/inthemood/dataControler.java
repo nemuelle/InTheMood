@@ -22,20 +22,6 @@ public class dataControler {
     Context context;
 
     /**
-     * Instantiates a new dataControler. This should be called once. after the first user in the
-     * system has been registered.
-     *
-     * @param firstUser first registered user in our database
-     * @param myContext
-     */
-    public dataControler(User firstUser, Context myContext){
-        userCount = 1;
-        this.userList = new ArrayList<User>();
-        this.userList.add(firstUser);
-        this.context = myContext;
-    }
-
-    /**
      * Instantiates a new dataControler without context. (used for JUnit testing)
      *
      * @param firstUser first registered user in our database
@@ -248,7 +234,7 @@ public class dataControler {
      * @return online a boolean indicating whether device is online or not
      */
 
-    public boolean isOnline(){
+    /*public boolean isOnline(){
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         boolean online = false;
@@ -256,7 +242,7 @@ public class dataControler {
             online = true;
         }
         return online;
-    }
+    }*/
 
     /**
      * gets a user from elasticSearch using username
@@ -276,5 +262,33 @@ public class dataControler {
             return null;
         }
         return locatedUser;
+    }
+
+    public User addUser(User user) {
+
+        ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
+        String userID = new String();
+        addUser.execute(user);
+        try {
+            userID = addUser.get();
+            user.setElasticSearchID(userID);
+            return user;
+        } catch (Exception e) {
+            Log.i("Error", "Failed to add user to Elastic Search");
+            return null;
+        }
+    }
+    public boolean syncUser(User user) {
+        ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
+        Boolean syncSuccess = new Boolean(false);
+        syncUser.execute(user);
+        try {
+            syncSuccess = syncUser.get();
+            return syncSuccess;
+        } catch (Exception e) {
+            Log.i("Error", "Failed to sync user");
+            return false;
+        }
+
     }
 }

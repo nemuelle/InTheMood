@@ -24,6 +24,22 @@ public class FriendRequests extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_requests);
+        loadFromFile();
+
+        //update current user from elasticSearch
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        loadFromFile();
+
+        //update current user from elasticSearch
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
     }
 
     //save the data controller. This function is never called in here for the time being
@@ -57,7 +73,7 @@ public class FriendRequests extends AppCompatActivity {
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser, this);
+            controller = new dataControler(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }
