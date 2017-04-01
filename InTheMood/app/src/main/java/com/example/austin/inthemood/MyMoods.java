@@ -304,12 +304,13 @@ public class MyMoods extends AppCompatActivity {
         startActivity(editMoodIntent);
 
 
+
     }
     //Start activity to add another mood
     private void addMood(View view){
         Intent addMoodIntent = new Intent(this,addEditMood.class);
         startActivity(addMoodIntent);
-
+        finish();
 
     }
 

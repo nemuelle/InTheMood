@@ -126,6 +126,8 @@ public class addEditMood extends AppCompatActivity {
                     targetMood.setMoodDescription(trigger);
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
+                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Log.i("SyncSuccess", syncSuccess.toString());
                 saveInFile();
                 startActivity(intent);
             }
@@ -138,6 +140,8 @@ public class addEditMood extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
+                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Log.i("SyncSuccess", syncSuccess.toString());
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
                 startActivity(intent);

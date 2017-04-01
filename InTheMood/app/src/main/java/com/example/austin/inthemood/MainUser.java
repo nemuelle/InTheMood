@@ -46,6 +46,7 @@ public class MainUser extends AppCompatActivity {
         setContentView(R.layout.activity_main_user);
         loadFromFile();
 
+
     }
 
     @Override
