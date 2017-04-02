@@ -38,6 +38,12 @@ public class MyFriends extends AppCompatActivity {
     private ArrayList<String> followedUserStringMessage;
     private dataControler controller;
     private ArrayAdapter<String> adapter;
+    //Testing Variables
+    private User testUser;
+    private User testUser2;
+    private User testUser3;
+    private User testUser4;
+    private Mood moodTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +51,13 @@ public class MyFriends extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
-        //Print to list view. For each followed user, print his name and his most recent mood with mood date
-        //just print followeduser name if no moods have been recorded
+        testUser = new User("Test","Test");
+        moodTest = new Mood("Testing");
+        moodTest.setMoodName("Anger");
+        testUser.addMood(moodTest);
+        controller.addToUserList(testUser);
+        controller.getCurrentUser().addToMyFollowingList("Test");
+
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         offlineMessage = (TextView) findViewById(R.id.offlineMessage);
         followingList = new ArrayList<User>();
