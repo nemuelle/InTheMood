@@ -39,8 +39,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        controller.updateUserList(updatedCurrentUser);
+        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        //controller.updateUserList(updatedCurrentUser);
+        //saveInFile();
     }
 
     @Override
@@ -50,8 +51,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        controller.updateUserList(updatedCurrentUser);
+        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        //controller.updateUserList(updatedCurrentUser);
+        //saveInFile();
     }
 
     /**
@@ -63,7 +65,7 @@ public class FindFriends extends AppCompatActivity {
         searchableUserName = (EditText) findViewById(R.id.searchEditText);
         searchedUserName = (TextView) findViewById(R.id.searchResultTextView);
         String searchableUserNameString = searchableUserName.getText().toString();
-        controller.getElasticSearchUser(searchableUserNameString);
+        locatedUser = controller.getElasticSearchUser(searchableUserNameString);
         searchableUserName.setText("");
         if (locatedUser == null){
             searchedUserName.setText("Name not found");
