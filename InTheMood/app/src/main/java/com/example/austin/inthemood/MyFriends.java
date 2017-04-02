@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
@@ -31,6 +33,7 @@ public class MyFriends extends AppCompatActivity {
 
     private static final String FILENAME = "file.sav";
     private ListView myFriendsListView;
+    private TextView offlineMessage;
     private ArrayList<User> followingList;
     private ArrayList<String> followedUserStringMessage;
     private dataControler controller;
@@ -45,6 +48,7 @@ public class MyFriends extends AppCompatActivity {
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
         //just print followeduser name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
+        offlineMessage = (TextView) findViewById(R.id.offlineMessage);
         followingList = new ArrayList<User>();
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
             followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
@@ -78,6 +82,17 @@ public class MyFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+
+        //If we're not online, hide the friend information as it may be out of date.
+        //TODO: have a proper connection checker
+        if (false) {
+            myFriendsListView.setVisibility(View.GONE);
+            offlineMessage.setVisibility(View.VISIBLE);
+        }   else {
+            //We are online, so show your friends' most recent mood.
+            myFriendsListView.setVisibility(View.VISIBLE);
+            offlineMessage.setVisibility(View.GONE);
+        }
     }
 
     //Called when the Find Friends button is clicked.
@@ -104,6 +119,4 @@ public class MyFriends extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
-
-
 }

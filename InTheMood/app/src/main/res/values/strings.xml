@@ -55,5 +55,6 @@
 
     <!-- Strings related to friends -->
     <string name="find_friends">Find Friends</string>
+    <string name="offlineMessage">This feature is not available offline.</string>
 
 </resources>
