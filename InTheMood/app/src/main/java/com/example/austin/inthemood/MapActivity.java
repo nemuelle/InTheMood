@@ -14,11 +14,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,9 +39,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private final String FILENAME = "file.sav";
     private GoogleMap mMap;
     dataControler controller;
-    private String trigger;
-    private String emotion;
-    private int lastWeek;
+    private String triggerFilter;
+    private String emotionFilter;
+    private int lastWeekFilter;
+    private ArrayList<Mood> moodList = new ArrayList<>();
     private String launchedFrom;
 
     private HashMap<String, Float> hexColorToHUE = new HashMap<>();
@@ -46,13 +52,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         buildHashMap();
+        loadFromFile();
+        moodList = controller.getCurrentUser().getMyMoodsList();
+        filterMoods();
 
-        trigger = getIntent().getStringExtra("trigger");
-        emotion = getIntent().getStringExtra("emotion");
-        lastWeek = getIntent().getIntExtra("lastweek", -1);
+        triggerFilter = getIntent().getStringExtra("trigger");
+        emotionFilter = getIntent().getStringExtra("emotion");
+        lastWeekFilter = getIntent().getIntExtra("lastweek", -1);
         launchedFrom = getIntent().getStringExtra("activity");
-
-        //filterMoods();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -62,18 +69,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     /**
      * Take the Mood hex colors and have a color for MakerOption objects
      * that are place in a GoogleMap
+     *
+     * TODO change the mood colour with #cecece to some orange colour
      */
     private void buildHashMap() {
-        /**
-         * TODO make bitmaps of these colors
-         * https://stackoverflow.com/questions/14811579/how-to-create-a-custom-shaped-bitmap-marker-with-android-map-api-v2
-         *
-         else if(this.moodName.equals("Confusion")) {
-         this.colorHexCode = "#cecece";
-
-         else if (this.moodName.equals("Fear")){
-         this.colorHexCode = "#8383a9";
-         */
 
         hexColorToHUE.put("#f0391c", BitmapDescriptorFactory.HUE_RED);
         hexColorToHUE.put("#cecece", BitmapDescriptorFactory.HUE_ORANGE);
@@ -87,9 +86,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     }
 
+    /**
+     * check the filtering flags use the data controller to give back a filtered list.
+     */
     private void filterMoods() {
         // TODO get and filter moods
         // then send to makeMarkers
+
+        if (emotionFilter != null)
+            moodList = controller.filterByMood(emotionFilter, moodList);
+
+        if (lastWeekFilter != -1)
+            moodList = controller.filterByWeek(moodList);
+
+        if (triggerFilter != null)
+            moodList = controller.filterByTrigger(triggerFilter, moodList);
     }
 
     private ArrayList<MarkerOptions> makeMarkers(ArrayList<Mood> moods) {
@@ -116,57 +127,41 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return list;
     }
 
+    private void addMarkers(ArrayList<MarkerOptions> list, GoogleMap googleMap) {
+        mMap = googleMap;
+
+        for (MarkerOptions option : list) {
+            mMap.addMarker(option);
+        }
+
+        // set camera to last mood
+        int lastIndex = list.size() - 1;
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(lastIndex).getPosition()));
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(sydney)
-                .title("Marker")
-                .icon(getMarkerIcon("#cecece"));
-        mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        //a();
+        addMarkers(makeMarkers(moodList), googleMap);
     }
 
-    private void a(){
-        for (int i =0; i <= 60; i++) {
-            LatLng sydney = new LatLng(0, i);
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(sydney)
-                    .title("Marker")
-                    .icon(BitmapDescriptorFactory.defaultMarker((float) i+299));
-            mMap.addMarker(markerOptions);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        }
-    }
-
-    private BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
-    }
-
-    // Save the data controller into the specified file.
-    // Taken from: the CMPUT301 lonelyTwitter lab examples
-    private void saveInFile() {
+    //Load data controller
+    private void loadFromFile() {
         try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
 
-            FileOutputStream fos = openFileOutput(FILENAME, 0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
             Gson gson = new Gson();
-            gson.toJson(controller, writer);
-            Log.i("gsonToJson", gson.toJson(controller));
-            writer.flush();
+
+            Type objectType = new TypeToken<dataControler>() {}.getType();
+            controller = gson.fromJson(in, objectType);
+
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
+            User firstUser = new User("admin", "admin");
+            controller = new dataControler(firstUser);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException();
         }
     }
