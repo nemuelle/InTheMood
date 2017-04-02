@@ -130,17 +130,6 @@ public class dataControler {
     }
 
     /**
-     * send follow request. followee added to user's (Owner's) followRequests and user added to followee's followerRequests.
-     *
-     * @param user user wishing to follow followee
-     * @param followee person be asked to be followed
-     */
-    public void requestToFollow(User user, String followee){
-        user.addToMyFollowRequests(followee);
-        searchForUserByName(followee).addToMyFollowerRequests(user.getName());
-    }
-
-    /**
      * grant user (followerName) follow permission to follow user (owner)
      *
      * @param user user being requested to follow by followerName

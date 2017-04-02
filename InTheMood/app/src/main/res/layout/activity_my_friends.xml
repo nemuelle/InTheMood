@@ -54,4 +54,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:onClick="findFriends" />
+
 </android.support.constraint.ConstraintLayout>
