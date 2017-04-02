@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -77,9 +79,11 @@ public class dataControler {
      * @param user the updated user replacing old user
      */
     public void updateUserList(User user) {
-        for (int i = 0; i < userList.size(); i++){
-            if (userList.get(i).getName() == user.getName()){
-                userList.set(i, user);
+        for (int i = 0; i < this.userList.size(); i++){
+            if (this.userList.get(i).getName() == user.getName()){
+                this.userList.set(i, user);
+                Gson gson = new Gson();
+                Log.i("Updated user", gson.toJson(user));
             }
         }
     }
@@ -89,8 +93,8 @@ public class dataControler {
      * @param user user being added
      */
     public void addToUserList(User user){
-        userList.add(user);
-        userCount += 1;
+        this.userList.add(user);
+        this.userCount += 1;
     }
 
     /**
