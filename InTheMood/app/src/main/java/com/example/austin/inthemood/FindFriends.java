@@ -27,6 +27,7 @@ public class FindFriends extends AppCompatActivity {
 
     private EditText searchableUserName;
     private TextView searchedUserName;
+    private TextView displayFollowResult;
 
     private User locatedUser;
     private dataControler controller;
@@ -39,9 +40,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
-        //saveInFile();
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
+        saveInFile();
     }
 
     @Override
@@ -51,9 +52,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
-        //saveInFile();
+        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        controller.updateUserList(updatedCurrentUser);
+        saveInFile();
     }
 
     /**
@@ -77,23 +78,36 @@ public class FindFriends extends AppCompatActivity {
 
     public void followUser(View view){
 
+        displayFollowResult = (TextView) findViewById(R.id.displayFollowResult);
         if (locatedUser != null) {
             //check if request is already pending
             if (!controller.getCurrentUser().getMyFollowRequests().contains(locatedUser.getName())) {
 
                 //check if the located user is already being followed
                 if (!controller.getCurrentUser().getMyFollowingList().contains(locatedUser.getName())) {
-                    controller.requestToFollow(controller.getCurrentUser(), locatedUser.getName());
+                    controller.getCurrentUser().addToMyFollowRequests(locatedUser.getName());
+                    locatedUser.addToMyFollowerRequests(controller.getCurrentUser().getName());
 
-                    //upload current user and located user to elasticSearch
-                    ElasticSearchController.SyncUserTask syncCurrentUserTask = new ElasticSearchController.SyncUserTask();
-                    syncCurrentUserTask.execute(controller.getCurrentUser());
-                    ElasticSearchController.SyncUserTask syncLocatedUserTask = new ElasticSearchController.SyncUserTask();
-                    syncLocatedUserTask.execute(locatedUser);
+
+
+                    Gson gson = new Gson();
+                    Log.i("json", gson.toJson(controller.getCurrentUser()));
+                    Log.i("json", gson.toJson(locatedUser));
 
                     //update current user locally
                     controller.updateUserList(controller.getCurrentUser());
+                    if (controller.searchForUserByName(locatedUser.getName()) != null){
+                        Log.i("Message", "Saved local user we tried to follow");
+                        controller.updateUserList(locatedUser);
+                        Log.i("jsonInIf", gson.toJson(locatedUser));
+                    }
                     saveInFile();
+                    //upload current user and located user to elasticSearch
+                    controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                    controller.ElasticSearchsyncUser(locatedUser);
+
+
+                    displayFollowResult.setText("Follow Request Sent");
                 }
 
             }

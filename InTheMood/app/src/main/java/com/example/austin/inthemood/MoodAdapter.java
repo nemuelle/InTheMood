@@ -27,9 +27,10 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
      * @param context  the context
      * @param moodList the mood list
      */
-
-    public MoodAdapter(Context context, ArrayList<Mood> moodList) {
+    private String userName;
+    public MoodAdapter(Context context, ArrayList<Mood> moodList, String user) {
         super(context, 0, moodList);
+        this.userName = user;
     }
 
     /**
@@ -49,12 +50,19 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_mood, parent, false);
         }
+
         // Lookup view for data population
         TextView moodString = (TextView) convertView.findViewById(R.id.moodString);
         TextView moodComment = (TextView) convertView.findViewById(R.id.moodComment);
         ImageView moodEmote = (ImageView) convertView.findViewById(R.id.img);
         // Populate the data into the template view using the data object
-        moodString.setText(mood.getMoodName() + "     " + mood.getMoodDate().toString());
+
+        if(!userName.equals(mood.getOwnerName())){
+            moodString.setText(mood.getOwnerName() + " felt " +mood.getMoodName() + " on " + mood.getMoodDate().toString());
+
+        }else{
+            moodString.setText(mood.getMoodName() + " felt on " + mood.getMoodDate().toString());
+        }
         moodComment.setText(mood.getMoodDescription());
         convertView.setBackgroundColor(Color.parseColor(mood.getColorHexCode()));
 

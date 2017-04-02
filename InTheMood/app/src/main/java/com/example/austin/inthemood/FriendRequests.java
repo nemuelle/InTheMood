@@ -2,6 +2,10 @@ package com.example.austin.inthemood;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,10 +18,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class FriendRequests extends AppCompatActivity {
 
     private dataControler controller;
+    private ArrayAdapter<String> followAdapter;
+    private ArrayAdapter<String> followerAdapter;
+    private ListView pendingFollowRequests;
+    private ListView pendingFollowerRequests;
+    private TextView followRequests;
+    private TextView followerRequests;
+
     private static final String FILENAME = "file.sav";
 
     @Override
@@ -29,6 +41,28 @@ public class FriendRequests extends AppCompatActivity {
         //update current user from elasticSearch
         User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         controller.updateUserList(updatedCurrentUser);
+        saveInFile();
+
+        Gson gson = new Gson();
+        Log.i("json", gson.toJson(controller.getCurrentUser()));
+
+        //print textview
+        followerRequests = (TextView) findViewById(R.id.followerRequests);
+        followRequests = (TextView) findViewById(R.id.followRequests);
+        followerRequests.setText("Follower Requests");
+        followRequests.setText("Follow Requests");
+
+        //print follow requests to listview
+        pendingFollowRequests = (ListView) findViewById(R.id.pendingFollowRequests);
+        followAdapter = new ArrayAdapter<String>(this,
+                R.layout.list_item, controller.getCurrentUser().getMyFollowRequests());
+       pendingFollowRequests.setAdapter(followAdapter);
+
+        //print follower requests to listview
+        pendingFollowerRequests = (ListView) findViewById(R.id.pendingFollowerRequests);
+        followerAdapter = new ArrayAdapter<String>(this,
+                R.layout.list_item, controller.getCurrentUser().getMyFollowerRequests());
+        pendingFollowerRequests.setAdapter(followerAdapter);
     }
 
     @Override
@@ -40,6 +74,7 @@ public class FriendRequests extends AppCompatActivity {
         //update current user from elasticSearch
         User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         controller.updateUserList(updatedCurrentUser);
+        saveInFile();
     }
 
     //save the data controller. This function is never called in here for the time being
