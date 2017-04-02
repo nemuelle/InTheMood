@@ -134,9 +134,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             mMap.addMarker(option);
         }
 
-        // set camera to last mood
-        int lastIndex = list.size() - 1;
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(lastIndex).getPosition()));
+        // set camera to last mood should be sorted with the most recent first
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(0).getPosition()));
     }
 
 

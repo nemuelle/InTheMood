@@ -56,7 +56,7 @@ public class MyFriends extends AppCompatActivity {
         controller.getCurrentUser().addToMyFollowingList("Steve");
 
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
-        //just print followeduser name if no moods have been recorded
+        //just print followed user name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = new ArrayList<User>();
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
@@ -112,6 +112,12 @@ public class MyFriends extends AppCompatActivity {
      */
     public void friendRequests(View view){
         Intent intent = new Intent(this, FriendRequests.class);
+        startActivity(intent);
+    }
+
+    public void openMap(View v) {
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("activity", "MyFriends");
         startActivity(intent);
     }
 
