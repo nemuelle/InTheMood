@@ -137,6 +137,7 @@
 
     <ListView
         android:id="@+id/myMoodsListView"
+        android:layout_below="@id/triggerFilterButton"
         android:layout_width="match_parent"
         android:layout_height="320dp"
         android:layout_alignParentBottom="true"

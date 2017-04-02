@@ -34,7 +34,8 @@
             android:name=".NewUserLogin"
             android:label="@string/title_activity_new_user_login" />
         <activity android:name=".MainUser" />
-        <activity android:name=".MyMoods" />
+        <activity android:name=".MyMoods"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".addEditMood" />
         <activity android:name=".MyFriends" />
         <activity android:name=".FindFriends" />

@@ -2,6 +2,8 @@ package com.example.austin.inthemood;
 
 import android.graphics.Color;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 
 

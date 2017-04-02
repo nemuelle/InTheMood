@@ -1,6 +1,5 @@
 package com.example.austin.inthemood;
 
-import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.content.IntentSender;
@@ -26,14 +25,14 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 /**
- * Created by Nathan on 3/31/2017.
+ * A Controller class that attempts to allow for simple handling of getting locations
  */
-
 public class LocationControllor implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult> {
+
 
     protected static final String TAG = LocationControllor.class.getSimpleName();
     public static final int REQUEST_CHECK_SETTINGS = 1;
@@ -41,7 +40,6 @@ public class LocationControllor implements
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
 
     protected GoogleApiClient mGoogleApiClient;
     protected Activity activity;
@@ -51,6 +49,12 @@ public class LocationControllor implements
     private boolean mRequestingLocationUpdates;
     private boolean canGetLocation;
 
+    /**
+     * Instantiates a new Location controllor.
+     *
+     * @param mGoogleApiClient the m google api client
+     * @param activity         the activity
+     */
     public LocationControllor(GoogleApiClient mGoogleApiClient, Activity activity) {
         this.mGoogleApiClient = mGoogleApiClient;
         this.activity = activity;
@@ -60,22 +64,48 @@ public class LocationControllor implements
         buildLocationSettingsRequest();
     }
 
+    /**
+     * Is can get location boolean.
+     *
+     * @return the boolean
+     */
     public boolean isCanGetLocation() {
         return canGetLocation;
     }
 
+    /**
+     * Sets can get location.
+     *
+     * @param canGetLocation the can get location
+     */
     public void setCanGetLocation(boolean canGetLocation) {
         this.canGetLocation = canGetLocation;
     }
 
+    /**
+     * Gets google api client.
+     *
+     * @return the google api client
+     */
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
     }
 
+    /**
+     * Gets current location.
+     * this might still be null becuase it doesn't seem to work right.
+     * @return the current location
+     */
     public Location getCurrentLocation() {
+        if (mCurrentLocation == null && checkLocationPermission()) {
+            return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
         return mCurrentLocation;
     }
 
+    /**
+     * Build google api client.
+     */
     protected void buildGoogleApiClient() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(activity)
@@ -86,6 +116,9 @@ public class LocationControllor implements
         }
     }
 
+    /**
+     * Create location request.
+     */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
@@ -93,12 +126,20 @@ public class LocationControllor implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    /**
+     * Build location settings request.
+     */
     protected void buildLocationSettingsRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
 
+    /**
+     * Check location permission boolean.
+     *
+     * @return the boolean
+     */
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -108,8 +149,8 @@ public class LocationControllor implements
     }
 
 
-    /*
-     * request the location permission from the user.
+    /**
+     * Request location permission.
      */
     public void requestLocationPermission() {
         ActivityCompat.requestPermissions(activity,
@@ -129,13 +170,17 @@ public class LocationControllor implements
         result.setResultCallback(this);
     }
 
-    /*
+
+    /**
+     * On request permissions result.
      * check the result from requesting the location permission
      * from https://stackoverflow.com/questions/33865445/gps-location-provider-requires-access-fine-location-permission-for-android-6-0
      * accessed on March 27, 2017
+     *
+     * @param requestCode  the request code
+     * @param permissions  the permissions
+     * @param grantResults the grant results
      */
-
-
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_ACCESS_FINE_LOCATION_PERMISSION: {
@@ -152,6 +197,9 @@ public class LocationControllor implements
         }
     }
 
+    /**
+     * Start location updates.
+     */
     public void startLocationUpdates() {
         if (checkLocationPermission()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -167,6 +215,9 @@ public class LocationControllor implements
         }
     }
 
+    /**
+     * Stop location updates.
+     */
     public void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient,
