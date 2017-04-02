@@ -75,14 +75,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
          this.colorHexCode = "#8383a9";
          */
 
-        hexColorToHUE.put("#f0391c", Float.valueOf(0.0f));
-        //hexColorToHUE.put("#cecece", Float.valueOf(0.0f)) how to get grey
-        hexColorToHUE.put("#9ae343", Float.valueOf(120.0f));
-        //hexColorToHUE.put("#8383a9", Float.valueOf(120.0f));
-        hexColorToHUE.put("#e8ef02", Float.valueOf(60.0f));
-        hexColorToHUE.put("#03acca", Float.valueOf(180.0f));
-        hexColorToHUE.put("#cd00ff", Float.valueOf(300.0f));
-        hexColorToHUE.put("#cd00ff", Float.valueOf(330.0f));
+        hexColorToHUE.put("#f0391c", BitmapDescriptorFactory.HUE_RED);
+        hexColorToHUE.put("#cecece", BitmapDescriptorFactory.HUE_ORANGE);
+        hexColorToHUE.put("#9ae343", BitmapDescriptorFactory.HUE_GREEN);
+        hexColorToHUE.put("#8383a9", BitmapDescriptorFactory.HUE_AZURE);
+        hexColorToHUE.put("#e8ef02", BitmapDescriptorFactory.HUE_YELLOW);
+        hexColorToHUE.put("#03acca", BitmapDescriptorFactory.HUE_CYAN);
+        hexColorToHUE.put("#cd00ff", BitmapDescriptorFactory.HUE_MAGENTA);
+        hexColorToHUE.put("#ff006c", BitmapDescriptorFactory.HUE_ROSE);
 
 
     }
