@@ -38,13 +38,12 @@ import java.util.HashMap;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
     private final String FILENAME = "file.sav";
     private GoogleMap mMap;
-    dataControler controller;
+    private dataControler controller;
     private String triggerFilter;
     private String emotionFilter;
     private int lastWeekFilter;
-    private ArrayList<Mood> moodList = new ArrayList<>();
     private String launchedFrom;
-
+    private ArrayList<Mood> moodList = new ArrayList<>();
     private HashMap<String, Float> hexColorToHUE = new HashMap<>();
 
     @Override
@@ -52,14 +51,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         buildHashMap();
-        loadFromFile();
-        moodList = controller.getCurrentUser().getMyMoodsList();
-        filterMoods();
 
         triggerFilter = getIntent().getStringExtra("trigger");
         emotionFilter = getIntent().getStringExtra("emotion");
         lastWeekFilter = getIntent().getIntExtra("lastweek", -1);
         launchedFrom = getIntent().getStringExtra("activity");
+
+        loadFromFile();
+        if (launchedFrom.equals("MyMoods")) {
+            moodList = controller.getCurrentUser().getMyMoodsList();
+            filterMoods();
+        }
+
+        if (launchedFrom.equals("MyFriends")) {
+            moodList = getFriendsMoods();
+        }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -90,9 +97,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      * check the filtering flags use the data controller to give back a filtered list.
      */
     private void filterMoods() {
-        // TODO get and filter moods
-        // then send to makeMarkers
-
         if (emotionFilter != null)
             moodList = controller.filterByMood(emotionFilter, moodList);
 
@@ -101,6 +105,33 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         if (triggerFilter != null)
             moodList = controller.filterByTrigger(triggerFilter, moodList);
+    }
+
+    /**
+     * Get the List of Users that the current user follows
+     *
+     * @return
+     */
+    private ArrayList<Mood> getFriendsMoods() {
+        ArrayList<User> followingList = new ArrayList<>();
+        ArrayList<Mood> sortedFollowingMoods = new ArrayList<>();
+
+        for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
+            followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+        }
+
+        for (int i = 0; i < followingList.size(); i++){
+            ArrayList<Mood> followedUserMoods = followingList.get(i).getMyMoodsList();
+
+            //if the followed user has moods, find his most recent mood and display it. If not,
+            //only display his name
+            if (followedUserMoods.size() > 0) {
+                followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
+                sortedFollowingMoods.add(followedUserMoods.get(0));
+            }
+        }
+
+        return sortedFollowingMoods;
     }
 
     private ArrayList<MarkerOptions> makeMarkers(ArrayList<Mood> moods) {

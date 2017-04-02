@@ -78,7 +78,6 @@ public class MyFriends extends AppCompatActivity {
             } else {
                 String message = followingList.get(i).getName();
                 followedUserStringMessage.add(message);
-
             }
         }
         adapter = new MoodAdapter(this, sortedFollowingMoods,controller.getCurrentUser().getName());
