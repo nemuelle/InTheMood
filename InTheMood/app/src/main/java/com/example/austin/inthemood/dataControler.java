@@ -30,6 +30,7 @@ public class dataControler {
         userCount = 1;
         this.userList = new ArrayList<User>();
         this.userList.add(firstUser);
+
     }
 
     /**
@@ -89,13 +90,14 @@ public class dataControler {
      * @param password corresponding password being checked for in database
      * @return User if login successful or null if unsuccessful
      */
-    public User verifyLogIn(String name, String password){
+    public User verifyLogIn(String name, String password, Boolean isOnline){
         Log.i("Message","trying to get verify login");
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName().equals(name)) {
                 if (userList.get(i).getPassword().equals(password)) {
                     User user = userList.get(i);
                     Boolean syncSuccess =ElasticSearchsyncUser(user);
+                    Log.i("Found user", "in local");
                     Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());
                     Log.i("Users pass:", user.getPassword());
@@ -107,14 +109,18 @@ public class dataControler {
         }
         //User user = getElasticSearchUser(name);
         //User user  = new User("none","none");
-        User user = getElasticSearchUser(name);
-        if (user != null){
-            if (user.getPassword().equals(password));
-                Log.i("Users name:", user.getName());
-                Log.i("Users pass:", user.getPassword());
-                Log.i("Userus ES ID", user.getElasticSearchID());
-                addToUserList(user);
-                return user;
+        if (isOnline) {
+            User user = getElasticSearchUser(name);
+            if (user != null) {
+                if (user.getPassword().equals(password)) {
+                    Log.i("Found user:", "from elastic search");
+                    Log.i("Users name:", user.getName());
+                    Log.i("Users pass:", user.getPassword());
+                    Log.i("Userus ES ID", user.getElasticSearchID());
+                    addToUserList(user);
+                    return user;
+                }
+            }
         }
         return null;
     }
@@ -271,14 +277,15 @@ public class dataControler {
     public User getElasticSearchUser(String username) {
         ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
         getUser.execute(username);
-        User locatedUser = null;
+        //User locatedUser = null;
         try {
-            locatedUser = getUser.get();
+            User locatedUser = getUser.get();
+            return locatedUser;
         } catch (Exception e) {
             Log.i("Error", "Failed to get user by name");
             return null;
         }
-        return locatedUser;
+
     }
 
     public User ElasticSearchaddUser(User user) {
@@ -308,4 +315,7 @@ public class dataControler {
         }
 
     }
+
+
+
 }

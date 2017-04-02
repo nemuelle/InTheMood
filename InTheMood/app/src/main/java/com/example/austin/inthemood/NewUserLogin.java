@@ -82,7 +82,12 @@ public class NewUserLogin extends AppCompatActivity {
      * @param view
      */
     public void register(View view) {
-        if (validRegistration() == 1) {
+        Boolean isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
+        if (isOnline == false) {
+            eU.setVisibility(View.VISIBLE);
+            eU.setText("Cannot register user while device is offline");
+        }
+        else if (validRegistration() == 1) {
             eU = (TextView) findViewById(R.id.eUser);
             eU.setVisibility(View.GONE);
             eP = (TextView) findViewById(R.id.ePass);
@@ -97,6 +102,7 @@ public class NewUserLogin extends AppCompatActivity {
             controller.setCurrentUser(newUser);
             saveInFile();
             startActivity(intent);
+            finish();
 
         } else if (validRegistration() == -1) {
             eU.setVisibility(View.VISIBLE);

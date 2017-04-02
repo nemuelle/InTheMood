@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 public class MainUser extends AppCompatActivity {
     private MainUser activity = this;
 
+
     //UI Elements
     private Button myFriendsMoodsButton;
     private Button myMoodsButton;
@@ -45,6 +46,7 @@ public class MainUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
         loadFromFile();
+
 
 
     }
