@@ -34,8 +34,6 @@ import java.util.concurrent.ExecutionException;
 
     For project part 5:
         Still need to change each mood item's color based on what mood it is
-        Still need to connect new mood button to add/edit mood activity
-        Still need to make clicking a mood take you to its edit screen.
         Still need to make the buttons appear unselected upon 2nd click
  */
 public class MyMoods extends AppCompatActivity {
@@ -53,7 +51,7 @@ public class MyMoods extends AppCompatActivity {
     private ListView moodsListView;
     public dataControler controller;
     private static final String FILENAME = "file.sav";
-    private ArrayAdapter<Mood> moodAdapter;
+    private MoodAdapter moodAdapter;
     private User currentUser;
     private ArrayList<Mood> SortedMoodList = new ArrayList<Mood>();
     private ArrayList<Mood> NewMoodList = new ArrayList<Mood>();
@@ -313,7 +311,7 @@ public class MyMoods extends AppCompatActivity {
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
         }
 
-        moodAdapter = new ArrayAdapter<Mood>(this,R.layout.list_item,SortedMoodList);
+        moodAdapter = new MoodAdapter(this,SortedMoodList);
         moodsListView.setAdapter(moodAdapter);
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent,View view, int position,long id){

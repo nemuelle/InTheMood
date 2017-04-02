@@ -1,12 +1,17 @@
 package com.example.austin.inthemood;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +27,7 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
      * @param context  the context
      * @param moodList the mood list
      */
+
     public MoodAdapter(Context context, ArrayList<Mood> moodList) {
         super(context, 0, moodList);
     }
@@ -35,8 +41,10 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         // Get the data item for this position
         Mood mood = (Mood) getItem(position);
+
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_mood, parent, false);
@@ -44,9 +52,39 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
         // Lookup view for data population
         TextView moodString = (TextView) convertView.findViewById(R.id.moodString);
         TextView moodComment = (TextView) convertView.findViewById(R.id.moodComment);
+        ImageView moodEmote = (ImageView) convertView.findViewById(R.id.img);
         // Populate the data into the template view using the data object
-        moodString.setText(mood.getMoodName());
+        moodString.setText(mood.getMoodName() + "     " + mood.getMoodDate().toString());
         moodComment.setText(mood.getMoodDescription());
+        convertView.setBackgroundColor(Color.parseColor(mood.getColorHexCode()));
+
+        //set emoticon
+        if (mood.getMoodName().equals("Anger")) {
+            moodEmote.setImageResource(R.drawable.anger);
+        }
+        else if (mood.getMoodName().equals("Confusion")) {
+            moodEmote.setImageResource(R.drawable.confusion);
+        }
+        else if (mood.getMoodName().equals("Disgust")) {
+            moodEmote.setImageResource(R.drawable.disgust);
+        }
+        else if (mood.getMoodName().equals("Fear")) {
+            moodEmote.setImageResource(R.drawable.fear);
+        }
+        else if (mood.getMoodName().equals("Happiness")) {
+            moodEmote.setImageResource(R.drawable.happy);
+        }
+        else if (mood.getMoodName().equals("Sadness")) {
+            moodEmote.setImageResource(R.drawable.sad);
+        }
+        else if (mood.getMoodName().equals("Shame")) {
+            moodEmote.setImageResource(R.drawable.shame);
+        }
+        else if (mood.getMoodName().equals("Surprise")) {
+            moodEmote.setImageResource(R.drawable.surprise);
+        }
+
+
         // Return the completed view to render on screen
         return convertView;
     }
