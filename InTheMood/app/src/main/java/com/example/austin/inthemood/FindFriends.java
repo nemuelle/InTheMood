@@ -51,7 +51,8 @@ public class FindFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
-        controller.setCurrentUser(controller.addFollowRequestsToUser(controller.getCurrentUser()));
+        controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
+        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
         //update current user from elasticSearch
         //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         //controller.updateUserList(updatedCurrentUser);

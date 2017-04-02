@@ -41,7 +41,7 @@ public class FriendRequests extends AppCompatActivity {
         //update current user from elasticSearch
         //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         //controller.updateUserList(updatedCurrentUser);
-        controller.setCurrentUser(controller.addFollowRequestsToUser(controller.getCurrentUser()));
+        controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
         saveInFile();
 
         Gson gson = new Gson();
