@@ -39,6 +39,7 @@ public class FindFriends extends AppCompatActivity {
         setContentView(R.layout.activity_find_friends);
         loadFromFile();
 
+
         //update current user from elasticSearch
         //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         //controller.updateUserList(updatedCurrentUser);

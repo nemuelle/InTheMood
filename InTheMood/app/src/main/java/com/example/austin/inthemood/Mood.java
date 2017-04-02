@@ -26,6 +26,7 @@ public class Mood {
     //Bitmap moodImg;
     private String moodImgStringForm;
     private LatLng latLng;
+    private String ElasticSearchID;
 
 
     /**
@@ -66,6 +67,20 @@ public class Mood {
 
         this.moodName = moodName;
         this.inferMoodColor();
+    }
+
+    /**
+     * Gets the elastic search ID of a mood
+     * @return ElasticSearchID
+     */
+    public String getElasticSearchID() { return ElasticSearchID;}
+
+    /**
+     * Sets the elastic search ID of a mood
+     * @param esID
+     */
+    public void setElasticSearchID(String esID) {
+        this.ElasticSearchID = esID;
     }
 
     public String getOwnerName(){
