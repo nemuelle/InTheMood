@@ -56,6 +56,8 @@ public class ExistingUserLogin extends AppCompatActivity{
         // Hide the error message by default.
         eL = (TextView) findViewById(R.id.eLogin);
         eL.setVisibility(View.GONE);
+        Boolean isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
+        Log.i("Device is online", isOnline.toString());
 
         // Initialize the data controller.
         loadFromFile();
@@ -128,13 +130,15 @@ public class ExistingUserLogin extends AppCompatActivity{
     public void login(View view) {
         String name = mUserView.getText().toString();
         String pass = mPasswordView.getText().toString();
-        User userLogin = controller.verifyLogIn(name, pass);
+        Boolean isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
+        User userLogin = controller.verifyLogIn(name, pass, isOnline);
         if (userLogin != null) {
             Intent intent = new Intent(this, MainUser.class);
             controller.setCurrentUser(userLogin);
             saveInFile();
 
             startActivity(intent);
+            finish();
         } else {
             eL.setVisibility(View.VISIBLE);
         }
@@ -151,6 +155,7 @@ public class ExistingUserLogin extends AppCompatActivity{
         Intent intent = new Intent(this, NewUserLogin.class);
         saveInFile();
         startActivity(intent);
+        finish();
     }
 
 }

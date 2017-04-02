@@ -99,7 +99,7 @@ public class ElasticSearchController {
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the moods");
+                    Log.i("Error", "The application send the User");
                 }
             }
             return userID;
@@ -164,6 +164,8 @@ public class ElasticSearchController {
         }
     }
 
+
+
     public static class GetUserByName extends AsyncTask<String, Void, User> {
         /*
         USAGE:
@@ -215,16 +217,19 @@ public class ElasticSearchController {
                     //users.addAll(foundUsers);
                     user = result.getSourceAsObject(User.class);
                     Log.i("Error", "We got the user!");
+                    return user;
                 }
                 else {
                     Log.i("Error", "The search query failed to find any users that matched");
+                    return null;
                 }
             }
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+                return null;
             }
             //user = users.get(0);
-            return user;
+
         }
     }
 
