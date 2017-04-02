@@ -180,6 +180,7 @@ public class addEditMood extends AppCompatActivity {
                 Log.i("SyncSuccess", syncSuccess.toString());
                 saveInFile();
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -195,6 +196,7 @@ public class addEditMood extends AppCompatActivity {
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
                 startActivity(intent);
+                finish();
             }
         });
 
