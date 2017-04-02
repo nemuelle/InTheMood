@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * A Controller class that attempts to allow for simple handling of getting locations
@@ -35,8 +36,8 @@ public class LocationControllor implements
 
 
     protected static final String TAG = LocationControllor.class.getSimpleName();
-    public static final int REQUEST_CHECK_SETTINGS = 1;
-    public static final int REQUEST_ACCESS_FINE_LOCATION_PERMISSION = 2;
+    public static final int REQUEST_CHECK_SETTINGS = 2;
+    public static final int REQUEST_ACCESS_FINE_LOCATION_PERMISSION = 3;
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
@@ -228,6 +229,15 @@ public class LocationControllor implements
                 mRequestingLocationUpdates = false;
             }
         });
+    }
+
+    /**
+     * static method to convert a location object to a LatLng for Google Maps
+     * @param location
+     * @return
+     */
+    public static LatLng locationToLatLng(Location location) {
+        return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override

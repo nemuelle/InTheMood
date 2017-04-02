@@ -23,6 +23,8 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -127,6 +129,8 @@ public class addEditMood extends AppCompatActivity {
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
             scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.getMoodScenario()));
             triggerText.setText(targetMood.getMoodDescription());
+            if (targetMood.getLatLng() != null)
+                locationSwitch.setChecked(true); // TODO what to do if they want to update location?
             if(targetMood.getMoodImg() != null) {
                 pictureView.setImageBitmap(targetMood.getMoodImg());
             }
@@ -156,7 +160,10 @@ public class addEditMood extends AppCompatActivity {
 
                     Location location = locationControllor.getCurrentLocation();
 
-
+                    if (location != null) {
+                        LatLng latLng = LocationControllor.locationToLatLng(location);
+                        newMood.setLatLng(latLng);
+                    }
 
                     controller.getCurrentUser().addMood(newMood);
 
@@ -250,6 +257,15 @@ public class addEditMood extends AppCompatActivity {
                     case Activity.RESULT_CANCELED:
                         locationControllor.setCanGetLocation(false);
                 }
+                break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    if(extras.get("data") != null){
+                        imageBitMap = (Bitmap) extras.get("data");
+                        pictureView.setImageBitmap(imageBitMap);
+                    }
+                }
         }
     }
 
@@ -302,22 +318,6 @@ public class addEditMood extends AppCompatActivity {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, 1);
         }
-
-    }
-    // Retrieve photo thumbnail that was taken
-    //Adapted from same code as takePhoto
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            if(extras.get("data") != null){
-                imageBitMap = (Bitmap) extras.get("data");
-                pictureView.setImageBitmap(imageBitMap);
-            }
-
-        }
-
 
     }
 }

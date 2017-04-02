@@ -17,14 +17,15 @@ import java.util.Date;
   the subclass on its creation.
  */
 public class Mood {
-    Date moodDate;
-    String moodDescription;
-    String colorHexCode;
-    String moodScenario;
-    String moodName;
-    String ownerName;
+    private Date moodDate;
+    private String moodDescription;
+    private String colorHexCode;
+    private String moodScenario;
+    private String moodName;
+    private String ownerName;
     //Bitmap moodImg;
-    String moodImgStringForm;
+    private String moodImgStringForm;
+    private LatLng latLng;
 
 
     /**
@@ -156,6 +157,14 @@ public class Mood {
                 this.moodDescription;
     }
 
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
+    }
+
     private void inferMoodColor(){
         if (this.moodName.equals("Anger")){
             this.colorHexCode = "#f0391c";
@@ -185,6 +194,7 @@ public class Mood {
             this.colorHexCode = "#ff006c";
 
         }
+
 
     }
 }
