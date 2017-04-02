@@ -88,13 +88,24 @@ public class FindFriends extends AppCompatActivity {
                     controller.getCurrentUser().addToMyFollowRequests(locatedUser.getName());
                     locatedUser.addToMyFollowerRequests(controller.getCurrentUser().getName());
 
+
+
+                    Gson gson = new Gson();
+                    Log.i("json", gson.toJson(controller.getCurrentUser()));
+                    Log.i("json", gson.toJson(locatedUser));
+
+                    //update current user locally
+                    controller.updateUserList(controller.getCurrentUser());
+                    if (controller.searchForUserByName(locatedUser.getName()) != null){
+                        Log.i("Message", "Saved local user we tried to follow");
+                        controller.updateUserList(locatedUser);
+                        Log.i("jsonInIf", gson.toJson(locatedUser));
+                    }
+                    saveInFile();
                     //upload current user and located user to elasticSearch
                     controller.ElasticSearchsyncUser(controller.getCurrentUser());
                     controller.ElasticSearchsyncUser(locatedUser);
 
-                    //update current user locally
-                    controller.updateUserList(controller.getCurrentUser());
-                    saveInFile();
 
                     displayFollowResult.setText("Follow Request Sent");
                 }

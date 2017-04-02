@@ -2,6 +2,7 @@ package com.example.austin.inthemood;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,11 +43,14 @@ public class FriendRequests extends AppCompatActivity {
         controller.updateUserList(updatedCurrentUser);
         saveInFile();
 
+        Gson gson = new Gson();
+        Log.i("json", gson.toJson(controller.getCurrentUser()));
+
         //print textview
         followerRequests = (TextView) findViewById(R.id.followerRequests);
         followRequests = (TextView) findViewById(R.id.followRequests);
         followerRequests.setText("Follower Requests");
-        followerRequests.setText("Follow Requests");
+        followRequests.setText("Follow Requests");
 
         //print follow requests to listview
         pendingFollowRequests = (ListView) findViewById(R.id.pendingFollowRequests);

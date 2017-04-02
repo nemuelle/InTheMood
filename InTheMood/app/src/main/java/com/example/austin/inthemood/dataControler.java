@@ -106,9 +106,9 @@ public class dataControler {
             if (userList.get(i).getName().equals(name)) {
                 if (userList.get(i).getPassword().equals(password)) {
                     User user = userList.get(i);
-                    Boolean syncSuccess =ElasticSearchsyncUser(user);
+                    //Boolean syncSuccess =ElasticSearchsyncUser(user);
                     Log.i("Found user", "in local");
-                    Log.i("SyncSuccess", syncSuccess.toString());
+                    //Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());
                     Log.i("Users pass:", user.getPassword());
                     Log.i("Users ES ID", user.getElasticSearchID());
@@ -295,6 +295,7 @@ public class dataControler {
         try {
             userID = addUser.get();
             user.setElasticSearchID(userID);
+            ElasticSearchsyncUser(user);
             return user;
         } catch (Exception e) {
             Log.i("Error", "Failed to add user to Elastic Search");

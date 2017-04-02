@@ -95,8 +95,23 @@ public class MyFriends extends AppCompatActivity {
         loadFromFile();
     }
 
+    /**
+     * onclick findFriends button is pressed and the FindFriend activity is called
+     *
+     * @param view
+     */
     public void findFriends(View view){
         Intent intent = new Intent(this, FindFriends.class);
+        startActivity(intent);
+    }
+
+    /**
+     * onclick friendRequests button is pressed and the friendRequests activity is called
+     *
+     * @param view
+     */
+    public void friendRequests(View view){
+        Intent intent = new Intent(this, FriendRequests.class);
         startActivity(intent);
     }
 
