@@ -106,7 +106,10 @@ public class dataControler {
             if (userList.get(i).getName().equals(name)) {
                 if (userList.get(i).getPassword().equals(password)) {
                     User user = userList.get(i);
-                    Boolean syncSuccess =ElasticSearchsyncUser(user);
+                    Boolean syncSuccess = false;
+                    if (isOnline) {
+                        syncSuccess = ElasticSearchsyncUser(user);
+                    }
                     Log.i("Found user", "in local");
                     Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());

@@ -75,6 +75,8 @@ public class addEditMood extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private Switch locationSwitch;
 
+    private Boolean isOnline;
+
     //Mood Index
     int moodIndex = -1;
 
@@ -92,6 +94,7 @@ public class addEditMood extends AppCompatActivity {
         imageButton = (Button) findViewById(R.id.imageButton);
         pictureView = (ImageView) findViewById(R.id.imageView);
         locationSwitch = (Switch) findViewById(R.id.locationSwitch);
+        isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
 
         //Grab the data controller
         loadFromFile();
@@ -183,7 +186,10 @@ public class addEditMood extends AppCompatActivity {
                     if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
-                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Boolean syncSuccess = false;
+                if (isOnline) {
+                    syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                }
                 Log.i("SyncSuccess", syncSuccess.toString());
                 saveInFile();
                 startActivity(intent);
@@ -198,7 +204,10 @@ public class addEditMood extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
-                Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                Boolean syncSuccess = false;
+                if (isOnline) {
+                    syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                }
                 Log.i("SyncSuccess", syncSuccess.toString());
                 Intent intent = new Intent(activity, MyMoods.class);
                 saveInFile();
