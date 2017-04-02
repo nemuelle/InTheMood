@@ -119,7 +119,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         moodListForDay = new ArrayList<>();
         moodListForMonth = new ArrayList<>();
 
-        moodArrayAdapter = new MoodAdapter(this, moodListForDay);
+        moodArrayAdapter = new MoodAdapter(this, moodListForDay,controller.getCurrentUser().getName());
         moodForDayListView.setAdapter(moodArrayAdapter);
         moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
 

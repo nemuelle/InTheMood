@@ -71,7 +71,7 @@ public class MainUser extends AppCompatActivity {
 
     //go back to existing loggin activity and set current user to null
     public void SignOut(View view){
-        controller.setCurrentUser(null);
+        controller.signOut();
         saveInFile();
         Intent intent = new Intent(this, ExistingUserLogin.class);
         startActivity(intent);

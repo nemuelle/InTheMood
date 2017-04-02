@@ -34,11 +34,21 @@ public class dataControler {
     }
 
     /**
+     * sets currentUserName to null
+     */
+    public void signOut(){
+        this.currentUserName = null;
+    }
+
+    /**
      * set the current user interacting with the system in the data controler
      *
      * @param currentUser user interacting with the system
      */
     public void setCurrentUser(User currentUser){
+        if (currentUser == null){
+            this.currentUserName = null;
+        }
         this.currentUserName = currentUser.getName();
     }
 

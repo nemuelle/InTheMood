@@ -1,19 +1,35 @@
 package com.example.austin.inthemood;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +55,8 @@ public class addEditMood extends AppCompatActivity {
     private dataControler controller;
     private String FILENAME = "file.sav";
     private Mood targetMood;
+    private Bitmap imageBitMap;
+    private LocationControllor locationControllor;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -46,6 +64,10 @@ public class addEditMood extends AppCompatActivity {
     private EditText triggerText;
     private Button saveButton;
     private Button deleteButton;
+    private Button imageButton;
+    private ImageView pictureView;
+    private GoogleApiClient mGoogleApiClient;
+    private Switch locationSwitch;
 
     //Mood Index
     int moodIndex = -1;
@@ -61,12 +83,24 @@ public class addEditMood extends AppCompatActivity {
         triggerText = (EditText) findViewById(R.id.addEditMoodsTriggerText);
         saveButton = (Button) findViewById(R.id.addEditMoodSaveButton);
         deleteButton = (Button) findViewById(R.id.addEditMoodDeleteButton);
+        imageButton = (Button) findViewById(R.id.imageButton);
+        pictureView = (ImageView) findViewById(R.id.imageView);
+        locationSwitch = (Switch) findViewById(R.id.locationSwitch);
 
         //Grab the data controller
         loadFromFile();
 
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                takePhoto();
+            }
+        });
 
+        locationControllor = new LocationControllor(mGoogleApiClient, activity);
+        // constructor builds the mGoogleApiClient we need to reset the reference
+        mGoogleApiClient = locationControllor.getGoogleApiClient();
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -89,13 +123,18 @@ public class addEditMood extends AppCompatActivity {
 
         //Check if a mood was passed in
         Intent intent = getIntent();
-        //TODO: get the scenario of a mood
         moodIndex = intent.getIntExtra("Mood index", -1);
         if (moodIndex != -1) {
             targetMood = controller.getCurrentUser().getMyMoodsList().get(moodIndex);
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
-            //scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.get));
+            scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.getMoodScenario()));
             triggerText.setText(targetMood.getMoodDescription());
+            if (targetMood.getLatLng() != null)
+                locationSwitch.setChecked(true); // TODO what to do if they want to update location?
+            if(targetMood.getMoodImg() != null) {
+                pictureView.setImageBitmap(targetMood.getMoodImg());
+            }
+
         } else {
             // Hide the delete button, since you can't delete a Mood that doesn't exist!
             deleteButton.setVisibility(View.GONE);
@@ -118,12 +157,23 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+
+                    Location location = locationControllor.getCurrentLocation();
+
+                    if (location != null) {
+                        LatLng latLng = LocationControllor.locationToLatLng(location);
+                        newMood.setLatLng(latLng);
+                    }
+
                     controller.getCurrentUser().addMood(newMood);
+
 
                 } else {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
                     targetMood.setMoodDescription(trigger);
+                    targetMood.setmoodScenario(scenario);
+                    if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
                 Boolean syncSuccess =controller.ElasticSearchsyncUser(controller.getCurrentUser());
@@ -150,6 +200,75 @@ public class addEditMood extends AppCompatActivity {
             }
         });
 
+        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    locationControllor.stopLocationUpdates();
+                    return;
+                }
+
+                if (!locationControllor.checkLocationPermission()) {
+                    locationControllor.requestLocationPermission();
+                }
+
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient.isConnected()) {
+            locationControllor.startLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient.isConnected()) {
+            locationControllor.stopLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case LocationControllor.REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // todo make sure its high accuracy
+                        locationControllor.setCanGetLocation(true);
+                        locationControllor.startLocationUpdates();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        locationControllor.setCanGetLocation(false);
+                }
+                break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    if(extras.get("data") != null){
+                        imageBitMap = (Bitmap) extras.get("data");
+                        pictureView.setImageBitmap(imageBitMap);
+                    }
+                }
+        }
     }
 
     // Load the data controller stored in the specified file.
@@ -190,4 +309,19 @@ public class addEditMood extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
+
+    //Start intent to take a photo
+    //Adapted from https://developer.android.com/training/camera/photobasics.html
+    // and https://github.com/alisajedi/MyCameraTest1
+    private void takePhoto()
+    {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, 1);
+        }
+
+    }
 }
+
+

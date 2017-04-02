@@ -32,9 +32,13 @@ public class MyFriends extends AppCompatActivity {
     private static final String FILENAME = "file.sav";
     private ListView myFriendsListView;
     private ArrayList<User> followingList;
+    private ArrayList<Mood> sortedFollowingMoods = new ArrayList<Mood>();
     private ArrayList<String> followedUserStringMessage;
     private dataControler controller;
-    private ArrayAdapter<String> adapter;
+    private MoodAdapter adapter;
+    //private ArrayAdapter<String> adapter;
+    private User testUser;
+    private Mood testMood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +46,21 @@ public class MyFriends extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
+        testUser = new User("Steve","1");
+        testMood = new Mood("Testing");
+        testMood.setMoodName("Anger");
+        testMood.setOwnerName("Steve");
+        testUser.addMood(testMood);
+
+        controller.addToUserList(testUser);
+        controller.getCurrentUser().addToMyFollowingList("Steve");
+
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
         //just print followeduser name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = new ArrayList<User>();
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
-            followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+           followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
         }
         followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
@@ -57,18 +70,20 @@ public class MyFriends extends AppCompatActivity {
             //only display his name
             if (followedUserMoods.size() > 0) {
                 followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
-                String message = followingList.get(i).getName() + " felt " +
-                        followedUserMoods.get(followedUserMoods.size() - 1).getMoodName() + " on " +
+                sortedFollowingMoods.add(followedUserMoods.get(followedUserMoods.size() - 1));
+                /*String message = followingList.get(i).getName() + " felt " +
+                       followedUserMoods.get(followedUserMoods.size() - 1).getMoodName() + " on " +
                         followedUserMoods.get(followedUserMoods.size() - 1).getMoodDate();
-                followedUserStringMessage.add(message);
+                followedUserStringMessage.add(message);*/
             } else {
                 String message = followingList.get(i).getName();
                 followedUserStringMessage.add(message);
 
             }
         }
-        adapter = new ArrayAdapter<String>(this,
-                R.layout.list_item, followedUserStringMessage);
+        adapter = new MoodAdapter(this, sortedFollowingMoods,controller.getCurrentUser().getName());
+        //adapter = new ArrayAdapter<String>(this,
+          //     R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
     }
