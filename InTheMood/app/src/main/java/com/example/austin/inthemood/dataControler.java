@@ -100,13 +100,31 @@ public class dataControler {
      * @return User if login successful or null if unsuccessful
      */
     public User verifyLogIn(String name, String password){
+        Log.i("Message","trying to get verify login");
         for (int i = 0; i < userList.size(); i++){
             if (userList.get(i).getName().equals(name)) {
                 if (userList.get(i).getPassword().equals(password)) {
+                    User user = userList.get(i);
+                    Boolean syncSuccess =ElasticSearchsyncUser(user);
+                    Log.i("SyncSuccess", syncSuccess.toString());
+                    Log.i("Users name:", user.getName());
+                    Log.i("Users pass:", user.getPassword());
+                    Log.i("Users ES ID", user.getElasticSearchID());
                     return userList.get(i);
 
                 }
             }
+        }
+        //User user = getElasticSearchUser(name);
+        //User user  = new User("none","none");
+        User user = getElasticSearchUser(name);
+        if (user != null){
+            if (user.getPassword().equals(password));
+                Log.i("Users name:", user.getName());
+                Log.i("Users pass:", user.getPassword());
+                Log.i("Userus ES ID", user.getElasticSearchID());
+                addToUserList(user);
+                return user;
         }
         return null;
     }
@@ -273,7 +291,7 @@ public class dataControler {
         return locatedUser;
     }
 
-    public User addUser(User user) {
+    public User ElasticSearchaddUser(User user) {
 
         ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
         String userID = new String();
@@ -287,7 +305,7 @@ public class dataControler {
             return null;
         }
     }
-    public boolean syncUser(User user) {
+    public boolean ElasticSearchsyncUser(User user) {
         ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
         Boolean syncSuccess = new Boolean(false);
         syncUser.execute(user);

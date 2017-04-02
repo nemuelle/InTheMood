@@ -9,10 +9,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,8 +34,6 @@ import java.util.concurrent.ExecutionException;
 
     For project part 5:
         Still need to change each mood item's color based on what mood it is
-        Still need to connect new mood button to add/edit mood activity
-        Still need to make clicking a mood take you to its edit screen.
         Still need to make the buttons appear unselected upon 2nd click
  */
 public class MyMoods extends AppCompatActivity {
@@ -43,13 +43,15 @@ public class MyMoods extends AppCompatActivity {
     private Button emotionFilterButton;
     private Button weekFilterButton;
     private Button triggerFilterButton;
-    private Button newMoodButton;
     private EditText triggerText;
+    private ImageButton newMoodButton;
+    private ImageButton calendarButton;
+    private ImageButton mapButton;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
     public dataControler controller;
     private static final String FILENAME = "file.sav";
-    private ArrayAdapter<Mood> moodAdapter;
+    private MoodAdapter moodAdapter;
     private User currentUser;
     private ArrayList<Mood> SortedMoodList = new ArrayList<Mood>();
     private ArrayList<Mood> NewMoodList = new ArrayList<Mood>();
@@ -68,7 +70,9 @@ public class MyMoods extends AppCompatActivity {
         triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         moodsListView = (ListView) findViewById(R.id.myMoodsListView);
-        newMoodButton = (Button) findViewById(R.id.newMoodButton);
+        newMoodButton = (ImageButton) findViewById(R.id.newMoodImg);
+        calendarButton = (ImageButton) findViewById(R.id.calendarImg);
+        mapButton = (ImageButton) findViewById(R.id.mapImg);
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.moods, android.R.layout.simple_spinner_item);
@@ -231,11 +235,31 @@ public class MyMoods extends AppCompatActivity {
 
         });
 
+
         newMoodButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
                 addMood(v);
+            }
+
+        });
+
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+
+            }
+
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+                Intent intent = new Intent(MyMoods.this ,MapActivity.class);
+                startActivity(intent);
             }
 
         });
@@ -287,7 +311,7 @@ public class MyMoods extends AppCompatActivity {
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
         }
 
-        moodAdapter = new ArrayAdapter<Mood>(this,R.layout.list_item,SortedMoodList);
+        moodAdapter = new MoodAdapter(this,SortedMoodList);
         moodsListView.setAdapter(moodAdapter);
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent,View view, int position,long id){
@@ -304,12 +328,13 @@ public class MyMoods extends AppCompatActivity {
         startActivity(editMoodIntent);
 
 
+
     }
     //Start activity to add another mood
     private void addMood(View view){
         Intent addMoodIntent = new Intent(this,addEditMood.class);
         startActivity(addMoodIntent);
-
+        finish();
 
     }
 
