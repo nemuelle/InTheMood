@@ -12,6 +12,8 @@ import java.net.URL;
  * Created by annaholowaychuk on 2017-04-01.
  */
 
+//Code for this class was taked and modified from http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+    // on April 1, 2017
 public class NetworkStatus {
     private static NetworkStatus instance = new NetworkStatus();
     static Context context;
