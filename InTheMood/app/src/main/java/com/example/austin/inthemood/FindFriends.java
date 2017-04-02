@@ -40,9 +40,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        controller.updateUserList(updatedCurrentUser);
-        saveInFile();
+        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        //controller.updateUserList(updatedCurrentUser);
+        //saveInFile();
     }
 
     @Override
@@ -52,9 +52,9 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        controller.updateUserList(updatedCurrentUser);
-        saveInFile();
+        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        //controller.updateUserList(updatedCurrentUser);
+        //saveInFile();
     }
 
     /**
@@ -85,26 +85,37 @@ public class FindFriends extends AppCompatActivity {
 
                 //check if the located user is already being followed
                 if (!controller.getCurrentUser().getMyFollowingList().contains(locatedUser.getName())) {
-                    controller.getCurrentUser().addToMyFollowRequests(locatedUser.getName());
-                    locatedUser.addToMyFollowerRequests(controller.getCurrentUser().getName());
 
+                    controller.getCurrentUser().addToMyFollowRequests(locatedUser.getName());
+                    saveInFile();
+                    controller.ElasticSearchsyncUser(controller.getCurrentUser());
 
 
                     Gson gson = new Gson();
                     Log.i("json", gson.toJson(controller.getCurrentUser()));
                     Log.i("json", gson.toJson(locatedUser));
+                    User tester2 = controller.searchForUserByName(controller.getCurrentUser().getName());
+                    Log.i("FROM CONTROLLER CURRENT", gson.toJson(tester2));
 
-                    //update current user locally
-                    controller.updateUserList(controller.getCurrentUser());
+
                     if (controller.searchForUserByName(locatedUser.getName()) != null){
                         Log.i("Message", "Saved local user we tried to follow");
-                        controller.updateUserList(locatedUser);
-                        Log.i("jsonInIf", gson.toJson(locatedUser));
+                        User current = controller.getCurrentUser();
+                        controller.setCurrentUser(locatedUser);
+                        controller.getCurrentUser().addToMyFollowerRequests(current.getName());
+                        saveInFile();
+                        controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                        controller.setCurrentUser(current);
+                        User tester = controller.searchForUserByName(locatedUser.getName());
+                        Log.i("FROM CONTROLLER located", gson.toJson(tester));
+                    } else {
+                        locatedUser.addToMyFollowerRequests(controller.getCurrentUser().getName());
+                        controller.ElasticSearchsyncUser(locatedUser);
                     }
                     saveInFile();
                     //upload current user and located user to elasticSearch
-                    controller.ElasticSearchsyncUser(controller.getCurrentUser());
-                    controller.ElasticSearchsyncUser(locatedUser);
+
+
 
 
                     displayFollowResult.setText("Follow Request Sent");
