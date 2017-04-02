@@ -117,10 +117,11 @@ public class dataControler {
                     //Boolean syncSuccess =ElasticSearchsyncUser(user);
                     Boolean syncSuccess = false;
                     if (isOnline) {
+                        user = addFollowRequestsToUser(user);
                         syncSuccess = ElasticSearchsyncUser(user);
                     }
                     Log.i("Found user", "in local");
-                    //Log.i("SyncSuccess", syncSuccess.toString());
+                    Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());
                     Log.i("Users pass:", user.getPassword());
                     Log.i("Users ES ID", user.getElasticSearchID());
@@ -392,6 +393,23 @@ public class dataControler {
 
 
         return closeMoods;
+    }
+
+    public ArrayList<String> getFollowRequests(User user) {
+        User ESuser = getElasticSearchUser(user.getName());
+        return ESuser.getMyFollowRequests();
+    }
+
+    public User addFollowRequestsToUser(User user){
+        ArrayList<String> requests = getFollowRequests(user);
+
+        for (int x = 0; x < requests.size(); x++) {
+            String requester = requests.get(x);
+            if (!user.getMyFollowRequests().contains(requester)){
+                user.addToMyFollowRequests(requester);
+            }
+        }
+        return user;
     }
 
 
