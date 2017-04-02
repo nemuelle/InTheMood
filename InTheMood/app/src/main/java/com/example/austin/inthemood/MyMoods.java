@@ -311,7 +311,7 @@ public class MyMoods extends AppCompatActivity {
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
         }
 
-        moodAdapter = new MoodAdapter(this,SortedMoodList);
+        moodAdapter = new MoodAdapter(this,SortedMoodList,controller.getCurrentUser().getName());
         moodsListView.setAdapter(moodAdapter);
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent,View view, int position,long id){
