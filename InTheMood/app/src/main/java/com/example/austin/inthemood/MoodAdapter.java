@@ -61,7 +61,7 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
             moodString.setText(mood.getOwnerName() + " felt " +mood.getMoodName() + " on " + mood.getMoodDate().toString());
 
         }else{
-            moodString.setText(mood.getMoodName() + "     " + mood.getMoodDate().toString());
+            moodString.setText(mood.getMoodName() + " felt on " + mood.getMoodDate().toString());
         }
         moodComment.setText(mood.getMoodDescription());
         convertView.setBackgroundColor(Color.parseColor(mood.getColorHexCode()));

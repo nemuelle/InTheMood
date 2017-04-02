@@ -1,13 +1,18 @@
 package com.example.austin.inthemood;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.location.Location;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +56,7 @@ import java.lang.reflect.Type;
  * TODO: Get the scenario of an existing mood
  */
 public class addEditMood extends AppCompatActivity {
+    public static  final int REQUEST_ACCESS_CAMERA = 4;
     private addEditMood activity = this;
     private dataControler controller;
     private String FILENAME = "file.sav";
@@ -94,7 +100,7 @@ public class addEditMood extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                takePhoto();
+                attemptToTakePhoto();
             }
         });
 
@@ -157,6 +163,7 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+                    newMood.setOwnerName(controller.getCurrentUser().getName());
 
                     Location location = locationControllor.getCurrentLocation();
 
@@ -315,12 +322,38 @@ public class addEditMood extends AppCompatActivity {
     // and https://github.com/alisajedi/MyCameraTest1
     private void takePhoto()
     {
-
+        //ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.CAMERA},
+          //      MY_PERMISSIONS_REQUEST_CAMERA);
+        
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, 1);
         }
 
+    }
+
+    private void attemptToTakePhoto()
+    {
+        //ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.CAMERA},
+        //      MY_PERMISSIONS_REQUEST_CAMERA);
+
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.CAMERA}, REQUEST_ACCESS_CAMERA);
+
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_ACCESS_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // check location settings
+                    takePhoto();
+
+                }
+        }   }
     }
 }
 
