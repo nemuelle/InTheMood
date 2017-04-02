@@ -29,7 +29,6 @@ import java.lang.reflect.Type;
 public class MainUser extends AppCompatActivity {
     private MainUser activity = this;
 
-
     //UI Elements
     private Button myFriendsMoodsButton;
     private Button myMoodsButton;
@@ -80,6 +79,16 @@ public class MainUser extends AppCompatActivity {
     //start the myFriends activity
     public void MyFriends(View view){
         Intent intent = new Intent(this, MyFriends.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Start MapActivity
+     * @param v - the View that calls the method
+     */
+    public void openMap(View v) {
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra("activity", "MainUser");
         startActivity(intent);
     }
 

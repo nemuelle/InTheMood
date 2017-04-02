@@ -364,25 +364,25 @@ public class dataControler {
         return users;
     }
 
-    public ArrayList<Mood> getNearMoods(LatLng currentLocation) {
+    public ArrayList<Mood> getNearMoods(Location currentLocation) {
+        if (currentLocation == null) {
+            return null;
+        }
         ArrayList<Mood> closeMoods = new ArrayList<>();
         ArrayList<User> users = new ArrayList<>();
         users = ElasticSearchGetAllUsers();
-        Location fromPoint = new Location("from");
-        fromPoint.setLatitude(currentLocation.latitude);
-        fromPoint.setLongitude(currentLocation.longitude);
 
         for (int x = 0; x < users.size(); x++) {
             User user = users.get(x);
             ArrayList<Mood> usersMoods = user.getMyMoodsList();
             ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
-            Mood mostRecentMood = sortedMoods.get(sortedMoods.size()-1);
+            Mood mostRecentMood = sortedMoods.get(0);
             if (mostRecentMood.getLatLng() != null) {
                 LatLng moodLocation = mostRecentMood.getLatLng();
                 Location toPoint = new Location("to");
                 toPoint.setLatitude(moodLocation.latitude);
                 toPoint.setLongitude(moodLocation.longitude);
-                if (toPoint.distanceTo(fromPoint) <= 5000) {
+                if (toPoint.distanceTo(currentLocation) <= 5000) {
                     closeMoods.add(mostRecentMood);
                 }
             }

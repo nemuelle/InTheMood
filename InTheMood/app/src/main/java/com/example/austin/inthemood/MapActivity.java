@@ -1,10 +1,17 @@
 package com.example.austin.inthemood;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,8 +44,11 @@ import java.util.HashMap;
  */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
     private final String FILENAME = "file.sav";
+    private GoogleApiClient mGoogleApiClient;
     private GoogleMap mMap;
     private dataControler controller;
+    private Location location;
+    private LocationControllor locationControllor;
     private String triggerFilter;
     private String emotionFilter;
     private int lastWeekFilter;
@@ -67,11 +77,81 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             moodList = getFriendsMoods();
         }
 
+        if (launchedFrom.equals("MainUser")) {
+            locationControllor = new LocationControllor(mGoogleApiClient, MapActivity.this);
+            locationSetup();
+            locationControllor.startLocationUpdates();
+            location = locationControllor.getCurrentLocation();
+
+            // just make sure
+            if (location == null) {
+                location = locationControllor.getCurrentLocation();
+            }
+
+            moodList = controller.getNearMoods(location);
+            if (moodList == null) {
+                Toast.makeText(MapActivity.this, "Cannot get location", Toast.LENGTH_LONG).show();
+                this.finish();
+            }
+        }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (locationControllor != null) {
+            locationControllor.connectGoogleApiClient();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (locationControllor != null) {
+            if (locationControllor.googleApiClientConnected()) {
+                locationControllor.startLocationUpdates();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (locationControllor != null) {
+            if (locationControllor.googleApiClientConnected()) {
+                locationControllor.stopLocationUpdates();
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (locationControllor != null) {
+            locationControllor.disconnectGoogleApiClient();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case LocationControllor.REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        locationControllor.setCanGetLocation(true);
+                        locationControllor.startLocationUpdates();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        locationControllor.setCanGetLocation(false);
+                }
+        }
+    }
+
 
     /**
      * Take the Mood hex colors and have a color for MakerOption objects
@@ -80,7 +160,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      * TODO change the mood colour with #cecece to some orange colour
      */
     private void buildHashMap() {
-
         hexColorToHUE.put("#f0391c", BitmapDescriptorFactory.HUE_RED);
         hexColorToHUE.put("#cecece", BitmapDescriptorFactory.HUE_ORANGE);
         hexColorToHUE.put("#9ae343", BitmapDescriptorFactory.HUE_GREEN);
@@ -89,8 +168,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         hexColorToHUE.put("#03acca", BitmapDescriptorFactory.HUE_CYAN);
         hexColorToHUE.put("#cd00ff", BitmapDescriptorFactory.HUE_MAGENTA);
         hexColorToHUE.put("#ff006c", BitmapDescriptorFactory.HUE_ROSE);
-
-
     }
 
     /**
@@ -105,6 +182,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         if (triggerFilter != null)
             moodList = controller.filterByTrigger(triggerFilter, moodList);
+    }
+
+    private void locationSetup() {
+        if (!locationControllor.checkLocationPermission()) {
+            locationControllor.requestLocationPermission();
+        }
     }
 
     /**
@@ -134,6 +217,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return sortedFollowingMoods;
     }
 
+
+    /**
+     * Make MarkerOptions from an ArrayList of Moods for displaying on a GoogleMap
+     * @param moods ArrayList of Mood objects
+     * @return ArrayList of MakerOption objects
+     */
     private ArrayList<MarkerOptions> makeMarkers(ArrayList<Mood> moods) {
         ArrayList<MarkerOptions> list = new ArrayList<>();
 
@@ -158,6 +247,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         return list;
     }
 
+    /**
+     * Add MarkerOptions to a GoogleMap
+     * @param list ArrayList of MarkerOptions
+     * @param googleMap an initialized GoogleMap
+     */
     private void addMarkers(ArrayList<MarkerOptions> list, GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -166,7 +260,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
 
         // set camera to last mood should be sorted with the most recent first
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(0).getPosition()));
+        if (launchedFrom.equals("UserMain")) {
+            LatLng latLng = LocationControllor.locationToLatLng(location);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(0).getPosition()));
+        }
     }
 
 

@@ -108,8 +108,6 @@ public class addEditMood extends AppCompatActivity {
         });
 
         locationControllor = new LocationControllor(mGoogleApiClient, activity);
-        // constructor builds the mGoogleApiClient we need to reset the reference
-        mGoogleApiClient = locationControllor.getGoogleApiClient();
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -237,13 +235,13 @@ public class addEditMood extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        locationControllor.connectGoogleApiClient();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected()) {
+        if (locationControllor.googleApiClientConnected()) {
             locationControllor.startLocationUpdates();
         }
     }
@@ -251,7 +249,7 @@ public class addEditMood extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
+        if (locationControllor.googleApiClientConnected()) {
             locationControllor.stopLocationUpdates();
         }
     }
@@ -259,7 +257,7 @@ public class addEditMood extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        locationControllor.disconnectGoogleApiClient();
     }
 
     @Override

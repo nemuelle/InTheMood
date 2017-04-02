@@ -198,6 +198,18 @@ public class LocationControllor implements
         }
     }
 
+    public void connectGoogleApiClient() {
+        mGoogleApiClient.connect();
+    }
+
+    public void disconnectGoogleApiClient() {
+        mGoogleApiClient.disconnect();
+    }
+
+    public boolean googleApiClientConnected() {
+        return mGoogleApiClient.isConnected();
+    }
+
     /**
      * Start location updates.
      */
