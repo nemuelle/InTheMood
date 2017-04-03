@@ -202,14 +202,14 @@ public class MyMoods extends AppCompatActivity {
                 // send moods to the new activity
                 Intent intent = new Intent(MyMoods.this ,MapActivity.class);
                 intent.putExtra("activity", "MyMoods");
-                if (triggerFilterButton.isActivated())
-                    intent.getIntExtra("trigger", 1);
+                if (triggerFilterButton.isChecked())
+                    intent.putExtra("trigger", triggerFilterButton.getText().toString());
 
-                if (emotionFilterButton.isActivated())
+                if (emotionFilterButton.isChecked())
                     intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
 
-                if (weekFilterButton.isActivated())
-                    intent.putExtra("lastweek", 2);
+                if (weekFilterButton.isChecked())
+                    intent.putExtra("lastweek", 1);
 
                 startActivity(intent);
                 finish();

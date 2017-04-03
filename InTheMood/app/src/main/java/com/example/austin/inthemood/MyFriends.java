@@ -126,19 +126,19 @@ public class MyFriends extends AppCompatActivity {
 
             public void onClick(View v) {
                 // send moods to the new activity
-                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
-                intent.putExtra("activity", "MyFriends");
-                if (triggerFilterButton.isActivated())
-                    intent.getIntExtra("trigger", 1);
-
-                if (emotionFilterButton.isActivated())
-                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
-
-                if (weekFilterButton.isActivated())
-                    intent.putExtra("lastweek", 2);
-
-                startActivity(intent);
-                finish();
+//                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
+//                intent.putExtra("activity", "MyMoods");
+//                if (triggerFilterButton.isChecked())
+//                    intent.putExtra("trigger", triggerFilterButton.getText().toString());
+//
+//                if (emotionFilterButton.isChecked())
+//                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
+//
+//                if (weekFilterButton.isChecked())
+//                    intent.putExtra("lastweek", 1);
+//
+//                startActivity(intent);
+//                finish();
             }
 
         });
