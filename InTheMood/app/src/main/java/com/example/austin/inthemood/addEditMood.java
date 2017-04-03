@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /** This activity handles all of creating, editing, and deletion of a User's Mood.
@@ -74,6 +77,7 @@ public class addEditMood extends AppCompatActivity {
     private ImageView pictureView;
     private GoogleApiClient mGoogleApiClient;
     private Switch locationSwitch;
+    private DatePicker datePicker;
 
     private Boolean isOnline;
 
@@ -95,6 +99,7 @@ public class addEditMood extends AppCompatActivity {
         pictureView = (ImageView) findViewById(R.id.imageView);
         locationSwitch = (Switch) findViewById(R.id.locationSwitch);
         isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
+        datePicker = (DatePicker) findViewById(R.id.pickedDate);
 
         //Grab the data controller
         loadFromFile();
@@ -161,9 +166,22 @@ public class addEditMood extends AppCompatActivity {
                 String scenario = scenarioSpinner.getSelectedItem().toString();
                 String trigger = triggerText.getText().toString();
 
+                //set date from datePicker
+                int day = datePicker.getDayOfMonth();
+                day = day -1;
+                int month = datePicker.getMonth();
+                int year = datePicker.getYear();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+                Date date = calendar.getTime();
+
                 //If making a new Mood:
                 if (moodIndex == -1) {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
+                    newMood.setMoodDate(date);
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
                     newMood.setmoodScenario(scenario);
@@ -182,6 +200,7 @@ public class addEditMood extends AppCompatActivity {
                 } else {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
+                    targetMood.setMoodDate(date);
                     targetMood.setMoodDescription(trigger);
                     targetMood.setmoodScenario(scenario);
                     if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}

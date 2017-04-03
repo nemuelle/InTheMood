@@ -150,30 +150,6 @@ public class dataControler {
     }
 
     /**
-     * grant user (followerName) follow permission to follow user (owner)
-     *
-     * @param user user being requested to follow by followerName
-     * @param followerName user requesting to follow user (owner)
-     */
-    public void grantFollowPermission(User user, String followerName){
-        user.addToMyFollowersList(followerName);
-        user.removeFollowerRequest(followerName);
-        searchForUserByName(followerName).removeFollowRequest(user.getName());
-        searchForUserByName(followerName).addToMyFollowingList(user.getName());
-    }
-
-    /**
-     * deny user (followerName) requesting follow permission to follow user (owner)
-     *
-     * @param user user being requested to follow by followerName
-     * @param followerName user requesting to follow user (owner)
-     */
-    public void denyFollowPermission(User user, String followerName){
-        user.removeFollowerRequest(followerName);
-        searchForUserByName(followerName).removeFollowRequest(user.getName());
-    }
-
-    /**
      * search userList for a user by name, return null if not found
      *
      * @param name of user being searched for
