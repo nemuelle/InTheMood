@@ -2,21 +2,17 @@ package com.example.austin.inthemood;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
+
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,10 +22,8 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +33,7 @@ import java.util.HashMap;
  * Display locations on a map
  * Needs a Android Google Maps API key in AndroidManifest.xml
  *
- * TODO: Get moods from a controller depending on the context that the activity is launched
+ * TODO: Test MyFriends and Nearby Moods
  *
  */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -49,7 +43,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     private dataControler controller;
     private Location location;
-    private LocationControllor locationControllor;
+    private LocationController locationController;
     private String triggerFilter;
     private String emotionFilter;
     private int lastWeekFilter;
@@ -63,6 +57,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         setContentView(R.layout.activity_map);
         buildHashMap();
 
+        // check what the map should display
         triggerFilter = getIntent().getStringExtra("trigger");
         emotionFilter = getIntent().getStringExtra("emotion");
         lastWeekFilter = getIntent().getIntExtra("lastweek", -1);
@@ -79,17 +74,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
 
         if (launchedFrom.equals("MainUser")) {
-            locationControllor = new LocationControllor(mGoogleApiClient, MapActivity.this);
+            locationController = new LocationController(mGoogleApiClient, MapActivity.this);
             locationSetup();
-            mGoogleApiClient = locationControllor.getGoogleApiClient();
+            mGoogleApiClient = locationController.getGoogleApiClient();
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        locationControllor.connectGoogleApiClient();
+        if (locationController != null) {
+            locationController.connectGoogleApiClient();
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -99,9 +95,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onResume() {
         super.onResume();
-        if (locationControllor != null) {
-            if (locationControllor.googleApiClientConnected()) {
-                locationControllor.startLocationUpdates();
+        if (locationController != null) {
+            if (locationController.googleApiClientConnected()) {
+                locationController.startLocationUpdates();
             }
         }
     }
@@ -109,9 +105,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onPause() {
         super.onPause();
-        if (locationControllor != null) {
-            if (locationControllor.googleApiClientConnected()) {
-                locationControllor.stopLocationUpdates();
+        if (locationController != null) {
+            if (locationController.googleApiClientConnected()) {
+                locationController.stopLocationUpdates();
             }
         }
     }
@@ -119,22 +115,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onStop() {
         super.onStop();
-        if (locationControllor != null) {
-            locationControllor.disconnectGoogleApiClient();
+        if (locationController != null) {
+            locationController.disconnectGoogleApiClient();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case LocationControllor.REQUEST_CHECK_SETTINGS:
+            case LocationController.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        locationControllor.setCanGetLocation(true);
-                        locationControllor.startLocationUpdates();
+                        locationController.setCanGetLocation(true);
+                        locationController.startLocationUpdates();
                         break;
                     case Activity.RESULT_CANCELED:
-                        locationControllor.setCanGetLocation(false);
+                        locationController.setCanGetLocation(false);
                 }
         }
     }
@@ -172,8 +168,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     private void locationSetup() {
-        if (!locationControllor.checkLocationPermission()) {
-            locationControllor.requestLocationPermission();
+        if (!locationController.checkLocationPermission()) {
+            locationController.requestLocationPermission();
         }
     }
 
@@ -224,6 +220,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             // don't need titles for user moods or moods within 5km
             if (launchedFrom.equals("MyFriends"))
                 markerOption.title(mood.getOwnerName());
+            else
+                markerOption.title(mood.getMoodName() + " " + mood.getMoodDate().toString());
 
             float iconColor = hexColorToHUE.get(mood.getColorHexCode());
 
@@ -251,20 +249,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         // set camera to last mood should be sorted with the most recent first
         if (launchedFrom.equals("UserMain")) {
-            LatLng latLng = LocationControllor.locationToLatLng(location);
+            LatLng latLng = LocationController.locationToLatLng(location);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(list.get(0).getPosition()));
         }
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (locationControllor.checkLocationPermission()) {
-            mMap.setMyLocationEnabled(true);
+        if (!launchedFrom.equals("MyMoods")) {
+            if (locationController.checkLocationPermission()) {
+                mMap.setMyLocationEnabled(true);
+            }
+        } else {
+            addMarkers(makeMarkers(moodList), mMap);
         }
 
         mMap.setOnMyLocationButtonClickListener(this);
@@ -290,9 +291,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * When this activity is launched from "MyMoods" we need to get the location when the
+     * button is pressed. Failing to do so will not give enough time for the Google API object
+     * to initialize in the LocationController.
+     * @return
+     */
     @Override
     public boolean onMyLocationButtonClick() {
-        location = locationControllor.getCurrentLocation();
+        location = locationController.getCurrentLocation();
         Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
 
         moodList = controller.getNearMoods(location);
@@ -303,6 +310,5 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         addMarkers(makeMarkers(moodList), mMap);
         return true;
     }
-
 }
 

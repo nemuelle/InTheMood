@@ -1,18 +1,13 @@
 package com.example.austin.inthemood;
 
-import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,20 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -62,7 +53,7 @@ public class addEditMood extends AppCompatActivity {
     private String FILENAME = "file.sav";
     private Mood targetMood;
     private Bitmap imageBitMap;
-    private LocationControllor locationControllor;
+    private LocationController locationController;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -107,7 +98,7 @@ public class addEditMood extends AppCompatActivity {
             }
         });
 
-        locationControllor = new LocationControllor(mGoogleApiClient, activity);
+        locationController = new LocationController(mGoogleApiClient, activity);
 
         /*
          * Spinner initialization shamelessly taken from https://developer.android.com/guide/topics/ui/controls/spinner.html
@@ -166,10 +157,10 @@ public class addEditMood extends AppCompatActivity {
                     newMood.setMoodDescription(trigger);
                     newMood.setOwnerName(controller.getCurrentUser().getName());
 
-                    Location location = locationControllor.getCurrentLocation();
+                    Location location = locationController.getCurrentLocation();
 
                     if (location != null) {
-                        LatLng latLng = LocationControllor.locationToLatLng(location);
+                        LatLng latLng = LocationController.locationToLatLng(location);
                         newMood.setLatLng(latLng);
                     }
 
@@ -218,12 +209,12 @@ public class addEditMood extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    locationControllor.stopLocationUpdates();
+                    locationController.stopLocationUpdates();
                     return;
                 }
 
-                if (!locationControllor.checkLocationPermission()) {
-                    locationControllor.requestLocationPermission();
+                if (!locationController.checkLocationPermission()) {
+                    locationController.requestLocationPermission();
                 }
 
 
@@ -235,43 +226,43 @@ public class addEditMood extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        locationControllor.connectGoogleApiClient();
+        locationController.connectGoogleApiClient();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (locationControllor.googleApiClientConnected()) {
-            locationControllor.startLocationUpdates();
+        if (locationController.googleApiClientConnected()) {
+            locationController.startLocationUpdates();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (locationControllor.googleApiClientConnected()) {
-            locationControllor.stopLocationUpdates();
+        if (locationController.googleApiClientConnected()) {
+            locationController.stopLocationUpdates();
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        locationControllor.disconnectGoogleApiClient();
+        locationController.disconnectGoogleApiClient();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case LocationControllor.REQUEST_CHECK_SETTINGS:
+            case LocationController.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         // todo make sure its high accuracy
-                        locationControllor.setCanGetLocation(true);
-                        locationControllor.startLocationUpdates();
+                        locationController.setCanGetLocation(true);
+                        locationController.startLocationUpdates();
                         break;
                     case Activity.RESULT_CANCELED:
-                        locationControllor.setCanGetLocation(false);
+                        locationController.setCanGetLocation(false);
                 }
                 break;
             case 1:

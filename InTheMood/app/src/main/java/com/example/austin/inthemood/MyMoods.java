@@ -250,6 +250,7 @@ public class MyMoods extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MyMoods.this ,MoodCalendarActivity.class);
                 startActivity(intent);
+                finish();
 
             }
 
@@ -271,6 +272,7 @@ public class MyMoods extends AppCompatActivity {
                     intent.putExtra("lastweek", 2);
 
                 startActivity(intent);
+                finish();
             }
 
         });
