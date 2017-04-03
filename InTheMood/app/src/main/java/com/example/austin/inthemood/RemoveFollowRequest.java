@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
  * RemoveFollowRequests activity is called to give the current user the option to either
  * remove a follow request made by current user or return back to FriendRequests and
  * not remove his request.
+ *
+ * @see FriendRequests
  */
 public class RemoveFollowRequest extends AppCompatActivity {
 

@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
  * AcceptFollowerRequest activity is called to give the current user the option to either
  * remove a follower request made by another user to follow current user, allow other user to follow current user,
  * or return back to FriendRequests and neither allow or deny request.
+ *
+ * @see FriendRequests
  */
 public class AcceptFollowerRequest extends AppCompatActivity {
 

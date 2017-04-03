@@ -30,8 +30,10 @@ import java.lang.reflect.Type;
  * This class displays the current user's Friends and each of their most recent moods. Furthermore,
  * you can filter these most recent moods from your friends by last week only, moods containing
  * the string from the search field, or by emotional state, just like in the MyMoods activity.
- * The User may also navigate to the Find Friends or Friend Request activities from here.
+ * The User may also navigate to the Mood Map with friends' Moods, or to the Find Friends or
+ * Friend Request activities from here.
  *
+ * @see MapActivity
  * @see FindFriends
  * @see FriendRequests
  */
