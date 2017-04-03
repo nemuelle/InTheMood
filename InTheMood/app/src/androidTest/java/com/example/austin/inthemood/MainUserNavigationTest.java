@@ -26,14 +26,22 @@ public class MainUserNavigationTest extends ActivityInstrumentationTestCase2<Mai
     public void testNavigation() {
         solo.assertCurrentActivity("Wrong Activity", MainUser.class);
 
-        solo.goBack();
-        solo.assertCurrentActivity("Wrong Activity", MainUser.class);
+
 
         solo.clickOnButton("My Moods");
         solo.assertCurrentActivity("Wrong Activity", MyMoods.class);
         solo.goBack();
         solo.assertCurrentActivity("Wrong Activity", MainUser.class);
 
+        solo.clickOnButton("My Friends");
+        solo.assertCurrentActivity("Wrong Activity", MyFriends.class);
+        solo.goBack();
+        solo.assertCurrentActivity("Wrong Activity", MainUser.class);
+
+        solo.clickOnButton("Nearby Moods");
+        solo.assertCurrentActivity("Wrong Activity", MapActivity.class);
+        solo.goBack();
+        solo.assertCurrentActivity("Wrong Activity", MainUser.class);
 
         solo.clickOnButton("Mood Calendar");
         solo.assertCurrentActivity("Wrong Activity", MoodCalendarActivity.class);
