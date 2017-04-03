@@ -55,7 +55,7 @@ public class MyMoods extends AppCompatActivity {
     private ImageButton mapButton;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
-    public dataControler controller;
+    public DataController controller;
     private static final String FILENAME = "file.sav";
     private MoodAdapter moodAdapter;
     private User currentUser;
@@ -320,7 +320,7 @@ public class MyMoods extends AppCompatActivity {
 
     //Start edit mood activity
     private void editMood(View view, int index){
-        Intent editMoodIntent = new Intent(this,addEditMood.class);
+        Intent editMoodIntent = new Intent(this,AddEditMood.class);
         editMoodIntent.putExtra("Mood index",index);
         startActivity(editMoodIntent);
         finish();
@@ -335,7 +335,7 @@ public class MyMoods extends AppCompatActivity {
      * @param view
      */
     private void addMood(View view){
-        Intent addMoodIntent = new Intent(this,addEditMood.class);
+        Intent addMoodIntent = new Intent(this,AddEditMood.class);
         startActivity(addMoodIntent);
         finish();
 
@@ -352,12 +352,12 @@ public class MyMoods extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
 
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

@@ -73,6 +73,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         if (launchedFrom.equals("MyFriends")) {
             moodList = getFriendsMoods();
+            filterMoods();
         }
 
         if (launchedFrom.equals("MainUser")) {
@@ -302,7 +303,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public boolean onMyLocationButtonClick() {
         location = locationController.getCurrentLocation();
-//        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
 
         moodList = controller.getNearMoods(location);
         if (moodList.size() == 0) {
