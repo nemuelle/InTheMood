@@ -33,8 +33,13 @@ import java.util.List;
 import static android.provider.Telephony.Mms.Part.FILENAME;
 
 /**
- * This class displays the current user's Friends and their most recent mood (with date) to the list
- * view.
+ * This class displays the current user's Friends and each of their most recent moods. Furthermore,
+ * you can filter these most recent moods from your friends by last week only, moods containing
+ * the string from the search field, or by emotional state, just like in the MyMoods activity.
+ * The User may also navigate to the Find Friends or Friend Request activities from here.
+ *
+ * @see FindFriends
+ * @see FriendRequests
  */
 public class MyFriends extends AppCompatActivity {
 

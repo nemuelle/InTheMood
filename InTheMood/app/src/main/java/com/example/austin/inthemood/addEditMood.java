@@ -51,9 +51,10 @@ import java.lang.reflect.Type;
  * which is set in real time for the User), and then save those changes with the
  * Save button, or delete the Mood with the Delete button. If no existing Mood was
  * supplied, then the User can only add a new Mood with the values in the text /
- * dropdown fields.
+ * dropdown fields. Adding, saving, or deleting a mood will return the User to their
+ * MyMoods page.
  *
- * TODO: Get the scenario of an existing mood
+ * @see MyMoods
  */
 public class addEditMood extends AppCompatActivity {
     public static  final int REQUEST_ACCESS_CAMERA = 4;
