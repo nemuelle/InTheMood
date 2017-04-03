@@ -187,6 +187,11 @@ public class addEditMood extends AppCompatActivity {
                     if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
+
+                /* Attempts to connect to the elasticsearch database to push the changes to their moods, after grabbing
+                * any changes to the user's follower / following lists. If the connection attempt fails, the changes
+                * for mood are stored locally.
+                */
                 Boolean syncSuccess = false;
                 if (isOnline) {
                     controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
@@ -207,6 +212,11 @@ public class addEditMood extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
+
+                /* Attempts to connect to the elasticsearch database to push the changes to their moods, after grabbing
+                * any changes to the user's follower / following lists. If the connection attempt fails, the changes
+                * for mood are stored locally.
+                */
                 Boolean syncSuccess = false;
                 if (isOnline) {
                     controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
@@ -221,6 +231,7 @@ public class addEditMood extends AppCompatActivity {
             }
         });
 
+        //Code that is run when the location switch is selected.
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
