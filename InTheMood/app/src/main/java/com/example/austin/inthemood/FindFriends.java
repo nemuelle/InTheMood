@@ -23,6 +23,10 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+/**
+ * This class implements functionality to find a user in our elastic search server
+ * and send them a follow request.
+ */
 public class FindFriends extends AppCompatActivity {
 
     private EditText searchableUserName;
@@ -40,10 +44,7 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
 
 
-        //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
-        //saveInFile();
+
     }
 
     @Override
@@ -53,14 +54,11 @@ public class FindFriends extends AppCompatActivity {
         loadFromFile();
         controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
         controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
-        //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
         saveInFile();
     }
 
     /**
-     * onclick search for a user by name
+     * Search for a user in the elastic search server
      *
      * @param view
      */
@@ -78,6 +76,11 @@ public class FindFriends extends AppCompatActivity {
 
     }
 
+    /**
+     * Undergoes the transaction required to add a follow request to a user and sync that user to
+     * the elastic search user. This allows them to see the pending follow request.
+     * @param view
+     */
     public void followUser(View view){
 
         displayFollowResult = (TextView) findViewById(R.id.displayFollowResult);

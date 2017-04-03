@@ -13,7 +13,11 @@ import java.net.URL;
  */
 
 //Code for this class was taked and modified from http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
-    // on April 1, 2017
+// on April 1, 2017
+
+/**
+ * This class provides functionality to determine whether or not the device is currently online.
+ */
 public class NetworkStatus {
     private static NetworkStatus instance = new NetworkStatus();
     static Context context;
@@ -26,6 +30,10 @@ public class NetworkStatus {
         return instance;
     }
 
+    /**
+     * This method returns a Boolean representing the device's network status
+     * @return connected Boolean showing whether or not the device is online
+     */
     public boolean isOnline() {
         try {
             connectivityManager = (ConnectivityManager) context

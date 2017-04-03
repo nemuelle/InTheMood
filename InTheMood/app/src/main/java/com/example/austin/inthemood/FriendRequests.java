@@ -43,9 +43,7 @@ public class FriendRequests extends AppCompatActivity {
         setContentView(R.layout.activity_friend_requests);
         loadFromFile();
 
-        //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
+
         controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
         controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
         for (int x = 0; x < controller.getCurrentUser().getMyFollowingList().size(); x++ ) {
