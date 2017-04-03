@@ -338,7 +338,7 @@ public class DataController {
             ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
 
             if (sortedMoods.size() == 0) {
-                return sortedMoods;
+                continue;
             }
 
             Mood mostRecentMood = sortedMoods.get(sortedMoods.size() - 1);
@@ -347,7 +347,7 @@ public class DataController {
                 Location toPoint = new Location("to");
                 toPoint.setLatitude(moodLocation.latitude);
                 toPoint.setLongitude(moodLocation.longitude);
-                if (toPoint.distanceTo(currentLocation) <= 5000) {
+                if (currentLocation.distanceTo(toPoint) <= 5000.0f) {
                     closeMoods.add(mostRecentMood);
                 }
             }
