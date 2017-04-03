@@ -6,12 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +36,7 @@ public class ExistingUserLogin extends AppCompatActivity{
      *  To pass in a message to the next activity
      */
     private static final String FILENAME = "file.sav";
-    public dataControler controller;
+    public DataController controller;
 
     // UI references.
     private EditText mUserView;
@@ -88,12 +83,12 @@ public class ExistingUserLogin extends AppCompatActivity{
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
 
             Gson gson = new Gson();
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
             System.out.println("before");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
             System.out.println("after");
         } catch (IOException e) {
             throw new RuntimeException();

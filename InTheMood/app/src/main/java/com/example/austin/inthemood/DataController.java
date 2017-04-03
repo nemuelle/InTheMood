@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by olivier on 2017-03-10.
  */
 
-public class dataControler {
+public class DataController {
     private ArrayList<User> userList = new ArrayList<>();
     private ArrayList<Mood> moodList = new ArrayList<>();
     private int userCount;
@@ -28,11 +28,11 @@ public class dataControler {
 
 
     /**
-     * Instantiates a new dataControler without context. (used for JUnit testing)
+     * Instantiates a new DataController without context. (used for JUnit testing)
      *
      * @param firstUser first registered user in our database
      */
-    public dataControler(User firstUser){
+    public DataController(User firstUser){
         userCount = 1;
         this.userList = new ArrayList<User>();
         this.userList.add(firstUser);

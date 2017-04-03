@@ -24,7 +24,7 @@ public class DataControlerTest {
     @Test
     public void testGetUserList(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         assertEquals(1, controler.getUserList().size());
         assertEquals(user1, controler.getUserList().get(0));
         assertEquals("user1", controler.getUserList().get(0).getName());
@@ -36,7 +36,7 @@ public class DataControlerTest {
     public void testAddToUserList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         assertEquals(2, controler.getUserList().size());
         assertEquals(user1, controler.getUserList().get(0));
@@ -51,7 +51,7 @@ public class DataControlerTest {
     public void testVerifyLogIn(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         //userName and password correct
         assertEquals(controler.verifyLogIn("user1", "p1"), user1);
@@ -67,7 +67,7 @@ public class DataControlerTest {
     public void testRequestToFollow(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         controler.requestToFollow(user1, user2.getName());
         //check user1's followRequests
@@ -83,7 +83,7 @@ public class DataControlerTest {
     public void testGrantFollowPermission(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         controler.requestToFollow(user1, user2.getName());
         controler.grantFollowPermission(user2, user1.getName());
@@ -99,7 +99,7 @@ public class DataControlerTest {
     public void testDenyFollowPermission(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         controler.requestToFollow(user1, user2.getName());
         controler.denyFollowPermission(user2, user1.getName());
@@ -112,7 +112,7 @@ public class DataControlerTest {
     @Test
     public void testSearchForUserByName(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         assertEquals(user1, controler.searchForUserByName("user1"));
         assertEquals(controler.searchForUserByName("user2"), null);
     }
@@ -122,7 +122,7 @@ public class DataControlerTest {
     @Test
     public void testSortMoodsByDate(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood2 = new Mood("user1");
         Date date = new Date(97, 1, 23);
@@ -142,7 +142,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByMood(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood2 = new Mood("user1");
         mood1.setMoodName("happy");
@@ -159,7 +159,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByWeek(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood3 = new Mood("user1");
         Date dateOld = new Date(98, 3, 8);
@@ -178,7 +178,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByTrigger(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood2 = new Mood("user1");
         mood2.setMoodDescription("grumpy");

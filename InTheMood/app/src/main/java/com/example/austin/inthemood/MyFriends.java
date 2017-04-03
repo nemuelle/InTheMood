@@ -1,6 +1,5 @@
 package com.example.austin.inthemood;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,10 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-
-import android.widget.Toast;
 
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -27,10 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.provider.Telephony.Mms.Part.FILENAME;
 
 /**
  * This class displays the current user's Friends and their most recent mood (with date) to the list
@@ -54,7 +46,7 @@ public class MyFriends extends AppCompatActivity {
     private ArrayList<User> followingList;
     private ArrayList<Mood> sortedFollowingMoods = new ArrayList<Mood>();
     private ArrayList<String> followedUserStringMessage;
-    private dataControler controller;
+    private DataController controller;
     private MoodAdapter adapter;
     //private ArrayAdapter<String> adapter;
     private User testUser;
@@ -225,12 +217,12 @@ public class MyFriends extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {
+            Type objectType = new TypeToken<DataController>() {
             }.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

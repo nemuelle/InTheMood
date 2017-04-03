@@ -4,11 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,7 +24,6 @@ import java.lang.reflect.Type;
  * This class is the main menu view. There are 5 buttons in the layout to choose from.
  * Each button sends the user to a different activity.
  */
-
 public class MainUser extends AppCompatActivity {
     private MainUser activity = this;
 
@@ -39,7 +35,7 @@ public class MainUser extends AppCompatActivity {
     private Button moodCalendarButton;
 
     private static final String FILENAME = "file.sav";
-    public dataControler controller;
+    public DataController controller;
 
 
     @Override
@@ -47,30 +43,26 @@ public class MainUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_user);
         loadFromFile();
-
-
-
     }
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
-        loadFromFile();
     }
-    //go to MyMoods activity 
+
+    /**
+     * Start MyMoods activity
+     * @param view
+     */
     public void MyMoods(View view){
         Intent intent = new Intent(this, MyMoods.class);
         startActivity(intent);
     }
 
-    //go to myFriendsMoods activity (empty activity at the moment)
-    public void MyFriendsMoods(View view){
-        Intent intent = new Intent(this, MyFriendsMoods.class);
-        startActivity(intent);
-    }
-
-    //go back to existing loggin activity and set current user to null
+    /**
+     * Remove the User from the data controller and return to login screen
+     * @param view
+     */
     public void SignOut(View view){
         controller.signOut();
         saveInFile();
@@ -78,7 +70,10 @@ public class MainUser extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //start the myFriends activity
+    /**
+     * Start the MyFriends Activity
+     * @param view
+     */
     public void MyFriends(View view){
         Boolean isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
         if (!isOnline) {
@@ -104,13 +99,18 @@ public class MainUser extends AppCompatActivity {
     }
 
 
-    //start the calendar activity
+    /**
+     * Start the MoodCalendar activity
+     * @param view
+     */
     public void MoodCalendar(View view) {
         Intent intent = new Intent(this, MoodCalendarActivity.class);
         startActivity(intent);
     }
 
-    //load the data controller. called at the start of the activity. All data is stored in the controller.
+    /**
+     * Load file FILENAME using GSON
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -118,16 +118,19 @@ public class MainUser extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
-    //save the data controller. This function is never called in here for the time being
+
+    /**
+     * Save the data controller to file FILENAME using GSON.
+     */
     private void saveInFile() {
         try {
 

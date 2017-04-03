@@ -13,7 +13,7 @@ public class RegisterUnitTest {
         String firstName = "first";
         String firstPass = "wow";
         User firstUser = new User(firstName, firstPass);
-        dataControler controller = new dataControler(firstUser);
+        DataController controller = new DataController(firstUser);
         User addedUser = controller.verifyLogIn(firstName, firstPass);
 
         assertEquals(addedUser.getName(), firstName);

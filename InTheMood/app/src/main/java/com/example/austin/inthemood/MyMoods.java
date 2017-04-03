@@ -3,7 +3,6 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,11 +13,8 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -27,14 +23,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-/* My moods activity displays the list of all moods a user inputs and allows filtering the list to
-    show only relevant moods.
-
-    For project part 5:
-        Still need to change each mood item's color based on what mood it is
-        Still need to make the buttons appear unselected upon 2nd click
+/**
+ *  My moods activity displays the list of all moods a user inputs and allows filtering the list to
+ *  show only relevant moods.
+ *
+ *  Moods can also be edited by selecting them from the ListView.
+ *  Filters can be shown from a map and a calendar containing all Moods can also be launched.
+ *
+ *  TODO change radio buttons to a radio group to only allow for one filter.
  */
 public class MyMoods extends AppCompatActivity {
 
@@ -49,7 +46,8 @@ public class MyMoods extends AppCompatActivity {
     private ImageButton mapButton;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
-    public dataControler controller;
+
+    public DataController controller;
     private static final String FILENAME = "file.sav";
     private MoodAdapter moodAdapter;
     private User currentUser;
@@ -303,9 +301,13 @@ public class MyMoods extends AppCompatActivity {
     }
 
 
-    //Start edit mood activity
+    /**
+     * Start AddEditMood activity to edit a selected mood.
+     * @param view
+     * @param index
+     */
     private void editMood(View view, int index){
-        Intent editMoodIntent = new Intent(this,addEditMood.class);
+        Intent editMoodIntent = new Intent(this,AddEditMood.class);
         editMoodIntent.putExtra("Mood index",index);
         startActivity(editMoodIntent);
         finish();
@@ -313,15 +315,21 @@ public class MyMoods extends AppCompatActivity {
 
 
     }
-    //Start activity to add another mood
+
+    /**
+     * Start AddEditMood activity to add a new mood
+     * @param view
+     */
     private void addMood(View view){
-        Intent addMoodIntent = new Intent(this,addEditMood.class);
+        Intent addMoodIntent = new Intent(this,AddEditMood.class);
         startActivity(addMoodIntent);
         finish();
 
     }
 
-    //Load data controller
+    /**
+     * Load data controller from GSON
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -329,12 +337,12 @@ public class MyMoods extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
 
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

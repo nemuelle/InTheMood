@@ -32,7 +32,7 @@ public class NewUserLogin extends AppCompatActivity {
      */
     public static final String EXTRA_MESSAGE = "com.example.inthemood.MESSAGE";
     private static final String FILENAME = "file.sav";
-    public dataControler controller;
+    public DataController controller;
 
     // UI references.
     private EditText mUserView;
@@ -147,11 +147,11 @@ public class NewUserLogin extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

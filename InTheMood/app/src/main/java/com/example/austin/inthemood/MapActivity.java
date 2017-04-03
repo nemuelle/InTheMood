@@ -43,7 +43,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private final String FILENAME = "file.sav";
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mMap;
-    private dataControler controller;
+    private DataController controller;
     private Location location;
     private LocationController locationController;
     private String triggerFilter;
@@ -282,12 +282,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
 
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }
