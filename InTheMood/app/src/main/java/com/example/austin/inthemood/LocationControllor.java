@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -99,8 +100,10 @@ public class LocationControllor implements
      */
     public Location getCurrentLocation() {
         if (mCurrentLocation == null && checkLocationPermission()) {
+            Toast.makeText(activity, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString(), Toast.LENGTH_SHORT).show();
             return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
+        Toast.makeText(activity, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
         return mCurrentLocation;
     }
 

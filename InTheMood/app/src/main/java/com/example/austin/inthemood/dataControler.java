@@ -366,7 +366,7 @@ public class dataControler {
 
     public ArrayList<Mood> getNearMoods(Location currentLocation) {
         if (currentLocation == null) {
-            return null;
+            return new ArrayList<Mood>();
         }
         ArrayList<Mood> closeMoods = new ArrayList<>();
         ArrayList<User> users = new ArrayList<>();
@@ -376,7 +376,12 @@ public class dataControler {
             User user = users.get(x);
             ArrayList<Mood> usersMoods = user.getMyMoodsList();
             ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
-            Mood mostRecentMood = sortedMoods.get(0);
+
+            if (sortedMoods.size() == 0) {
+                return sortedMoods;
+            }
+
+            Mood mostRecentMood = sortedMoods.get(sortedMoods.size() - 1);
             if (mostRecentMood.getLatLng() != null) {
                 LatLng moodLocation = mostRecentMood.getLatLng();
                 Location toPoint = new Location("to");

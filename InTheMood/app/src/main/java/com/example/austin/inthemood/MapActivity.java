@@ -42,7 +42,8 @@ import java.util.HashMap;
  * TODO: Get moods from a controller depending on the context that the activity is launched
  *
  */
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleMap.OnMyLocationButtonClickListener {
     private final String FILENAME = "file.sav";
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mMap;
@@ -80,33 +81,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         if (launchedFrom.equals("MainUser")) {
             locationControllor = new LocationControllor(mGoogleApiClient, MapActivity.this);
             locationSetup();
-            locationControllor.startLocationUpdates();
-            location = locationControllor.getCurrentLocation();
-
-            // just make sure
-            if (location == null) {
-                location = locationControllor.getCurrentLocation();
-            }
-
-            moodList = controller.getNearMoods(location);
-            if (moodList == null) {
-                Toast.makeText(MapActivity.this, "Cannot get location", Toast.LENGTH_LONG).show();
-                this.finish();
-            }
+            mGoogleApiClient = locationControllor.getGoogleApiClient();
         }
-
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (locationControllor != null) {
-            locationControllor.connectGoogleApiClient();
-        }
+
+        locationControllor.connectGoogleApiClient();
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -229,10 +216,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         for (Mood mood : moods) {
             MarkerOptions markerOption = new MarkerOptions();
 
-            if (mood.getLatLng() != null) {
-                markerOption.position(mood.getLatLng());
+            if (mood.getLatLng() == null) {
                 continue; // only display moods with locations
             }
+            markerOption.position(mood.getLatLng());
 
             // don't need titles for user moods or moods within 5km
             if (launchedFrom.equals("MyFriends"))
@@ -253,6 +240,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      * @param googleMap an initialized GoogleMap
      */
     private void addMarkers(ArrayList<MarkerOptions> list, GoogleMap googleMap) {
+        if (list.size() == 0) {
+            return;
+        }
         mMap = googleMap;
 
         for (MarkerOptions option : list) {
@@ -273,7 +263,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        addMarkers(makeMarkers(moodList), googleMap);
+        if (locationControllor.checkLocationPermission()) {
+            mMap.setMyLocationEnabled(true);
+        }
+
+        mMap.setOnMyLocationButtonClickListener(this);
+
     }
 
     //Load data controller
@@ -294,4 +289,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             throw new RuntimeException();
         }
     }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        location = locationControllor.getCurrentLocation();
+        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
+
+        moodList = controller.getNearMoods(location);
+        if (moodList.size() == 0) {
+            Toast.makeText(MapActivity.this, "Cannot find any Moods", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        addMarkers(makeMarkers(moodList), mMap);
+        return true;
+    }
+
 }
+
