@@ -184,12 +184,7 @@ public class AddEditMood extends AppCompatActivity {
                             newMood.setLatLng(latLng);
                         }
                     }
-                    //Location location = locationController.getCurrentLocation();
 
-                    /*if (location != null) {
-                        LatLng latLng = LocationController.locationToLatLng(location);
-                        newMood.setLatLng(latLng);
-                    }*/
 
                     controller.getCurrentUser().addMood(newMood);
 

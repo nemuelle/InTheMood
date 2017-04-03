@@ -382,6 +382,7 @@ public class DataController {
      * @return user with updated follower requests list from elasticSearch
      */
     public User addFollowerRequestsToUser(User user){
+
         ArrayList<String> requests = getFollowerRequests(user);
 
         for (int x = 0; x < requests.size(); x++) {

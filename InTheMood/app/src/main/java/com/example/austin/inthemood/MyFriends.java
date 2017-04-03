@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,15 +75,6 @@ public class MyFriends extends AppCompatActivity {
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         myFriendsListView = (ListView) findViewById(R.id.myMoodsListView);
 
-        testUser = new User("Steve","1");
-        testMood = new Mood("Testing");
-        testMood.setMoodName("Anger");
-        testMood.setOwnerName("Steve");
-        testUser.addMood(testMood);
-
-        controller.addToUserList(testUser);
-        controller.getCurrentUser().addToMyFollowingList("Steve");
-        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.moods, android.R.layout.simple_spinner_item);
@@ -149,6 +141,31 @@ public class MyFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
+
+        moodFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(emotionFilterButton.isSelected()){
+
+                    triggerFilterButton.setSelected(false);
+                    weekFilterButton.setSelected(false);
+                    emotionFilterButton.setSelected(true);
+                    newMoodList = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(), originalMoodList);
+                    sortedFollowingMoods.clear();
+
+                    for (int i = 0; i < newMoodList.size(); i++) {
+                        sortedFollowingMoods.add(newMoodList.get(i));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     /**
@@ -185,35 +202,60 @@ public class MyFriends extends AppCompatActivity {
             case R.id.emotionalStateFilterButton:
                 if (checked) {
                     // Filter by emotional state
+
+                    triggerFilterButton.setSelected(false);
+                    weekFilterButton.setSelected(false);
+                    emotionFilterButton.setSelected(true);
+                    newMoodList = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(), originalMoodList);
                     sortedFollowingMoods.clear();
-                    adapter.clear();
-                    sortedFollowingMoods = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(), originalMoodList);
-                    adapter.addAll(sortedFollowingMoods);
+
+                    for (int i = 0; i < newMoodList.size(); i++) {
+                        sortedFollowingMoods.add(newMoodList.get(i));
+                    }
                     adapter.notifyDataSetChanged();
-                    myFriendsListView.setAdapter(adapter);
+
+
                     break;
                 }
             case R.id.weekFilterButton:
                 if (checked) {
                     // Filter by last week's moods only
+                    emotionFilterButton.setSelected(false);
+                    triggerFilterButton.setSelected(false);
+                    newMoodList = controller.filterByWeek(originalMoodList);
                     sortedFollowingMoods.clear();
-                    adapter.clear();
-                    sortedFollowingMoods = controller.filterByWeek(originalMoodList);
-                    adapter.addAll(sortedFollowingMoods);
+                    for (int i = 0; i < newMoodList.size(); i++) {
+                        sortedFollowingMoods.add(newMoodList.get(i));
+                    }
+                    weekFilterButton.setSelected(true);
                     adapter.notifyDataSetChanged();
-                    myFriendsListView.setAdapter(adapter);
                     break;
                 }
             case R.id.triggerFilterButton:
                 if (checked) {
                     // Filter by Moods containing the trigger filter
+                    emotionFilterButton.setSelected(false);
+                    weekFilterButton.setSelected(false);
+                    newMoodList = controller.filterByTrigger(triggerText.getText().toString(), originalMoodList);
                     sortedFollowingMoods.clear();
-                    adapter.clear();
-                    sortedFollowingMoods = controller.filterByTrigger(triggerText.getText().toString(), originalMoodList);
-                    adapter.addAll(sortedFollowingMoods);
+
+                    for (int i = 0; i < newMoodList.size(); i++) {
+                        sortedFollowingMoods.add(newMoodList.get(i));
+                    }
                     adapter.notifyDataSetChanged();
-                    myFriendsListView.setAdapter(adapter);
+                    triggerFilterButton.setSelected(true);
                     break;
+                }
+            case R.id.noFilterButton:
+                if(checked){
+                    emotionFilterButton.setSelected(false);
+                    triggerFilterButton.setSelected(false);
+                    weekFilterButton.setSelected(false);
+                    sortedFollowingMoods.clear();
+                    for (int i = 0; i < originalMoodList.size(); i++) {
+                        sortedFollowingMoods.add(originalMoodList.get(i));
+                    }
+                    adapter.notifyDataSetChanged();
                 }
         }
     }
