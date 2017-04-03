@@ -1,10 +1,12 @@
 package com.example.austin.inthemood;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -19,9 +21,11 @@ import java.util.Date;
 
 public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<Mood> moodList = new ArrayList<>();
     private int userCount;
     private String currentUserName;
     Context context;
+
 
     /**
      * Instantiates a new dataControler without context. (used for JUnit testing)
@@ -113,14 +117,16 @@ public class dataControler {
                     //Boolean syncSuccess =ElasticSearchsyncUser(user);
                     Boolean syncSuccess = false;
                     if (isOnline) {
+                        user = addFollowerRequestsToUser(user);
+                        user = addFollowingToUser(user);
                         syncSuccess = ElasticSearchsyncUser(user);
                     }
                     Log.i("Found user", "in local");
-                    //Log.i("SyncSuccess", syncSuccess.toString());
+                    Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());
                     Log.i("Users pass:", user.getPassword());
                     Log.i("Users ES ID", user.getElasticSearchID());
-                    return userList.get(i);
+                    return user;
 
                 }
             }
@@ -321,6 +327,107 @@ public class dataControler {
             Log.i("Error", "Failed to sync user");
             return false;
         }
+    }
+
+    public String ElasticSearchAddMood(Mood mood) {
+        ElasticSearchController.AddMoodTask addMood = new ElasticSearchController.AddMoodTask();
+        String esID = new String();
+        addMood.execute(mood);
+        try {
+            esID = addMood.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to add mood to elastic search");
+        }
+        return esID;
+    }
+
+    public Boolean ElasticSearchSyncMood(Mood mood) {
+        ElasticSearchController.SyncMoodTask syncMood = new ElasticSearchController.SyncMoodTask();
+        Boolean syncSuccess = new Boolean(false);
+        syncMood.execute(mood);
+        try {
+            syncSuccess = syncMood.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to sync the mood");
+        }
+        return syncSuccess;
+    }
+
+    public ArrayList<User> ElasticSearchGetAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        ElasticSearchController.GetAllUsers getUsers = new ElasticSearchController.GetAllUsers();
+        getUsers.execute("");
+        try {
+            users = getUsers.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the users");
+        }
+
+        return users;
+    }
+
+    public ArrayList<Mood> getNearMoods(LatLng currentLocation) {
+        ArrayList<Mood> closeMoods = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
+        users = ElasticSearchGetAllUsers();
+        Location fromPoint = new Location("from");
+        fromPoint.setLatitude(currentLocation.latitude);
+        fromPoint.setLongitude(currentLocation.longitude);
+
+        for (int x = 0; x < users.size(); x++) {
+            User user = users.get(x);
+            ArrayList<Mood> usersMoods = user.getMyMoodsList();
+            ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
+            Mood mostRecentMood = sortedMoods.get(sortedMoods.size()-1);
+            if (mostRecentMood.getLatLng() != null) {
+                LatLng moodLocation = mostRecentMood.getLatLng();
+                Location toPoint = new Location("to");
+                toPoint.setLatitude(moodLocation.latitude);
+                toPoint.setLongitude(moodLocation.longitude);
+                if (toPoint.distanceTo(fromPoint) <= 5000) {
+                    closeMoods.add(mostRecentMood);
+                }
+            }
+
+        }
+
+
+
+        return closeMoods;
+    }
+
+    public ArrayList<String> getFollowerRequests(User user) {
+        User ESuser = getElasticSearchUser(user.getName());
+        return ESuser.getMyFollowerRequests();
+    }
+
+    public ArrayList<String> getFollowingList(User user) {
+        User ESuser = getElasticSearchUser(user.getName());
+        return ESuser.getMyFollowingList();
+    }
+
+    public User addFollowerRequestsToUser(User user){
+        ArrayList<String> requests = getFollowerRequests(user);
+
+        for (int x = 0; x < requests.size(); x++) {
+            String requester = requests.get(x);
+            if (!user.getMyFollowerRequests().contains(requester)){
+                user.addToMyFollowerRequests(requester);
+            }
+        }
+        return user;
+    }
+
+    public User addFollowingToUser(User user) {
+        ArrayList<String> following = getFollowingList(user);
+
+        for (int x = 0; x < following.size(); x++) {
+            String friend = following.get(x);
+            if (!user.getMyFollowingList().contains(friend)){
+                user.addToMyFollowingList(friend);
+            }
+        }
+        return user;
 
     }
 

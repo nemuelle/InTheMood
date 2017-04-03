@@ -188,6 +188,8 @@ public class addEditMood extends AppCompatActivity {
                 Intent intent = new Intent(activity, MyMoods.class);
                 Boolean syncSuccess = false;
                 if (isOnline) {
+                    controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
+                    controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
                     syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
                 }
                 Log.i("SyncSuccess", syncSuccess.toString());
@@ -206,6 +208,8 @@ public class addEditMood extends AppCompatActivity {
                 controller.getCurrentUser().removeMood(targetMood);
                 Boolean syncSuccess = false;
                 if (isOnline) {
+                    controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
+                    controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
                     syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
                 }
                 Log.i("SyncSuccess", syncSuccess.toString());

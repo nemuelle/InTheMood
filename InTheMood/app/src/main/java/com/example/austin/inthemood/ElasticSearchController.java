@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.searchbox.action.Action;
+import io.searchbox.core.Doc;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -38,7 +39,7 @@ public class ElasticSearchController {
 
 
     // TODO we need a function which adds moods to elastic search
-    public static class AddMoodTask extends AsyncTask<Mood, Void, Void> {
+    public static class AddMoodTask extends AsyncTask<Mood, Void, String> {
         /*
         USAGE:
         Mood test = new Mood();
@@ -48,9 +49,9 @@ public class ElasticSearchController {
 
 
         @Override
-        protected Void doInBackground(Mood... moods) {
+        protected String doInBackground(Mood... moods) {
             verifySettings();
-
+            String moodID = new String();
             for (Mood mood : moods) {
                 try {
                     // where is the client?
@@ -58,13 +59,15 @@ public class ElasticSearchController {
                     Log.i("Error", "We sent the moods!");
                     if (result.isSucceeded() == false) {
                         Log.i("Error", "Elastic search couldn't add mood");
+                    } else {
+                        moodID = result.getId();
                     }
                 }
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the moods");
                 }
             }
-            return null;
+            return moodID;
         }
     }
 
@@ -164,6 +167,41 @@ public class ElasticSearchController {
         }
     }
 
+    public static class GetAllUsers extends AsyncTask<String, Void, ArrayList<User>> {
+
+        @Override
+        protected ArrayList<User> doInBackground(String ... strings) {
+            verifySettings();
+            ArrayList<User> users = new ArrayList<User>();
+
+            // TODO Build the query
+            String query = "";
+            Search search = new Search.Builder(query)
+                    .addIndex(index)
+                    .addType(user_type)
+                    .build();
+            try {
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+                    List<User> foundUsers = result.getSourceAsObjectList(User.class);
+                    users.addAll(foundUsers);
+                    Log.i("Error", "We got the users!");
+                    return users;
+                }
+                else {
+                    Log.i("Error", "The search query failed to find any users");
+                    return null;
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+                return null;
+            }
+
+
+        }
+    }
 
 
     public static class GetUserByName extends AsyncTask<String, Void, User> {
@@ -230,6 +268,30 @@ public class ElasticSearchController {
             }
             //user = users.get(0);
 
+        }
+    }
+
+    public static class SyncMoodTask extends AsyncTask<Mood, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Mood ... moods) {
+            verifySettings();
+            Boolean wasSuccess = new Boolean(false);
+            for (Mood mood: moods) {
+                try {
+                    String moodID = mood.getElasticSearchID();
+                    DocumentResult result = client.execute(new Index.Builder(mood).index(index).type(mood_type).id(moodID).build());
+                    wasSuccess = result.isSucceeded();
+                    if (wasSuccess) {
+                        Log.i("Success", "Mood was synced to elastic search");
+                    } else {
+                        Log.i("Failed", "Mood failed to sync to elastic search");
+                    }
+                } catch (Exception e) {
+                    Log.i("Error", "Elastic search couldn't sync mood");
+                }
+            }
+
+            return wasSuccess;
         }
     }
 
