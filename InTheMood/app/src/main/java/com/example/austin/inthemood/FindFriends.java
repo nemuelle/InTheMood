@@ -19,6 +19,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/**
+ * This class implements functionality to find a user in our elastic search server
+ * and send them a follow request.
+ */
 public class FindFriends extends AppCompatActivity {
 
     private EditText searchableUserName;
@@ -56,7 +60,7 @@ public class FindFriends extends AppCompatActivity {
     }
 
     /**
-     * onclick search for a user by name
+     * Search for a user in the elastic search server
      *
      * @param view
      */
@@ -73,7 +77,11 @@ public class FindFriends extends AppCompatActivity {
         }
 
     }
-
+    /**
+     * Undergoes the transaction required to add a follow request to a user and sync that user to
+     * the elastic search user. This allows them to see the pending follow request.
+     * @param view
+     */
     public void followUser(View view){
 
         displayFollowResult = (TextView) findViewById(R.id.displayFollowResult);
@@ -128,7 +136,9 @@ public class FindFriends extends AppCompatActivity {
         }
     }
 
-    //save the data controller. This function is never called in here for the time being
+    /**
+     * Save the data controller to file FILENAME using GSON.
+     */
     private void saveInFile() {
         try {
 
@@ -146,7 +156,9 @@ public class FindFriends extends AppCompatActivity {
         }
     }
 
-    //load the data controller. called at the start of the activity. All data is stored in the controller.
+    /**
+     * Load the data controller from file FILENAME using GSON.
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
