@@ -17,23 +17,25 @@ import java.util.Date;
 
 /**
  * Created by olivier on 2017-03-10.
+ *
+ * This class contains a lot of main functionality used for manipulating our local and elastic search data.
+ * The data controller also contains the userList, an Array list of Users, with each user containing all his
+ * moods. The data controller also tracks the current user by setting a unique currentUserName to the username
+ * of the current user.
+ *
  */
 
 public class dataControler {
     private ArrayList<User> userList = new ArrayList<>();
-    private ArrayList<Mood> moodList = new ArrayList<>();
-    private int userCount;
     private String currentUserName;
-    Context context;
 
 
     /**
-     * Instantiates a new dataControler without context. (used for JUnit testing)
+     * Instantiates a new dataControler. Instantiated when app is first launched on a new device
      *
      * @param firstUser first registered user in our database
      */
     public dataControler(User firstUser){
-        userCount = 1;
         this.userList = new ArrayList<User>();
         this.userList.add(firstUser);
 
@@ -47,7 +49,7 @@ public class dataControler {
     }
 
     /**
-     * set the current user interacting with the system in the data controler
+     * set the current user interacting with the system in the data controller
      *
      * @param currentUser user interacting with the system
      */
@@ -98,7 +100,6 @@ public class dataControler {
      */
     public void addToUserList(User user){
         this.userList.add(user);
-        this.userCount += 1;
     }
 
     /**
@@ -106,7 +107,8 @@ public class dataControler {
      *
      * @param name name being checked for in database
      * @param password corresponding password being checked for in database
-     * @return User if login successful or null if unsuccessful
+     * @param isOnline a boolean indicating if the device is online
+     * @return user if login successful or null if unsuccessful
      */
     public User verifyLogIn(String name, String password, Boolean isOnline){
         Log.i("Message","trying to get verify login");
@@ -114,7 +116,6 @@ public class dataControler {
             if (userList.get(i).getName().equals(name)) {
                 if (userList.get(i).getPassword().equals(password)) {
                     User user = userList.get(i);
-                    //Boolean syncSuccess =ElasticSearchsyncUser(user);
                     Boolean syncSuccess = false;
                     if (isOnline) {
                         user = addFollowerRequestsToUser(user);
@@ -131,8 +132,7 @@ public class dataControler {
                 }
             }
         }
-        //User user = getElasticSearchUser(name);
-        //User user  = new User("none","none");
+
         if (isOnline) {
             User user = getElasticSearchUser(name);
             if (user != null) {
@@ -153,7 +153,7 @@ public class dataControler {
      * search userList for a user by name, return null if not found
      *
      * @param name of user being searched for
-     * @return User with name name, return null if user not in userList
+     * @return userList.get(i) the username of the located user, return null if user not in userList
      */
     public User searchForUserByName(String name) {
         for (int i = 0; i < userList.size(); i++){
@@ -185,7 +185,7 @@ public class dataControler {
     /**
      * searches for moods with String moodName as a moodName and adds them to the filteredMoodList being returned
      *
-     * @param moodName the name of mood being searched for
+     * @param moodName the moodName being searched for
      * @param moodList the list of moods being searched
      * @return the list of moods filtered by particular mood. this returned list is also sorted by date
      */
@@ -240,33 +240,14 @@ public class dataControler {
     }
 
     /**
-     * This method checks wether device is online or not
-     *
-     * pulled from http://stackoverflow.com/questions/30343011/how-to-check-if-an-android-device-is-online on March 27, 2017
-     *
-     * @return online a boolean indicating whether device is online or not
-     */
-
-    /*public boolean isOnline(){
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean online = false;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            online = true;
-        }
-        return online;
-    }*/
-
-    /**
      * gets a user from elasticSearch using username
      *
      * @param username string username of user being looked for in elasticSearch
-     * @return User being looked for if found or null if found
+     * @return User being looked for if found or null if not found
      */
     public User getElasticSearchUser(String username) {
         ElasticSearchController.GetUserByName getUser = new ElasticSearchController.GetUserByName();
         getUser.execute(username);
-        //User locatedUser = null;
         try {
             User locatedUser = getUser.get();
             return locatedUser;
@@ -277,6 +258,11 @@ public class dataControler {
 
     }
 
+    /**
+     *  adds user to ElasticSearch database
+     * @param user user being added to elasticSearch
+     * @return user being added or null if failed to add user
+     */
     public User ElasticSearchaddUser(User user) {
 
         ElasticSearchController.AddUserTask addUser = new ElasticSearchController.AddUserTask();
@@ -292,6 +278,13 @@ public class dataControler {
             return null;
         }
     }
+
+    /**
+     * updates a user already in elasticSearch
+     *
+     * @param user user being updated
+     * @return true if the update was successful and false if update was unsuccessful
+     */
     public boolean ElasticSearchsyncUser(User user) {
         ElasticSearchController.SyncUserTask syncUser = new ElasticSearchController.SyncUserTask();
         Boolean syncSuccess = new Boolean(false);
@@ -307,7 +300,11 @@ public class dataControler {
         }
     }
 
-
+    /**
+     * gets an array list of all users on elasticSearch
+     *
+     * @return users, an array list of all users on elasticSearch
+     */
     public ArrayList<User> ElasticSearchGetAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         ElasticSearchController.GetAllUsers getUsers = new ElasticSearchController.GetAllUsers();
@@ -321,6 +318,12 @@ public class dataControler {
         return users;
     }
 
+    /**
+     * gets all moods in a 5km range from currentLocation
+     *
+     * @param currentLocation device
+     * @return closeMoods, all moods within 5km of current location
+     */
     public ArrayList<Mood> getNearMoods(Location currentLocation) {
         if (currentLocation == null) {
             return new ArrayList<Mood>();
@@ -350,22 +353,34 @@ public class dataControler {
             }
 
         }
-
-
-
         return closeMoods;
     }
 
+    /**
+     * gets array list of user's follower requests that are stored in elasticSearch
+     * @param user, user with follower requests
+     * @return ESuser.getMyFollowerRequests(), array list of follower requests (usernames of requesting followers)
+     */
     public ArrayList<String> getFollowerRequests(User user) {
         User ESuser = getElasticSearchUser(user.getName());
         return ESuser.getMyFollowerRequests();
     }
 
+    /**
+     * gets array list of user's follow requests that are stored in elasticSearch
+     * @param user, user with requests to follow other users
+     * @return ESuser.getMyFollowingRequests(), array list of follow requests (usernames of users being requested to follow by user)
+     */
     public ArrayList<String> getFollowingList(User user) {
         User ESuser = getElasticSearchUser(user.getName());
         return ESuser.getMyFollowingList();
     }
 
+    /**
+     * adds elasticSearch follower requests to user's local follower requests
+     * @param user, the user being requested to be followed
+     * @return user with updated follower requests list from elasticSearch
+     */
     public User addFollowerRequestsToUser(User user){
         ArrayList<String> requests = getFollowerRequests(user);
 
@@ -378,6 +393,11 @@ public class dataControler {
         return user;
     }
 
+    /**
+     * adds elasticSearch follow requests to user's local follow requests
+     * @param user, requesting to follow other users
+     * @return user with updated follow requests list from elasticSearch
+     */
     public User addFollowingToUser(User user) {
         ArrayList<String> following = getFollowingList(user);
 
