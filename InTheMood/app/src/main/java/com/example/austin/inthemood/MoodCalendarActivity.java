@@ -5,13 +5,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.austin.inthemood.decorators.EventDecorator;
@@ -25,10 +22,8 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,12 +38,12 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     private MaterialCalendarView widget;
     private ArrayList<Mood> moodListForDay;
-    private ArrayList<Mood> moodListForMonth; // save from time
+    private ArrayList<Mood> moodListForMonth;
     private ListView moodForDayListView;
     private MoodAdapter moodArrayAdapter;
     private static final String FILENAME = "file.sav";
 
-    public dataControler controller;
+    public DataController controller;
     private User user;
 
     @Override
@@ -93,7 +88,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
      * @param index
      */
     private void editMood(View view, int index) {
-        Intent editMoodIntent = new Intent(this, addEditMood.class);
+        Intent editMoodIntent = new Intent(this, AddEditMood.class);
         editMoodIntent.putExtra("Mood index", index);
         startActivity(editMoodIntent);
         finish();
@@ -101,7 +96,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        // clear current listview
+        // clear current ListView
         moodListForDay.clear();
         moodArrayAdapter.notifyDataSetChanged();
 
@@ -185,7 +180,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
     }
 
     /**
-     * Load dataControler from FILENAME stored in gson format.
+     * Load DataController from FILENAME stored in gson format.
      */
     private void loadFromFile() {
         try {
@@ -194,11 +189,11 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

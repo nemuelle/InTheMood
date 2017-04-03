@@ -4,10 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -21,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class FindFriends extends AppCompatActivity {
 
@@ -30,7 +26,7 @@ public class FindFriends extends AppCompatActivity {
     private TextView displayFollowResult;
 
     private User locatedUser;
-    private dataControler controller;
+    private DataController controller;
     private static final String FILENAME = "file.sav";
 
     @Override
@@ -158,12 +154,12 @@ public class FindFriends extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {
+            Type objectType = new TypeToken<DataController>() {
             }.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

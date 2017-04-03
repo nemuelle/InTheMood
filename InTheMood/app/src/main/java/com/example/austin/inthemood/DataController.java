@@ -25,7 +25,7 @@ import java.util.Date;
  *
  */
 
-public class dataControler {
+public class DataController {
     private ArrayList<User> userList = new ArrayList<>();
     private String currentUserName;
 
@@ -35,7 +35,7 @@ public class dataControler {
      *
      * @param firstUser first registered user in our database
      */
-    public dataControler(User firstUser){
+    public DataController(User firstUser){
         this.userList = new ArrayList<User>();
         this.userList.add(firstUser);
 

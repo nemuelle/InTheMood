@@ -44,10 +44,9 @@
         <activity
             android:name=".MyMoods"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".addEditMood" />
+        <activity android:name=".AddEditMood" />
         <activity android:name=".MyFriends" />
         <activity android:name=".FindFriends" />
-        <activity android:name=".MyFriendsMoods" />
         <activity
             android:name=".MoodCalendarActivity"
             android:label="@string/title_activity_mood_calendar"

@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 public class AcceptFollowerRequest extends AppCompatActivity {
 
     private String username;
-    private dataControler controller;
+    private DataController controller;
     private static final String FILENAME = "file.sav";
     public final static String EXTRA_MESSAGE = "com.example.InTheMood";
 
@@ -136,12 +136,12 @@ public class AcceptFollowerRequest extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {
+            Type objectType = new TypeToken<DataController>() {
             }.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }
