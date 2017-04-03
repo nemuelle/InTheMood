@@ -262,7 +262,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (launchedFrom.equals("UserMain")) {
+        if (launchedFrom.equals("MainUser")) {
             if (locationController.checkLocationPermission()) {
                 mMap.setMyLocationEnabled(true);
             }
@@ -302,7 +302,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public boolean onMyLocationButtonClick() {
         location = locationController.getCurrentLocation();
-        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), location.toString(), Toast.LENGTH_SHORT).show();
 
         moodList = controller.getNearMoods(location);
         if (moodList.size() == 0) {
