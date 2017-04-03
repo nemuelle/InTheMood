@@ -262,7 +262,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (!launchedFrom.equals("MyMoods")) {
+        if (launchedFrom.equals("UserMain")) {
             if (locationController.checkLocationPermission()) {
                 mMap.setMyLocationEnabled(true);
             }
