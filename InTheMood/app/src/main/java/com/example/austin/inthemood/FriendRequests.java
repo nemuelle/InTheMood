@@ -22,6 +22,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/**
+ * FriendRequests activity displays the current user's follow and follower requests in
+ * 2 different listviews. follower and follow requests (usernames displayed) can be selected from listviews
+ * which then starts a new activity to act on these requests.
+ */
 public class FriendRequests extends AppCompatActivity {
 
     private DataController controller;
@@ -42,9 +47,6 @@ public class FriendRequests extends AppCompatActivity {
         setContentView(R.layout.activity_friend_requests);
         loadFromFile();
 
-        //update current user from elasticSearch
-        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        //controller.updateUserList(updatedCurrentUser);
         controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
         controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
         for (int x = 0; x < controller.getCurrentUser().getMyFollowingList().size(); x++ ) {
@@ -78,7 +80,8 @@ public class FriendRequests extends AppCompatActivity {
         pendingFollowerRequests.setAdapter(followerAdapter);
 
         /**
-         *
+         * onItemClickListener which responds to a follow request being selected from listview
+         * and sends user to RemoveFollowRequest activity
          */
         pendingFollowRequests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -92,7 +95,8 @@ public class FriendRequests extends AppCompatActivity {
         });
 
         /**
-         *
+         * onItemClickListener which responds to a follower request being selected from listview
+         * and sends user to AcceptFollowerRequest
          */
         pendingFollowerRequests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -106,6 +110,15 @@ public class FriendRequests extends AppCompatActivity {
         });
     }
 
+    /**
+     * this method receives the control flow after either the AcceptFollowerRequest
+     * activity or the RemoveFollowRequest activity and updates the list views with the new list
+     * of follow and follower requests
+     *
+     * @param requestCode request code for sending data to this activity
+     * @param resultCode result code for sending data to this activity
+     * @param data intent data storing a boolean indicating if listview should be updated
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
