@@ -18,9 +18,70 @@
         tools:layout_constraintBottom_creator="1"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="229dp"
+        android:layout_marginBottom="52dp"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp" />
+        android:text="Filter Moods By:"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/moodFilterSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textView6"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView6"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/emotionalStateFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView6"
+            android:text="Emotional State"
+            android:onClick="filter" />
+
+        <RadioButton
+            android:id="@+id/weekFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/emotionalStateFilterButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Occured Last Week"
+            android:onClick="filter" />
+
+        <RadioButton
+            android:id="@+id/triggerFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/weekFilterButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Trigger"
+            android:onClick="filter" />
+    </RadioGroup>
+
+
+
+    <EditText
+        android:id="@+id/triggerFilterEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/findFriendsButton"
@@ -58,14 +119,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
 
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="42dp"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/triggerFilterEditText"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 </android.support.constraint.ConstraintLayout>
