@@ -2,15 +2,18 @@ package com.example.austin.inthemood;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -58,6 +62,7 @@ public class AddEditMood extends AppCompatActivity {
     private Mood targetMood;
     private Bitmap imageBitMap;
     private LocationController locationController;
+    private GoogleApiClient mGoogleApiClient;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -66,8 +71,8 @@ public class AddEditMood extends AppCompatActivity {
     private Button saveButton;
     private Button deleteButton;
     private Button imageButton;
+    private Button editLocButton;
     private ImageView pictureView;
-    private GoogleApiClient mGoogleApiClient;
     private Switch locationSwitch;
     private DatePicker datePicker;
 
@@ -92,6 +97,7 @@ public class AddEditMood extends AppCompatActivity {
         locationSwitch = (Switch) findViewById(R.id.locationSwitch);
         isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
         datePicker = (DatePicker) findViewById(R.id.pickedDate);
+        editLocButton = (Button) findViewById(R.id.editLocationButton);
 
         //Grab the data controller
         loadFromFile();
@@ -133,15 +139,19 @@ public class AddEditMood extends AppCompatActivity {
             moodSpinner.setSelection(moodAdapter.getPosition(targetMood.getMoodName()));
             scenarioSpinner.setSelection(socialAdapter.getPosition(targetMood.getMoodScenario()));
             triggerText.setText(targetMood.getMoodDescription());
+//            locationSwitch.setVisibility(View.GONE);
             if (targetMood.getLatLng() != null)
                 locationSwitch.setChecked(true); // TODO what to do if they want to update location?
             if(targetMood.getMoodImg() != null) {
                 pictureView.setImageBitmap(targetMood.getMoodImg());
             }
 
+
+
         } else {
             // Hide the delete button, since you can't delete a Mood that doesn't exist!
             deleteButton.setVisibility(View.GONE);
+            editLocButton.setVisibility(View.GONE);
         }
 
         /*
@@ -255,6 +265,65 @@ public class AddEditMood extends AppCompatActivity {
                     locationController.requestLocationPermission();
                 }
 
+
+            }
+        });
+
+        editLocButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                // get prompts.xml view
+                LayoutInflater layoutInflater = LayoutInflater.from(activity);
+
+                View promptView = layoutInflater.inflate(R.layout.edit_location_prompt, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
+
+                // set edit_location_prompt.xml to be the layout file of the alertdialog builder
+                alertDialogBuilder.setView(promptView);
+
+                final EditText latText = (EditText) promptView.findViewById(R.id.lat);
+                final EditText lngText = (EditText) promptView.findViewById(R.id.lng);
+
+                if(targetMood.getLatLng() != null) {
+                    latText.setText(String.valueOf(targetMood.getLatLng().latitude));
+                    lngText.setText(String.valueOf(targetMood.getLatLng().longitude));
+                }
+
+                // setup a dialog window
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Double lat, lng;
+                                if (latText.getText().toString().length() > 0 && lngText.getText().toString().length() > 0){
+                                    lat = Double.valueOf(latText.getText().toString());
+                                    lng = Double.valueOf(lngText.getText().toString());
+                                    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                                        // invalid send a toast
+                                        Toast.makeText(activity, "Location Invalid", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        targetMood.setLatLng(new LatLng(lat, lng));
+                                        locationSwitch.setChecked(true);
+                                    }
+                                } else {
+                                    Toast.makeText(activity, "Location Invalid", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,	int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create an alert dialog
+                AlertDialog alertD = alertDialogBuilder.create();
+
+                alertD.show();
 
             }
         });
