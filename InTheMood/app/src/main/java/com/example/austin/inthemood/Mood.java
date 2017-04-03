@@ -227,7 +227,7 @@ public class Mood {
 
         }
         else if(this.moodName.equals("Confusion")) {
-            this.colorHexCode = "#cecece";
+            this.colorHexCode = "#ffa500";
 
         }
         else if (this.moodName.equals("Disgust")){

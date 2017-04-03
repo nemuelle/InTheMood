@@ -187,7 +187,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         ArrayList<Mood> sortedFollowingMoods = new ArrayList<>();
 
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
-            followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+            User user = controller.getElasticSearchUser(controller.getCurrentUser().getMyFollowingList().get(i));
+            if (user != null) {
+                followingList.add(user);
+            }
         }
 
         for (int i = 0; i < followingList.size(); i++){
@@ -223,7 +226,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             // don't need titles for user moods or moods within 5km
             if (launchedFrom.equals("MyFriends"))
-                markerOption.title(mood.getOwnerName());
+                markerOption.title(mood.getOwnerName() + " felt " + mood.getMoodName() + " on " + new SimpleDateFormat("MMM dd, yyyy").format(mood.getMoodDate()));
             else
                 markerOption.title("Felt " + mood.getMoodName() + " on " + new SimpleDateFormat("MMM dd, yyyy").format(mood.getMoodDate()));
 

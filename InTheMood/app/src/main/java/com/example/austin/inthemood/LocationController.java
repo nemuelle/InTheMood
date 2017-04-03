@@ -105,10 +105,10 @@ public class LocationController implements
      */
     public Location getCurrentLocation() {
         if (mCurrentLocation == null && checkLocationPermission()) {
-            Toast.makeText(activity, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(activity, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString(), Toast.LENGTH_SHORT).show();
             return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
-        Toast.makeText(activity, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(activity, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
         return mCurrentLocation;
     }
 
