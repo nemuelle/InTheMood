@@ -117,14 +117,16 @@ public class dataControler {
                     //Boolean syncSuccess =ElasticSearchsyncUser(user);
                     Boolean syncSuccess = false;
                     if (isOnline) {
+                        user = addFollowerRequestsToUser(user);
+                        user = addFollowingToUser(user);
                         syncSuccess = ElasticSearchsyncUser(user);
                     }
                     Log.i("Found user", "in local");
-                    //Log.i("SyncSuccess", syncSuccess.toString());
+                    Log.i("SyncSuccess", syncSuccess.toString());
                     Log.i("Users name:", user.getName());
                     Log.i("Users pass:", user.getPassword());
                     Log.i("Users ES ID", user.getElasticSearchID());
-                    return userList.get(i);
+                    return user;
 
                 }
             }
@@ -397,6 +399,41 @@ public class dataControler {
 
 
         return closeMoods;
+    }
+
+    public ArrayList<String> getFollowerRequests(User user) {
+        User ESuser = getElasticSearchUser(user.getName());
+        return ESuser.getMyFollowerRequests();
+    }
+
+    public ArrayList<String> getFollowingList(User user) {
+        User ESuser = getElasticSearchUser(user.getName());
+        return ESuser.getMyFollowingList();
+    }
+
+    public User addFollowerRequestsToUser(User user){
+        ArrayList<String> requests = getFollowerRequests(user);
+
+        for (int x = 0; x < requests.size(); x++) {
+            String requester = requests.get(x);
+            if (!user.getMyFollowerRequests().contains(requester)){
+                user.addToMyFollowerRequests(requester);
+            }
+        }
+        return user;
+    }
+
+    public User addFollowingToUser(User user) {
+        ArrayList<String> following = getFollowingList(user);
+
+        for (int x = 0; x < following.size(); x++) {
+            String friend = following.get(x);
+            if (!user.getMyFollowingList().contains(friend)){
+                user.addToMyFollowingList(friend);
+            }
+        }
+        return user;
+
     }
 
 

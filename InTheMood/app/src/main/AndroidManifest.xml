@@ -7,12 +7,13 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -40,8 +41,9 @@
             android:name=".NewUserLogin"
             android:label="@string/title_activity_new_user_login" />
         <activity android:name=".MainUser" />
-        <activity android:name=".MyMoods"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MyMoods"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".addEditMood" />
         <activity android:name=".MyFriends" />
         <activity android:name=".FindFriends" />
@@ -50,8 +52,10 @@
             android:name=".MoodCalendarActivity"
             android:label="@string/title_activity_mood_calendar"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MapActivity"></activity>
-        <activity android:name=".FriendRequests"></activity>
+        <activity android:name=".MapActivity" />
+        <activity android:name=".FriendRequests" />
+        <activity android:name=".AcceptFollowerRequest" />
+        <activity android:name=".RemoveFollowRequest"></activity>
     </application>
 
 </manifest>

@@ -33,6 +33,8 @@ import java.util.HashMap;
  * Display locations on a map
  * Needs a Android Google Maps API key in AndroidManifest.xml
  *
+ * Bugs: Needs to have location enabled before launching.
+ *
  * TODO: Test MyFriends and Nearby Moods
  *
  */

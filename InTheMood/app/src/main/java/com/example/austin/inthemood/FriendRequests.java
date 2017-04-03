@@ -1,8 +1,11 @@
 package com.example.austin.inthemood;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +32,8 @@ public class FriendRequests extends AppCompatActivity {
     private ListView pendingFollowerRequests;
     private TextView followRequests;
     private TextView followerRequests;
+    public final static String EXTRA_MESSAGE = "com.example.InTheMood";
+    static final int PICK_CONTACT_REQUEST = 1;
 
     private static final String FILENAME = "file.sav";
 
@@ -39,8 +44,9 @@ public class FriendRequests extends AppCompatActivity {
         loadFromFile();
 
         //update current user from elasticSearch
-        User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
-        controller.updateUserList(updatedCurrentUser);
+        //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
+        //controller.updateUserList(updatedCurrentUser);
+        controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
         saveInFile();
 
         Gson gson = new Gson();
@@ -63,6 +69,63 @@ public class FriendRequests extends AppCompatActivity {
         followerAdapter = new ArrayAdapter<String>(this,
                 R.layout.list_item, controller.getCurrentUser().getMyFollowerRequests());
         pendingFollowerRequests.setAdapter(followerAdapter);
+
+        /**
+         *
+         */
+        pendingFollowRequests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentUpdate = new Intent(view.getContext(), RemoveFollowRequest.class);
+                String username = followAdapter.getItem(position);
+                intentUpdate.putExtra(EXTRA_MESSAGE, username);
+                startActivityForResult(intentUpdate, PICK_CONTACT_REQUEST);
+
+            }
+        });
+
+        /**
+         *
+         */
+        pendingFollowerRequests.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intentUpdate = new Intent(view.getContext(), AcceptFollowerRequest.class);
+                String username = followerAdapter.getItem(position);
+                intentUpdate.putExtra(EXTRA_MESSAGE, username);
+                startActivityForResult(intentUpdate, PICK_CONTACT_REQUEST);
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                loadFromFile();
+                Gson gS = new Gson();
+
+                String person = data.getStringExtra("MESSAGE");
+                boolean result = gS.fromJson(person, boolean.class);
+
+                if (result){
+                    followAdapter.clear();
+                    followAdapter.addAll(controller.getCurrentUser().getMyFollowRequests());
+                    followAdapter.notifyDataSetChanged();
+                    followerAdapter.clear();
+                    followerAdapter.addAll(controller.getCurrentUser().getMyFollowerRequests());
+                    followerAdapter.notifyDataSetChanged();
+                    pendingFollowRequests.setAdapter(followAdapter);
+                    pendingFollowerRequests.setAdapter(followerAdapter);
+                } else {
+                    pendingFollowRequests.setAdapter(followAdapter);
+                    pendingFollowerRequests.setAdapter(followerAdapter);
+                }
+            }
+        }
     }
 
     @Override

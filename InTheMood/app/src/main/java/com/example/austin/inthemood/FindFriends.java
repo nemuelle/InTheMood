@@ -51,11 +51,12 @@ public class FindFriends extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
-
+        controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
+        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
         //update current user from elasticSearch
         //User updatedCurrentUser = controller.getElasticSearchUser(controller.getCurrentUser().getName());
         //controller.updateUserList(updatedCurrentUser);
-        //saveInFile();
+        saveInFile();
     }
 
     /**
@@ -88,6 +89,8 @@ public class FindFriends extends AppCompatActivity {
                 if (!controller.getCurrentUser().getMyFollowingList().contains(locatedUser.getName())) {
 
                     controller.getCurrentUser().addToMyFollowRequests(locatedUser.getName());
+                    controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
+                    controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
                     saveInFile();
                     controller.ElasticSearchsyncUser(controller.getCurrentUser());
 
@@ -111,7 +114,10 @@ public class FindFriends extends AppCompatActivity {
                         Log.i("FROM CONTROLLER located", gson.toJson(tester));
                     } else {
                         locatedUser.addToMyFollowerRequests(controller.getCurrentUser().getName());
+                        locatedUser = controller.addFollowerRequestsToUser(locatedUser);
+                        locatedUser = controller.addFollowingToUser(locatedUser);
                         controller.ElasticSearchsyncUser(locatedUser);
+                        Log.i("json", gson.toJson(locatedUser));
                     }
                     saveInFile();
                     //upload current user and located user to elasticSearch
