@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -54,9 +55,7 @@ public class MyFriends extends AppCompatActivity {
     private ArrayList<String> followedUserStringMessage;
     private DataController controller;
     private MoodAdapter adapter;
-    //private ArrayAdapter<String> adapter;
-    private User testUser;
-    private Mood testMood;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,16 +233,22 @@ public class MyFriends extends AppCompatActivity {
             case R.id.triggerFilterButton:
                 if (checked) {
                     // Filter by Moods containing the trigger filter
-                    emotionFilterButton.setSelected(false);
-                    weekFilterButton.setSelected(false);
-                    newMoodList = controller.filterByTrigger(triggerText.getText().toString(), originalMoodList);
-                    sortedFollowingMoods.clear();
+                    if (triggerText.getText().toString().split(" ").length < 4 && triggerText.getText().toString().length() < 21)
+                    {
+                        emotionFilterButton.setSelected(false);
+                        weekFilterButton.setSelected(false);
+                        newMoodList = controller.filterByTrigger(triggerText.getText().toString(), originalMoodList);
+                        sortedFollowingMoods.clear();
 
-                    for (int i = 0; i < newMoodList.size(); i++) {
-                        sortedFollowingMoods.add(newMoodList.get(i));
+                        for (int i = 0; i < newMoodList.size(); i++) {
+                            sortedFollowingMoods.add(newMoodList.get(i));
+                        }
+                        adapter.notifyDataSetChanged();
+                        triggerFilterButton.setSelected(true);
+                    }else{
+                        Toast.makeText(MyFriends.this, "Trigger too long: Max Length 20 Characters or 3 words", Toast.LENGTH_SHORT).show();
+
                     }
-                    adapter.notifyDataSetChanged();
-                    triggerFilterButton.setSelected(true);
                     break;
                 }
             case R.id.noFilterButton:

@@ -8,8 +8,11 @@ import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
@@ -58,6 +62,7 @@ public class AddEditMood extends AppCompatActivity {
     private Mood targetMood;
     private Bitmap imageBitMap;
     private LocationController locationController;
+    private String[] wordCount;
 
     //UI Elements
     private Spinner moodSpinner;
@@ -125,6 +130,8 @@ public class AddEditMood extends AppCompatActivity {
         // Apply the adapter to the spinner
         scenarioSpinner.setAdapter(socialAdapter);
 
+
+
         //Check if a mood was passed in
         Intent intent = getIntent();
         moodIndex = intent.getIntExtra("Mood index", -1);
@@ -156,63 +163,68 @@ public class AddEditMood extends AppCompatActivity {
                 String scenario = scenarioSpinner.getSelectedItem().toString();
                 String trigger = triggerText.getText().toString();
 
-                //set date from datePicker
-                int day = datePicker.getDayOfMonth();
-                day = day -1;
-                int month = datePicker.getMonth();
-                int year = datePicker.getYear();
+                if (trigger.split(" ").length < 4 && trigger.length() < 21){
+                    //set date from datePicker
+                    int day = datePicker.getDayOfMonth();
+                    day = day -1;
+                    int month = datePicker.getMonth();
+                    int year = datePicker.getYear();
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                Date date = calendar.getTime();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    Date date = calendar.getTime();
 
-                //If making a new Mood:
-                if (moodIndex == -1) {
-                    Mood newMood = new Mood(controller.getCurrentUser().getName());
-                    newMood.setMoodDate(date);
-                    newMood.setMoodName(moodName);
-                    newMood.setMoodDescription(trigger);
-                    newMood.setmoodScenario(scenario);
-                    newMood.setOwnerName(controller.getCurrentUser().getName());
+                    //If making a new Mood:
+                    if (moodIndex == -1) {
+                        Mood newMood = new Mood(controller.getCurrentUser().getName());
+                        newMood.setMoodDate(date);
+                        newMood.setMoodName(moodName);
+                        newMood.setMoodDescription(trigger);
+                        newMood.setmoodScenario(scenario);
+                        newMood.setOwnerName(controller.getCurrentUser().getName());
 
-                    if(locationSwitch.isChecked()){
-                        Location location = locationController.getCurrentLocation();
-                        if (location != null) {
-                            LatLng latLng = LocationController.locationToLatLng(location);
-                            newMood.setLatLng(latLng);
+                        if(locationSwitch.isChecked()){
+                            Location location = locationController.getCurrentLocation();
+                            if (location != null) {
+                                LatLng latLng = LocationController.locationToLatLng(location);
+                                newMood.setLatLng(latLng);
+                            }
                         }
+
+
+                        controller.getCurrentUser().addMood(newMood);
+
+
+                    } else {
+                        // Edit the existing Mood with the changes supplied.
+                        targetMood.setMoodName(moodName);
+                        targetMood.setMoodDate(date);
+                        targetMood.setMoodDescription(trigger);
+                        targetMood.setmoodScenario(scenario);
+                        if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                     }
-
-
-                    controller.getCurrentUser().addMood(newMood);
-
-
-                } else {
-                    // Edit the existing Mood with the changes supplied.
-                    targetMood.setMoodName(moodName);
-                    targetMood.setMoodDate(date);
-                    targetMood.setMoodDescription(trigger);
-                    targetMood.setmoodScenario(scenario);
-                    if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
-                }
-                Intent intent = new Intent(activity, MyMoods.class);
+                    Intent intent = new Intent(activity, MyMoods.class);
 
                 /* Attempts to connect to the elasticsearch database to push the changes to their moods, after grabbing
                 * any changes to the user's follower / following lists. If the connection attempt fails, the changes
                 * for mood are stored locally.
                 */
-                Boolean syncSuccess = false;
-                if (isOnline) {
-                    controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
-                    controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
-                    syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                    Boolean syncSuccess = false;
+                    if (isOnline) {
+                        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
+                        controller.setCurrentUser(controller.addFollowerRequestsToUser(controller.getCurrentUser()));
+                        syncSuccess = controller.ElasticSearchsyncUser(controller.getCurrentUser());
+                    }
+                    Log.i("SyncSuccess", syncSuccess.toString());
+                    saveInFile();
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(activity, "Trigger too long: Max Length 20 Characters or 3 words", Toast.LENGTH_SHORT).show();
                 }
-                Log.i("SyncSuccess", syncSuccess.toString());
-                saveInFile();
-                startActivity(intent);
-                finish();
+
             }
         });
 

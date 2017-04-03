@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.formats.NativeAd;
 import com.google.gson.Gson;
@@ -99,17 +100,22 @@ public class MyMoods extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 if (triggerFilterButton.isSelected() == false) {
-                    emotionFilterButton.setSelected(false);
-                    weekFilterButton.setSelected(false);
-                    NewMoodList = controller.filterByTrigger(triggerText.getText().toString(), OriginalMoodList);
-                    SortedMoodList.clear();
+                    if(triggerText.getText().toString().split(" ").length < 4 && triggerText.getText().toString().length() <21) {
+                        emotionFilterButton.setSelected(false);
+                        weekFilterButton.setSelected(false);
+                        NewMoodList = controller.filterByTrigger(triggerText.getText().toString(), OriginalMoodList);
+                        SortedMoodList.clear();
 
-                    for (int i = 0; i < NewMoodList.size(); i++) {
-                        SortedMoodList.add(NewMoodList.get(i));
+                        for (int i = 0; i < NewMoodList.size(); i++) {
+                            SortedMoodList.add(NewMoodList.get(i));
+                        }
+
+                        moodAdapter.notifyDataSetChanged();
+                        triggerFilterButton.setSelected(true);
+                    }else{
+                        Toast.makeText(MyMoods.this, "Trigger too long: Max Length 20 Characters or 3 words", Toast.LENGTH_SHORT).show();
+
                     }
-
-                    moodAdapter.notifyDataSetChanged();
-                    triggerFilterButton.setSelected(true);
 
 
                 }
