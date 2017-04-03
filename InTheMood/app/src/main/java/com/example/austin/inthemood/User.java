@@ -7,7 +7,8 @@ package com.example.austin.inthemood;
 import java.util.ArrayList;
 
 /**
- * The type User.
+ * The user class stores all information about a given user including his list of moods, follower and following
+ * requests and followers and followed users.
  */
 public class User{
     private String name;
@@ -18,12 +19,12 @@ public class User{
     private ArrayList<String> myFollowingList;
     private ArrayList<String> myFollowerRequests;
     private ArrayList<String> myFollowRequests;
-    private int myMoodCount;
 
     /**
      * Instantiates a new User.
      *
-     * @param name the name
+     * @param name the name of the user
+     * @param password the chosen password of the user
      */
     public User(String name, String password) {
 
@@ -35,7 +36,6 @@ public class User{
         this.myFollowingList = new ArrayList<String>();
         this.myFollowerRequests = new ArrayList<String>();
         this.myFollowRequests = new ArrayList<String>();
-        this.myMoodCount = 0;
 
     }
 
@@ -107,7 +107,6 @@ public class User{
      */
     public void addMood(Mood mood){
         this.myMoodsList.add(mood);
-        this.myMoodCount += 1;
     }
 
     /**
@@ -117,7 +116,6 @@ public class User{
      */
     public void removeMood(Mood mood){
         this.myMoodsList.remove(mood);
-        this.myMoodCount -= 1;
     }
 
     /**
