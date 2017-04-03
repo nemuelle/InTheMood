@@ -12,22 +12,23 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- * Created by nemuelle on 2017-03-12.
- * Define an adapter to populate the listviews the require mood objects
+ * Define an adapter to populate a ListView the require mood objects
  * based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  * accessed march 12 2017
  */
 public class MoodAdapter extends ArrayAdapter<Mood> {
+    private String userName;
+
     /**
      * Instantiates a new Mood adapter.
      *
      * @param context  the context
      * @param moodList the mood list
      */
-    private String userName;
     public MoodAdapter(Context context, ArrayList<Mood> moodList, String user) {
         super(context, 0, moodList);
         this.userName = user;
@@ -61,7 +62,7 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
             moodString.setText(mood.getOwnerName() + " felt " +mood.getMoodName() + " on " + mood.getMoodDate().toString());
 
         }else{
-            moodString.setText(mood.getMoodName() + " felt on " + mood.getMoodDate().toString());
+            moodString.setText(mood.getMoodName() + " felt on " + new SimpleDateFormat("MMM dd, yyyy").format(mood.getMoodDate()));
         }
         moodComment.setText(mood.getMoodDescription());
         convertView.setBackgroundColor(Color.parseColor(mood.getColorHexCode()));

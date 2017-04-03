@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -224,7 +225,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             if (launchedFrom.equals("MyFriends"))
                 markerOption.title(mood.getOwnerName());
             else
-                markerOption.title(mood.getMoodName() + " " + mood.getMoodDate().toString());
+                markerOption.title("Felt " + mood.getMoodName() + " on " + new SimpleDateFormat("MMM dd, yyyy").format(mood.getMoodDate()));
 
             float iconColor = hexColorToHUE.get(mood.getColorHexCode());
 
