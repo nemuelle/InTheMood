@@ -112,43 +112,7 @@ public class MyMoods extends AppCompatActivity {
                     triggerFilterButton.setSelected(true);
 
 
-                }/*
-                else{
-                    //Unapply trigger filter while keeping any other filters selected active
-                    triggerFilterButton.setSelected(false);
-                    SortedMoodList.clear();
-
-
-                    if (emotionFilterButton.isSelected()){
-                        NewMoodList = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(),OriginalMoodList);
-                    }
-
-                    if (weekFilterButton.isSelected()){
-                        if (emotionFilterButton.isSelected()){
-                            NewMoodList = controller.filterByWeek(NewMoodList);
-                        }
-                        else{
-                            NewMoodList = controller.filterByWeek(OriginalMoodList);
-
-                        }
-                    }
-
-                    emotionFilterButton.setSelected(true);
-
-                    if (emotionFilterButton.isSelected() == false && weekFilterButton.isSelected() == false){
-                        for (int i = 0; i < OriginalMoodList.size(); i++) {
-                            SortedMoodList.add(OriginalMoodList.get(i));
-                        }
-                    }else{
-                        for (int i = 0; i < NewMoodList.size(); i++) {
-                            SortedMoodList.add(NewMoodList.get(i));
-                        }
-                    }
-                    moodAdapter.notifyDataSetChanged();
-
-
-
-                }*/
+                }
             }
 
         });
@@ -169,37 +133,7 @@ public class MyMoods extends AppCompatActivity {
                     weekFilterButton.setSelected(true);
                     moodAdapter.notifyDataSetChanged();
 
-                }/*else{
-
-                    //unapply last week filter for moods and keep and other active filters
-                    if (emotionFilterButton.isSelected()){
-                        NewMoodList = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(),OriginalMoodList);
-                    }
-
-                    if (triggerFilterButton.isSelected()){
-                        if (emotionFilterButton.isSelected()){
-                            NewMoodList = controller.filterByTrigger(triggerText.getText().toString(),NewMoodList);
-                        }
-                        else{
-                            NewMoodList = controller.filterByTrigger(triggerText.getText().toString(),OriginalMoodList);
-                        }
-                    }
-                    weekFilterButton.setSelected(false);
-                    SortedMoodList.clear();
-                    if (emotionFilterButton.isSelected() == false && triggerFilterButton.isSelected() == false){
-                        for (int i = 0; i < OriginalMoodList.size(); i++) {
-                            SortedMoodList.add(OriginalMoodList.get(i));
-                        }
-                    }else{
-                        for (int i = 0; i < NewMoodList.size(); i++) {
-                            SortedMoodList.add(NewMoodList.get(i));
-                        }
-                    }
-
                 }
-
-                moodAdapter.notifyDataSetChanged();
-                */
             }
 
         });
@@ -221,44 +155,7 @@ public class MyMoods extends AppCompatActivity {
                     }
                     moodAdapter.notifyDataSetChanged();
 
-                }else{
-                    triggerText.setText("Unselected?");
                 }
-
-
-
-                /*else{
-                    //unapply emotion filter and keep other active filters
-                    if (weekFilterButton.isSelected()){
-                        NewMoodList = controller.filterByWeek(OriginalMoodList);
-                    }
-                    if (triggerFilterButton.isSelected()){
-                        if (weekFilterButton.isSelected()){
-                            if (emotionFilterButton.isSelected()){
-                                NewMoodList = controller.filterByTrigger(triggerText.getText().toString(),NewMoodList);
-                            }
-                            else{
-                                NewMoodList = controller.filterByTrigger(triggerText.getText().toString(),OriginalMoodList);
-                            }
-                        }
-                    }
-                    emotionFilterButton.setSelected(false);
-                    SortedMoodList.clear();
-                    if (triggerFilterButton.isSelected() == false && weekFilterButton.isSelected() == false){
-                        for (int i = 0; i < OriginalMoodList.size(); i++) {
-                            SortedMoodList.add(OriginalMoodList.get(i));
-                        }
-                    }else{
-                        for (int i = 0; i < NewMoodList.size(); i++) {
-                            SortedMoodList.add(NewMoodList.get(i));
-                        }
-                    }
-
-                }
-
-                //triggerText.setText(moodFilterSpinner.getSelectedItem().toString());
-
-                moodAdapter.notifyDataSetChanged();*/
             }
 
         });
@@ -335,7 +232,29 @@ public class MyMoods extends AppCompatActivity {
         for (int i=0; i < currentUser.getMyMoodsList().size(); i++ ){
             OriginalMoodList.add(currentUser.getMyMoodsList().get(i));
         }
+        moodFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(emotionFilterButton.isSelected()){
 
+                    triggerFilterButton.setSelected(false);
+                    weekFilterButton.setSelected(false);
+                    emotionFilterButton.setSelected(true);
+                    NewMoodList = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(), OriginalMoodList);
+                    SortedMoodList.clear();
+
+                    for (int i = 0; i < NewMoodList.size(); i++) {
+                        SortedMoodList.add(NewMoodList.get(i));
+                    }
+                    moodAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         moodAdapter = new MoodAdapter(this,SortedMoodList,controller.getCurrentUser().getName());
         moodsListView.setAdapter(moodAdapter);
         moodsListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
