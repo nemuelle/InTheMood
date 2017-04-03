@@ -129,21 +129,21 @@
         android:id="@+id/triggerFilterEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/filterButtons"
-        android:layout_marginLeft="27dp"
-        android:layout_marginStart="27dp"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_alignBottom="@+id/filterButtons"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/filterButtons"
+        android:layout_toEndOf="@+id/filterButtons" />
 
     <ListView
         android:id="@+id/myMoodsListView"
-        android:layout_below="@id/triggerFilterButton"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/filterButtons"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp" />
 
 
 </android.widget.RelativeLayout>

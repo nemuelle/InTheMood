@@ -177,12 +177,19 @@ public class AddEditMood extends AppCompatActivity {
                     newMood.setmoodScenario(scenario);
                     newMood.setOwnerName(controller.getCurrentUser().getName());
 
-                    Location location = locationController.getCurrentLocation();
+                    if(locationSwitch.isChecked()){
+                        Location location = locationController.getCurrentLocation();
+                        if (location != null) {
+                            LatLng latLng = LocationController.locationToLatLng(location);
+                            newMood.setLatLng(latLng);
+                        }
+                    }
+                    //Location location = locationController.getCurrentLocation();
 
-                    if (location != null) {
+                    /*if (location != null) {
                         LatLng latLng = LocationController.locationToLatLng(location);
                         newMood.setLatLng(latLng);
-                    }
+                    }*/
 
                     controller.getCurrentUser().addMood(newMood);
 
