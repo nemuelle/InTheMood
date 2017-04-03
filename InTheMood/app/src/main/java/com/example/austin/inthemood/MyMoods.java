@@ -30,13 +30,18 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-/* My moods activity displays the list of all moods a user inputs and allows filtering the list to
-    show only relevant moods.
+/**
+ * My moods activity displays the list of all moods a user inputs and allows filtering the list to
+ * show only relevant moods.
+ *
+ * Clicking the + icon allows for creation of new moods, after creation it returns to this activity
+ * with a new mood appearing in the listview
+ *
+ * Clicking the listed views allows for editting/deletion
+ *
 
-    For project part 5:
-        Still need to change each mood item's color based on what mood it is
-        Still need to make the buttons appear unselected upon 2nd click
  */
+
 public class MyMoods extends AppCompatActivity {
 
 
@@ -307,8 +312,12 @@ public class MyMoods extends AppCompatActivity {
         });
     }
 
+    /**
+     * Start edit mood activity
+     * @param view
+     * @param index - what element of the list is clicked
+     */
 
-    //Start edit mood activity
     private void editMood(View view, int index){
         Intent editMoodIntent = new Intent(this,addEditMood.class);
         editMoodIntent.putExtra("Mood index",index);
@@ -318,7 +327,12 @@ public class MyMoods extends AppCompatActivity {
 
 
     }
-    //Start activity to add another mood
+
+    /**
+     *  start activity to add another mood
+     *
+     * @param view
+     */
     private void addMood(View view){
         Intent addMoodIntent = new Intent(this,addEditMood.class);
         startActivity(addMoodIntent);
@@ -326,6 +340,9 @@ public class MyMoods extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads locally stored data controller
+     */
     //Load data controller
     private void loadFromFile() {
         try {

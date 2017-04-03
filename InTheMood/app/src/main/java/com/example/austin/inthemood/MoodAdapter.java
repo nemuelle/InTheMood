@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by nemuelle on 2017-03-12.
- * Define an adapter to populate the listview in MoodCalendarActivity
+ * Define an adapter to populate the listviews the require mood objects
  * based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  * accessed march 12 2017
  */
@@ -34,7 +34,7 @@ public class MoodAdapter extends ArrayAdapter<Mood> {
     }
 
     /**
-     *
+     * Overrides getView to ensure proper mood list item formatting and associated img emoticon
      * @param position, the position of the mood selected
      * @param convertView, the view inside the ListView
      * @param parent, parent view

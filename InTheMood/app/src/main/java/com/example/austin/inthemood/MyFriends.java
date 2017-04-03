@@ -174,7 +174,11 @@ public class MyFriends extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Called when selecting a radio button.
+    /**
+     * Called when the user clickes a filter radio button
+     * Filters moods of friends
+     * @param view
+     */
     public void filter(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -217,7 +221,9 @@ public class MyFriends extends AppCompatActivity {
         }
     }
 
-    //load the data controller. called at the start of the activity. All data is stored in the controller.
+    /**
+     *  load the data controller. called at the start of the activity. All data is stored in the controller.
+     */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
