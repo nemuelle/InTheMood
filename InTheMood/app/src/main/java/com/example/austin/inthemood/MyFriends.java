@@ -1,5 +1,6 @@
 package com.example.austin.inthemood;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
@@ -43,6 +45,7 @@ public class MyFriends extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
@@ -54,13 +57,17 @@ public class MyFriends extends AppCompatActivity {
 
         controller.addToUserList(testUser);
         controller.getCurrentUser().addToMyFollowingList("Steve");
+        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
 
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
         //just print followeduser name if no moods have been recorded
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = new ArrayList<User>();
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
-           followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+           User user = controller.getElasticSearchUser(controller.getCurrentUser().getMyFollowingList().get(i));
+           if (user != null) {
+               followingList.add(user);
+           }
         }
         followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
@@ -68,7 +75,7 @@ public class MyFriends extends AppCompatActivity {
 
             //if the followed user has moods, find his most recent mood and display it. If not,
             //only display his name
-            if (followedUserMoods.size() > 0) {
+            if (followedUserMoods != null) {
                 followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
                 sortedFollowingMoods.add(followedUserMoods.get(followedUserMoods.size() - 1));
                 /*String message = followingList.get(i).getName() + " felt " +
