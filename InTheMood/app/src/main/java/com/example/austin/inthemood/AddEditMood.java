@@ -200,6 +200,7 @@ public class AddEditMood extends AppCompatActivity {
                         newMood.setMoodDescription(trigger);
                         newMood.setmoodScenario(scenario);
                         newMood.setOwnerName(controller.getCurrentUser().getName());
+                        if(imageBitMap != null){newMood.setMoodImg(imageBitMap);}
 
                         if(locationSwitch.isChecked()){
                             Location location = locationController.getCurrentLocation();
