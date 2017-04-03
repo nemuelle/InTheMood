@@ -176,7 +176,7 @@
     <DatePicker
         android:id="@+id/pickedDate"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="80dp"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
         app:layout_constraintLeft_toLeftOf="parent"
