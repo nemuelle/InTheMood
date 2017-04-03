@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.google.android.gms.ads.formats.NativeAd;
@@ -58,6 +59,7 @@ public class MyMoods extends AppCompatActivity {
     private ArrayList<Mood> OriginalMoodList = new ArrayList<Mood>();
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +76,9 @@ public class MyMoods extends AppCompatActivity {
         calendarButton = (ImageButton) findViewById(R.id.calendarImg);
         mapButton = (ImageButton) findViewById(R.id.mapImg);
 
-        final ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
+
+        ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
+
                 R.array.moods, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         moodSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -97,6 +101,7 @@ public class MyMoods extends AppCompatActivity {
 
                     moodAdapter.notifyDataSetChanged();
                     triggerFilterButton.setSelected(true);
+
 
                 }
                 else{

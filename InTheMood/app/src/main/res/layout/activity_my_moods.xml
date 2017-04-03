@@ -74,66 +74,67 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/appBarLayout"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
         android:text="Filter Moods By:"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_below="@+id/appBarLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <RadioButton
-        android:id="@+id/emotionalStateFilterButton"
+    <RadioGroup
+        android:id="@+id/filterButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView6"
-        android:layout_alignStart="@+id/textView6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView6"
         android:layout_below="@+id/textView6"
-        android:layout_marginTop="21dp"
-        android:text="Emotional State" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <RadioButton
+            android:id="@+id/emotionalStateFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView6"
+            android:text="Emotional State" />
+
+        <RadioButton
+            android:id="@+id/weekFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emotionalStateFilterButton"
+            android:layout_marginTop="14dp"
+            android:text="Occured Last Week" />
+
+        <RadioButton
+            android:id="@+id/triggerFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weekFilterButton"
+            android:layout_marginTop="13dp"
+            android:text="Trigger" />
+    </RadioGroup>
 
     <Spinner
         android:id="@+id/moodFilterSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/emotionalStateFilterButton"
-        android:layout_toEndOf="@+id/emotionalStateFilterButton"
-        android:layout_toRightOf="@+id/emotionalStateFilterButton"
-        android:layout_above="@+id/weekFilterButton" />
-
-    <RadioButton
-        android:id="@+id/weekFilterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/emotionalStateFilterButton"
-        android:layout_alignStart="@+id/emotionalStateFilterButton"
-        android:layout_below="@+id/emotionalStateFilterButton"
-        android:layout_marginTop="14dp"
-        android:text="Occured Last Week" />
+        android:layout_alignTop="@+id/filterButtons"
+        android:layout_centerHorizontal="true" />
 
-    <RadioButton
-        android:id="@+id/triggerFilterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/weekFilterButton"
-        android:layout_alignStart="@+id/weekFilterButton"
-        android:layout_below="@+id/weekFilterButton"
-        android:layout_marginTop="13dp"
-        android:text="Trigger" />
 
     <EditText
         android:id="@+id/triggerFilterEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/triggerFilterButton"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/triggerFilterButton"
-        android:layout_toEndOf="@+id/triggerFilterButton"
-        android:layout_toRightOf="@+id/triggerFilterButton"
-        android:textSize="12sp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/filterButtons"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:textSize="18sp" />
 
     <ListView
         android:id="@+id/myMoodsListView"
