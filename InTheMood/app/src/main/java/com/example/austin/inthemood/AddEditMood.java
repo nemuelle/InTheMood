@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -33,6 +34,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /** This activity handles all of creating, editing, and deletion of a User's Mood.
@@ -42,9 +45,10 @@ import java.lang.reflect.Type;
  * which is set in real time for the User), and then save those changes with the
  * Save button, or delete the Mood with the Delete button. If no existing Mood was
  * supplied, then the User can only add a new Mood with the values in the text /
- * dropdown fields.
+ * dropdown fields. Adding, saving, or deleting a mood will return the User to their
+ * MyMoods page.
  *
- * TODO: Get the scenario of an existing mood
+ * @see MyMoods
  */
 public class AddEditMood extends AppCompatActivity {
     public static  final int REQUEST_ACCESS_CAMERA = 4;
@@ -65,6 +69,7 @@ public class AddEditMood extends AppCompatActivity {
     private ImageView pictureView;
     private GoogleApiClient mGoogleApiClient;
     private Switch locationSwitch;
+    private DatePicker datePicker;
 
     private Boolean isOnline;
 
@@ -86,6 +91,7 @@ public class AddEditMood extends AppCompatActivity {
         pictureView = (ImageView) findViewById(R.id.imageView);
         locationSwitch = (Switch) findViewById(R.id.locationSwitch);
         isOnline = NetworkStatus.getInstance(this.getBaseContext()).isOnline();
+        datePicker = (DatePicker) findViewById(R.id.pickedDate);
 
         //Grab the data controller
         loadFromFile();
@@ -150,9 +156,22 @@ public class AddEditMood extends AppCompatActivity {
                 String scenario = scenarioSpinner.getSelectedItem().toString();
                 String trigger = triggerText.getText().toString();
 
+                //set date from datePicker
+                int day = datePicker.getDayOfMonth();
+                day = day -1;
+                int month = datePicker.getMonth();
+                int year = datePicker.getYear();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+                Date date = calendar.getTime();
+
                 //If making a new Mood:
                 if (moodIndex == -1) {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
+                    newMood.setMoodDate(date);
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
                     newMood.setmoodScenario(scenario);
@@ -171,11 +190,17 @@ public class AddEditMood extends AppCompatActivity {
                 } else {
                     // Edit the existing Mood with the changes supplied.
                     targetMood.setMoodName(moodName);
+                    targetMood.setMoodDate(date);
                     targetMood.setMoodDescription(trigger);
                     targetMood.setmoodScenario(scenario);
                     if(imageBitMap != null){targetMood.setMoodImg(imageBitMap);}
                 }
                 Intent intent = new Intent(activity, MyMoods.class);
+
+                /* Attempts to connect to the elasticsearch database to push the changes to their moods, after grabbing
+                * any changes to the user's follower / following lists. If the connection attempt fails, the changes
+                * for mood are stored locally.
+                */
                 Boolean syncSuccess = false;
                 if (isOnline) {
                     controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
@@ -196,6 +221,11 @@ public class AddEditMood extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 controller.getCurrentUser().removeMood(targetMood);
+
+                /* Attempts to connect to the elasticsearch database to push the changes to their moods, after grabbing
+                * any changes to the user's follower / following lists. If the connection attempt fails, the changes
+                * for mood are stored locally.
+                */
                 Boolean syncSuccess = false;
                 if (isOnline) {
                     controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
@@ -210,6 +240,7 @@ public class AddEditMood extends AppCompatActivity {
             }
         });
 
+        //Code that is run when the location switch is selected.
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

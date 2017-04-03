@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
  * The user can enter their desired username and password (which is entered twice
  * as a safety measure), and click the register button, which takes the User to
  * the main page if registration is successful.
+ *
+ * @see MainUser
  */
 public class NewUserLogin extends AppCompatActivity {
 

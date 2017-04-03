@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
  */
 
 public class RegisterUnitTest {
+    /*
     @Test
     public void testRegisterFirstUser() {
         String firstName = "first";
@@ -20,5 +21,5 @@ public class RegisterUnitTest {
         assertEquals(addedUser.getPassword(), firstPass);
 
     }
-
+    */
 }

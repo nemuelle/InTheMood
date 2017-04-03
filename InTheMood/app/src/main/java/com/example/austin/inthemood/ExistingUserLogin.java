@@ -30,6 +30,9 @@ import java.lang.reflect.Type;
  * to access their InTheMood main page. If the User does not yet have their own
  * login credentials, they can click the "Register" button to be redirected to the
  * new user registration screen to make their own account.
+ *
+ * @see MainUser
+ * @see NewUserLogin
  */
 public class ExistingUserLogin extends AppCompatActivity{
     /**

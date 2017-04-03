@@ -11,10 +11,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 
-/**Basic implementation of Mood class
-  Will later be expanded on to include Picture/Location storage
-  Also will later become abstract where moodName & Color are set by
-  the subclass on its creation.
+/**implementation of Mood class
+ * Moods store all their relevant information such as creation date, emotional state,description,ect
+ *
+ * Multiple moods will be stored by each user object
  */
 public class Mood {
     private Date moodDate;
@@ -134,19 +134,38 @@ public class Mood {
 
     }
 
+    /**
+     *
+     * @return moodScenario the Scenario a mood is in
+     */
     public String getMoodScenario() {
         return moodScenario;
     }
 
+    /**
+     * Sets the moodScenario
+     * @param scenario the scenario a mood occures in
+     */
     public void setmoodScenario(String scenario) {
         moodScenario = scenario;
     }
+
+    /**
+     *
+     * @return colorHexCode  - the color associated with a specific mood
+     */
     public String getColorHexCode() {
         return colorHexCode;
     }
 
     //getMoodImg takes the encoded String form of the bitmap Img and returns its Bitmap form
     //Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
+    /**
+     * getMoodImg takes the encoded String form of the bitmap Img and returns its Bitmap form
+     * BitMap allows for easy displaying of the image
+     * Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
+     * @return
+     */
     public Bitmap getMoodImg() {
         if (moodImgStringForm != null){
             byte [] decodedString = Base64.decode(moodImgStringForm,Base64.DEFAULT);
@@ -156,10 +175,14 @@ public class Mood {
         return null;
     }
 
-    // takes a BitMap and encodes it into a string to store in the mood class to allow easier
-    //Saving with jSon & elastic search
-    //Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
-    public void setMoodImg(Bitmap moodImg) {
+
+    /**
+     * takes a BitMap and encodes it into a string to store in the mood class to allow easier saving
+     * with jSon & elastic search
+     * Taken from http://stackoverflow.com/questions/30818538/converting-json-object-with-bitmaps
+     * @param moodImg - Original bitmap of image taken by camera
+     */
+     public void setMoodImg(Bitmap moodImg) {
 
         //this.moodImg = moodImg;
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
@@ -169,20 +192,35 @@ public class Mood {
 
     }
 
-
+    /**
+     *
+     * @return string repersentation of the mood
+     */
     public String toString(){
         return  "Mood on " + this.moodDate + " was " + this.moodName + " because " +
                 this.moodDescription;
     }
 
+    /**
+     *
+     * @return latLng - Latitude/Longitude location of the mood
+     */
     public LatLng getLatLng() {
         return latLng;
     }
 
+    /**
+     *
+     * @param latLng -Location where moood was taken
+     */
     public void setLatLng(LatLng latLng) {
         this.latLng = latLng;
     }
 
+    /**
+     * Function is called when a moodName is set
+     * Ensures proper color gets saved with the emotional state
+     */
     private void inferMoodColor(){
         if (this.moodName.equals("Anger")){
             this.colorHexCode = "#f0391c";
