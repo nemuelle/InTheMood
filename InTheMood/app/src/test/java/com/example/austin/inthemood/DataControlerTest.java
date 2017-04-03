@@ -24,7 +24,7 @@ public class DataControlerTest {
     @Test
     public void testGetUserList(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         assertEquals(1, controler.getUserList().size());
         assertEquals(user1, controler.getUserList().get(0));
         assertEquals("user1", controler.getUserList().get(0).getName());
@@ -36,7 +36,7 @@ public class DataControlerTest {
     public void testAddToUserList(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         assertEquals(2, controler.getUserList().size());
         assertEquals(user1, controler.getUserList().get(0));
@@ -47,12 +47,11 @@ public class DataControlerTest {
     /**
      * Test verifyLogIn
      */
-    /*
     @Test
     public void testVerifyLogIn(){
         User user1 = new User("user1", "p1");
         User user2 = new User("user2", "p2");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         controler.addToUserList(user2);
         //userName and password correct
         ssertEquals(controler.verifyLogIn("user1", "p1"), user1);
@@ -101,7 +100,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByMood(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood2 = new Mood("user1");
         mood1.setMoodName("happy");
@@ -118,7 +117,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByWeek(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood3 = new Mood("user1");
         Date dateOld = new Date(98, 3, 8);
@@ -138,7 +137,7 @@ public class DataControlerTest {
     @Test
     public void testFilterByTrigger(){
         User user1 = new User("user1", "p1");
-        dataControler controler = new dataControler(user1);
+        DataController controler = new DataController(user1);
         Mood mood1 = new Mood("user1");
         Mood mood2 = new Mood("user1");
         mood2.setMoodDescription("grumpy");

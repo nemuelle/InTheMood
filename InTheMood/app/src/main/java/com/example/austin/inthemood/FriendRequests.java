@@ -21,11 +21,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class FriendRequests extends AppCompatActivity {
 
-    private dataControler controller;
+    private DataController controller;
     private ArrayAdapter<String> followAdapter;
     private ArrayAdapter<String> followerAdapter;
     private ListView pendingFollowRequests;
@@ -174,12 +173,12 @@ public class FriendRequests extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {
+            Type objectType = new TypeToken<DataController>() {
             }.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

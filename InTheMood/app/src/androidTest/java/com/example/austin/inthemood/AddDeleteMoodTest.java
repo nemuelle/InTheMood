@@ -28,13 +28,13 @@ public class AddDeleteMoodTest extends ActivityInstrumentationTestCase2<MyMoods>
         solo.assertCurrentActivity("Wrong Activity", MyMoods.class);
         solo.clickOnButton("New Mood");
 
-        solo.assertCurrentActivity("Wrong Activity", addEditMood.class);
+        solo.assertCurrentActivity("Wrong Activity", AddEditMood.class);
         solo.enterText((EditText) solo.getView(R.id.addEditMoodsTriggerText), "UniqueTrigger");
         solo.clickOnButton("Save Mood");
         solo.assertCurrentActivity("Wrong Activity", MyMoods.class);
         assertTrue(solo.waitForText("UniqueTrigger"));
         solo.clickInList(0);
-        solo.assertCurrentActivity("Wrong Activity", addEditMood.class);
+        solo.assertCurrentActivity("Wrong Activity", AddEditMood.class);
         solo.clickOnButton("Delete Mood");
         solo.assertCurrentActivity("Wrong Activity", MyMoods.class);
         assertFalse(solo.waitForText("UniqueTrigger"));

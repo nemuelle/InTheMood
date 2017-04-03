@@ -3,10 +3,7 @@ package com.example.austin.inthemood;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,7 +21,7 @@ import java.lang.reflect.Type;
 public class RemoveFollowRequest extends AppCompatActivity {
 
     private String username;
-    private dataControler controller;
+    private DataController controller;
     private static final String FILENAME = "file.sav";
     public final static String EXTRA_MESSAGE = "com.example.InTheMood";
 
@@ -108,12 +105,12 @@ public class RemoveFollowRequest extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {
+            Type objectType = new TypeToken<DataController>() {
             }.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }

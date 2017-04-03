@@ -50,10 +50,10 @@ import java.util.Date;
  *
  * @see MyMoods
  */
-public class addEditMood extends AppCompatActivity {
+public class AddEditMood extends AppCompatActivity {
     public static  final int REQUEST_ACCESS_CAMERA = 4;
-    private addEditMood activity = this;
-    private dataControler controller;
+    private AddEditMood activity = this;
+    private DataController controller;
     private String FILENAME = "file.sav";
     private Mood targetMood;
     private Bitmap imageBitMap;
@@ -328,11 +328,11 @@ public class addEditMood extends AppCompatActivity {
 
             Gson gson = new Gson();
 
-            Type objectType = new TypeToken<dataControler>() {}.getType();
+            Type objectType = new TypeToken<DataController>() {}.getType();
             controller = gson.fromJson(in, objectType);
         } catch (FileNotFoundException e) {
             User firstUser = new User("admin", "admin");
-            controller = new dataControler(firstUser);
+            controller = new DataController(firstUser);
         } catch (IOException e) {
             throw new RuntimeException();
         }
