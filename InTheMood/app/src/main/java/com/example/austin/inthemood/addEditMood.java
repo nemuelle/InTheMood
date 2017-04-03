@@ -155,6 +155,7 @@ public class addEditMood extends AppCompatActivity {
                     Mood newMood = new Mood(controller.getCurrentUser().getName());
                     newMood.setMoodName(moodName);
                     newMood.setMoodDescription(trigger);
+                    newMood.setmoodScenario(scenario);
                     newMood.setOwnerName(controller.getCurrentUser().getName());
 
                     Location location = locationController.getCurrentLocation();
