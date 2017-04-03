@@ -31,43 +31,55 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <RadioButton
-        android:id="@+id/emotionalStateFilterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView6"
-        android:text="Emotional State" />
-
     <Spinner
         android:id="@+id/moodFilterSpinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/textView6"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_above="@+id/weekFilterButton"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <RadioButton
-        android:id="@+id/weekFilterButton"
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/emotionalStateFilterButton"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Occured Last Week"/>
+        app:layout_constraintTop_toBottomOf="@id/textView6"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/emotionalStateFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView6"
+            android:text="Emotional State"
+            android:onClick="filter" />
 
-    <RadioButton
-        android:id="@+id/triggerFilterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/weekFilterButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Trigger" />
+        <RadioButton
+            android:id="@+id/weekFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/emotionalStateFilterButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Occured Last Week"
+            android:onClick="filter" />
+
+        <RadioButton
+            android:id="@+id/triggerFilterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/weekFilterButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Trigger"
+            android:onClick="filter" />
+    </RadioGroup>
+
+
 
     <EditText
         android:id="@+id/triggerFilterEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/triggerFilterButton"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textSize="12sp" />
 
