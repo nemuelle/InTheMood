@@ -184,4 +184,17 @@
         app:layout_constraintTop_toBottomOf="@+id/locationSwitch"
         app:layout_constraintBottom_toTopOf="@+id/addEditMoodSaveButton" />
 
+    <Button
+        android:id="@+id/editLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Edit Location"
+        app:layout_constraintHorizontal_bias="0.345"
+        app:layout_constraintLeft_toLeftOf="@+id/imageButton"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
 </android.support.constraint.ConstraintLayout>
