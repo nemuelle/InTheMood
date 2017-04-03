@@ -44,7 +44,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-/** This activity handles all of creating, editing, and deletion of a User's Mood.
+/**
+ * This activity handles all of creating, editing, and deletion of a User's Mood.
  * The activity knows if it is working with an existing mood if it receives a non-
  * negative (and thus valid) Mood index from from an intent extra. If working with
  * an existing Mood, the User can change the fields of the Mood (except the date,
@@ -57,6 +58,9 @@ import java.util.Date;
  * @see MyMoods
  */
 public class AddEditMood extends AppCompatActivity {
+    /**
+     * The constant REQUEST_ACCESS_CAMERA.
+     */
     public static  final int REQUEST_ACCESS_CAMERA = 4;
     private AddEditMood activity = this;
     private DataController controller;
@@ -82,7 +86,10 @@ public class AddEditMood extends AppCompatActivity {
 
     private Boolean isOnline;
 
-    //Mood Index
+    /**
+     * The Mood index.
+     */
+//Mood Index
     int moodIndex = -1;
 
     @Override

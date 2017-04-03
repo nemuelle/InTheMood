@@ -34,15 +34,12 @@ import java.util.concurrent.ExecutionException;
 /**
  * My moods activity displays the list of all moods a user inputs and allows filtering the list to
  * show only relevant moods.
- *
+ * <p>
  * Clicking the + icon allows for creation of new moods, after creation it returns to this activity
  * with a new mood appearing in the listview
- *
+ * <p>
  * Clicking the listed views allows for editting/deletion
- *
-
  */
-
 public class MyMoods extends AppCompatActivity {
 
 
@@ -57,6 +54,9 @@ public class MyMoods extends AppCompatActivity {
     private ImageButton mapButton;
     private Spinner moodFilterSpinner;
     private ListView moodsListView;
+    /**
+     * The Controller.
+     */
     public DataController controller;
     private static final String FILENAME = "file.sav";
     private MoodAdapter moodAdapter;
