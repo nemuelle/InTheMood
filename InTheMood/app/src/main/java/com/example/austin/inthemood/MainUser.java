@@ -22,7 +22,14 @@ import java.lang.reflect.Type;
 
 /**
  * This class is the main menu view. There are 5 buttons in the layout to choose from.
- * Each button sends the user to a different activity.
+ * Each button sends the user to a different activity. Logging out will return the user to the
+ * main login page
+ *
+ * @see MyMoods
+ * @see MyFriends
+ * @see MapActivity
+ * @see MoodCalendarActivity
+ * @see ExistingUserLogin
  */
 public class MainUser extends AppCompatActivity {
     private MainUser activity = this;

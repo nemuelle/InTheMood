@@ -26,6 +26,9 @@ import java.lang.reflect.Type;
  * FriendRequests activity displays the current user's follow and follower requests in
  * 2 different listviews. follower and follow requests (usernames displayed) can be selected from listviews
  * which then starts a new activity to act on these requests.
+ *
+ * @see AcceptFollowerRequest
+ * @see RemoveFollowRequest
  */
 public class FriendRequests extends AppCompatActivity {
 

@@ -39,6 +39,10 @@ import java.util.concurrent.ExecutionException;
  * with a new mood appearing in the listview
  * <p>
  * Clicking the listed views allows for editting/deletion
+ *
+ * @see AddEditMood
+ * @see MapActivity
+ * @see MoodCalendarActivity
  */
 public class MyMoods extends AppCompatActivity {
 
