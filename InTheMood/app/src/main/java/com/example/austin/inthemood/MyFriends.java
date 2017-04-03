@@ -42,6 +42,7 @@ public class MyFriends extends AppCompatActivity {
     private Button emotionFilterButton;
     private Button weekFilterButton;
     private Button triggerFilterButton;
+    private Button mapButton;
     private EditText triggerText;
     private Spinner moodFilterSpinner;
     private User currentUser;
@@ -70,6 +71,8 @@ public class MyFriends extends AppCompatActivity {
         emotionFilterButton = (Button) findViewById(R.id.emotionalStateFilterButton);
         weekFilterButton = (Button) findViewById(R.id.weekFilterButton);
         triggerFilterButton = (RadioButton) findViewById(R.id.triggerFilterButton);
+        mapButton = (Button) findViewById(R.id.mapButton);
+
         triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         myFriendsListView = (ListView) findViewById(R.id.myMoodsListView);
@@ -118,8 +121,30 @@ public class MyFriends extends AppCompatActivity {
             sortedFollowingMoods.add(originalMoodList.get(i));
         }
         adapter = new MoodAdapter(this, sortedFollowingMoods,controller.getCurrentUser().getName());
+        //adapter = new ArrayAdapter<String>(this,
+          //     R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
+                intent.putExtra("activity", "MyFriends");
+                if (triggerFilterButton.isActivated())
+                    intent.getIntExtra("trigger", 1);
+
+                if (emotionFilterButton.isActivated())
+                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
+
+                if (weekFilterButton.isActivated())
+                    intent.putExtra("lastweek", 2);
+
+                startActivity(intent);
+                finish();
+            }
+
+        });
     }
 
     @Override
