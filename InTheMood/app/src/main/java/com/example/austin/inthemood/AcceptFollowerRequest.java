@@ -17,7 +17,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-
+/**
+ * AcceptFollowerRequest activity is called to give the current user the option to either
+ * remove a follower request made by another user to follow current user, allow other user to follow current user,
+ * or return back to FriendRequests and neither allow or deny request.
+ */
 public class AcceptFollowerRequest extends AppCompatActivity {
 
     private String username;
@@ -36,6 +40,10 @@ public class AcceptFollowerRequest extends AppCompatActivity {
         followedUser.setText(username);
     }
 
+    /**
+     * onClick method which removes/denies follower rights for another user to follow the current user
+     * @param view, this view
+     */
     public void removeRequest(View view) {
         //update current user
         controller.getCurrentUser().removeFollowerRequest(username);
@@ -65,6 +73,10 @@ public class AcceptFollowerRequest extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * onClick method which grants follow permission for another user to follow current user
+     * @param view, this view
+     */
     public void acceptRequest(View view) {
         //update current user
         controller.getCurrentUser().addToMyFollowersList(username);
@@ -98,6 +110,11 @@ public class AcceptFollowerRequest extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * onClick method which returns control flow back to FriendRequest and neither grants or denies
+     * user to follow current user
+     * @param view, this view
+     */
     public void returnToRequests(View view) {
         Gson gS = new Gson();
         boolean result = false;
