@@ -18,6 +18,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 
+/**
+ * RemoveFollowRequests activity is called to give the current user the option to either
+ * remove a follow request made by current user or return back to FriendRequests and
+ * not remove his request.
+ */
 public class RemoveFollowRequest extends AppCompatActivity {
 
     private String username;
@@ -36,6 +41,10 @@ public class RemoveFollowRequest extends AppCompatActivity {
         userToBeFollowed.setText(username);
     }
 
+    /**
+     * onClick method which removes a follow request made by current user
+     * @param view this view
+     */
     public void removeRequest(View view) {
         //update current user
         controller.getCurrentUser().removeFollowRequest(username);
@@ -66,7 +75,10 @@ public class RemoveFollowRequest extends AppCompatActivity {
     }
 
 
-
+    /**
+     * onClick method that returns activity flow back to FriendRequests activity
+     * @param view this view
+     */
     public void returnToRequests(View view) {
         Gson gS = new Gson();
         boolean result = false;
