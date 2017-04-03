@@ -47,6 +47,9 @@ public class MyFriends extends AppCompatActivity {
     private User currentUser;
     private ArrayList<Mood> newMoodList = new ArrayList<Mood>();
     private ArrayList<Mood> originalMoodList = new ArrayList<Mood>();
+    private String filterMood;
+    private String filterTrigger;
+    private int filterNumber;
 
     private static final String FILENAME = "file.sav";
     private ListView myFriendsListView;
@@ -113,23 +116,22 @@ public class MyFriends extends AppCompatActivity {
           //     R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
+        // start the map activity with the proper intents
         mapButton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
-                // send moods to the new activity
-//                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
-//                intent.putExtra("activity", "MyMoods");
-//                if (triggerFilterButton.isChecked())
-//                    intent.putExtra("trigger", triggerFilterButton.getText().toString());
-//
-//                if (emotionFilterButton.isChecked())
-//                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
-//
-//                if (weekFilterButton.isChecked())
-//                    intent.putExtra("lastweek", 1);
-//
-//                startActivity(intent);
-//                finish();
+                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
+                intent.putExtra("activity", "MyFriends");
+                if (filterNumber == 1)
+                    intent.putExtra("emotion", filterMood);
+
+                if (filterNumber == 2)
+                    intent.putExtra("lastweek", 1);
+
+                if (filterNumber == 3)
+                    intent.putExtra("trigger", filterTrigger);
+
+                startActivity(intent);
+                finish();
             }
 
         });
@@ -213,6 +215,8 @@ public class MyFriends extends AppCompatActivity {
                     }
                     adapter.notifyDataSetChanged();
 
+                    filterMood = moodFilterSpinner.getSelectedItem().toString();
+                    filterNumber = 1;
 
                     break;
                 }
@@ -228,6 +232,8 @@ public class MyFriends extends AppCompatActivity {
                     }
                     weekFilterButton.setSelected(true);
                     adapter.notifyDataSetChanged();
+
+                    filterNumber = 2;
                     break;
                 }
             case R.id.triggerFilterButton:
@@ -245,6 +251,8 @@ public class MyFriends extends AppCompatActivity {
                         }
                         adapter.notifyDataSetChanged();
                         triggerFilterButton.setSelected(true);
+                        filterTrigger = triggerText.getText().toString();
+                        filterNumber = 3;
                     }else{
                         Toast.makeText(MyFriends.this, "Trigger too long: Max Length 20 Characters or 3 words", Toast.LENGTH_SHORT).show();
 
