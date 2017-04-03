@@ -1,5 +1,6 @@
 package com.example.austin.inthemood;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,8 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+
+import android.widget.Toast;
+
 import android.widget.RadioButton;
 import android.widget.Spinner;
+
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
@@ -37,6 +42,7 @@ public class MyFriends extends AppCompatActivity {
     private Button emotionFilterButton;
     private Button weekFilterButton;
     private Button triggerFilterButton;
+    private Button mapButton;
     private EditText triggerText;
     private Spinner moodFilterSpinner;
     private User currentUser;
@@ -57,6 +63,7 @@ public class MyFriends extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
@@ -64,6 +71,8 @@ public class MyFriends extends AppCompatActivity {
         emotionFilterButton = (Button) findViewById(R.id.emotionalStateFilterButton);
         weekFilterButton = (Button) findViewById(R.id.weekFilterButton);
         triggerFilterButton = (RadioButton) findViewById(R.id.triggerFilterButton);
+        mapButton = (Button) findViewById(R.id.mapButton);
+
         triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
         moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
         myFriendsListView = (ListView) findViewById(R.id.myMoodsListView);
@@ -76,6 +85,7 @@ public class MyFriends extends AppCompatActivity {
 
         controller.addToUserList(testUser);
         controller.getCurrentUser().addToMyFollowingList("Steve");
+        controller.setCurrentUser(controller.addFollowingToUser(controller.getCurrentUser()));
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.moods, android.R.layout.simple_spinner_item);
@@ -89,7 +99,10 @@ public class MyFriends extends AppCompatActivity {
         myFriendsListView = (ListView) findViewById(R.id.myFriendsListView);
         followingList = new ArrayList<User>();
         for (int i = 0; i < controller.getCurrentUser().getMyFollowingList().size(); i++){
-           followingList.add(controller.searchForUserByName(controller.getCurrentUser().getMyFollowingList().get(i)));
+           User user = controller.getElasticSearchUser(controller.getCurrentUser().getMyFollowingList().get(i));
+           if (user != null) {
+               followingList.add(user);
+           }
         }
         followedUserStringMessage = new ArrayList<String>();
         for (int i = 0; i < followingList.size(); i++){
@@ -97,7 +110,7 @@ public class MyFriends extends AppCompatActivity {
 
             //if the followed user has moods, find his most recent mood and display it. If not,
             //only display his name
-            if (followedUserMoods.size() > 0) {
+            if (followedUserMoods != null) {
                 followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
                 originalMoodList.add(followedUserMoods.get(followedUserMoods.size() - 1));
             }
@@ -108,8 +121,30 @@ public class MyFriends extends AppCompatActivity {
             sortedFollowingMoods.add(originalMoodList.get(i));
         }
         adapter = new MoodAdapter(this, sortedFollowingMoods,controller.getCurrentUser().getName());
+        //adapter = new ArrayAdapter<String>(this,
+          //     R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // send moods to the new activity
+                Intent intent = new Intent(MyFriends.this ,MapActivity.class);
+                intent.putExtra("activity", "MyFriends");
+                if (triggerFilterButton.isActivated())
+                    intent.getIntExtra("trigger", 1);
+
+                if (emotionFilterButton.isActivated())
+                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
+
+                if (weekFilterButton.isActivated())
+                    intent.putExtra("lastweek", 2);
+
+                startActivity(intent);
+                finish();
+            }
+
+        });
     }
 
     @Override

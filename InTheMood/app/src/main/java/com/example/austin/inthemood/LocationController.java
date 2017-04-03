@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,16 +27,21 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * A Controller class that attempts to allow for simple handling of getting locations
+ * A Controller class that attempts to allow for simple handling of getting locations.
+ * Usage:
+ *          Check for FINE_LOCATION_PERMISSION
+ *          Request FINE_LOCATION_PERMISSION
+ *
+ *          if the request is successful the controller will will check and request location settings
  */
-public class LocationControllor implements
+public class LocationController implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         ResultCallback<LocationSettingsResult> {
 
 
-    protected static final String TAG = LocationControllor.class.getSimpleName();
+    protected static final String TAG = LocationController.class.getSimpleName();
     public static final int REQUEST_CHECK_SETTINGS = 2;
     public static final int REQUEST_ACCESS_FINE_LOCATION_PERMISSION = 3;
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -51,12 +57,12 @@ public class LocationControllor implements
     private boolean canGetLocation;
 
     /**
-     * Instantiates a new Location controllor.
+     * Instantiates a new Location controller.
      *
      * @param mGoogleApiClient the m google api client
      * @param activity         the activity
      */
-    public LocationControllor(GoogleApiClient mGoogleApiClient, Activity activity) {
+    public LocationController(GoogleApiClient mGoogleApiClient, Activity activity) {
         this.mGoogleApiClient = mGoogleApiClient;
         this.activity = activity;
 
@@ -99,8 +105,10 @@ public class LocationControllor implements
      */
     public Location getCurrentLocation() {
         if (mCurrentLocation == null && checkLocationPermission()) {
+            Toast.makeText(activity, LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient).toString(), Toast.LENGTH_SHORT).show();
             return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
+        Toast.makeText(activity, mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
         return mCurrentLocation;
     }
 
@@ -158,7 +166,7 @@ public class LocationControllor implements
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION_PERMISSION);
     }
 
-    /*
+    /**
      * ask the user if they want to change the location settings
      * based on http://blog.teamtreehouse.com/beginners-guide-location-android
      * accessed on March 27, 2017
@@ -199,6 +207,28 @@ public class LocationControllor implements
     }
 
     /**
+     * Connect the GoogleAPI. This should be called in an activities onStart() method.
+     */
+    public void connectGoogleApiClient() {
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     * Disconnect the GoogleAPI. This should be called in an activities onStop() method.
+     */
+    public void disconnectGoogleApiClient() {
+        mGoogleApiClient.disconnect();
+    }
+
+    /**
+     * Check if the Google API is connected.
+     * @return true if Google API is connected.
+     */
+    public boolean googleApiClientConnected() {
+        return mGoogleApiClient.isConnected();
+    }
+
+    /**
      * Start location updates.
      */
     public void startLocationUpdates() {
@@ -217,7 +247,7 @@ public class LocationControllor implements
     }
 
     /**
-     * Stop location updates.
+     * Stop requesting location updates.
      */
     public void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
@@ -232,9 +262,9 @@ public class LocationControllor implements
     }
 
     /**
-     * static method to convert a location object to a LatLng for Google Maps
+     * Convert a location object to a LatLng for Google Maps
      * @param location
-     * @return
+     * @return a LatLng object corresponding to the coordinates of the passed location.
      */
     public static LatLng locationToLatLng(Location location) {
         return new LatLng(location.getLatitude(), location.getLongitude());
@@ -245,6 +275,11 @@ public class LocationControllor implements
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
 
+
+    /**
+     * Called from a PendingResult object. In this case its used to check location settings.
+     * @param locationSettingsResult
+     */
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
         final Status status = locationSettingsResult.getStatus();

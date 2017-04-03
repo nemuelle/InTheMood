@@ -298,6 +298,8 @@ public class dataControler {
         syncUser.execute(user);
         try {
             syncSuccess = syncUser.get();
+            Gson gson = new Gson();
+            Log.i("Synced User", gson.toJson(user));
             return syncSuccess;
         } catch (Exception e) {
             Log.i("Error", "Failed to sync user");
@@ -305,29 +307,6 @@ public class dataControler {
         }
     }
 
-    public String ElasticSearchAddMood(Mood mood) {
-        ElasticSearchController.AddMoodTask addMood = new ElasticSearchController.AddMoodTask();
-        String esID = new String();
-        addMood.execute(mood);
-        try {
-            esID = addMood.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to add mood to elastic search");
-        }
-        return esID;
-    }
-
-    public Boolean ElasticSearchSyncMood(Mood mood) {
-        ElasticSearchController.SyncMoodTask syncMood = new ElasticSearchController.SyncMoodTask();
-        Boolean syncSuccess = new Boolean(false);
-        syncMood.execute(mood);
-        try {
-            syncSuccess = syncMood.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to sync the mood");
-        }
-        return syncSuccess;
-    }
 
     public ArrayList<User> ElasticSearchGetAllUsers() {
         ArrayList<User> users = new ArrayList<>();
@@ -342,25 +321,30 @@ public class dataControler {
         return users;
     }
 
-    public ArrayList<Mood> getNearMoods(LatLng currentLocation) {
+    public ArrayList<Mood> getNearMoods(Location currentLocation) {
+        if (currentLocation == null) {
+            return new ArrayList<Mood>();
+        }
         ArrayList<Mood> closeMoods = new ArrayList<>();
         ArrayList<User> users = new ArrayList<>();
         users = ElasticSearchGetAllUsers();
-        Location fromPoint = new Location("from");
-        fromPoint.setLatitude(currentLocation.latitude);
-        fromPoint.setLongitude(currentLocation.longitude);
 
         for (int x = 0; x < users.size(); x++) {
             User user = users.get(x);
             ArrayList<Mood> usersMoods = user.getMyMoodsList();
             ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
-            Mood mostRecentMood = sortedMoods.get(sortedMoods.size()-1);
+
+            if (sortedMoods.size() == 0) {
+                return sortedMoods;
+            }
+
+            Mood mostRecentMood = sortedMoods.get(sortedMoods.size() - 1);
             if (mostRecentMood.getLatLng() != null) {
                 LatLng moodLocation = mostRecentMood.getLatLng();
                 Location toPoint = new Location("to");
                 toPoint.setLatitude(moodLocation.latitude);
                 toPoint.setLongitude(moodLocation.longitude);
-                if (toPoint.distanceTo(fromPoint) <= 5000) {
+                if (toPoint.distanceTo(currentLocation) <= 5000) {
                     closeMoods.add(mostRecentMood);
                 }
             }
@@ -401,6 +385,7 @@ public class dataControler {
             String friend = following.get(x);
             if (!user.getMyFollowingList().contains(friend)){
                 user.addToMyFollowingList(friend);
+                user.removeFollowRequest(friend);
             }
         }
         return user;
