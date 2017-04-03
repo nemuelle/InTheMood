@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
@@ -29,6 +33,16 @@ import static android.provider.Telephony.Mms.Part.FILENAME;
  */
 public class MyFriends extends AppCompatActivity {
 
+    //UI Elements
+    private Button emotionFilterButton;
+    private Button weekFilterButton;
+    private Button triggerFilterButton;
+    private EditText triggerText;
+    private Spinner moodFilterSpinner;
+    private User currentUser;
+    private ArrayList<Mood> newMoodList = new ArrayList<Mood>();
+    private ArrayList<Mood> originalMoodList = new ArrayList<Mood>();
+
     private static final String FILENAME = "file.sav";
     private ListView myFriendsListView;
     private ArrayList<User> followingList;
@@ -46,6 +60,14 @@ public class MyFriends extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         loadFromFile();
 
+        //Initialize UI elements
+        emotionFilterButton = (Button) findViewById(R.id.emotionalStateFilterButton);
+        weekFilterButton = (Button) findViewById(R.id.weekFilterButton);
+        triggerFilterButton = (RadioButton) findViewById(R.id.triggerFilterButton);
+        triggerText = (EditText) findViewById(R.id.triggerFilterEditText);
+        moodFilterSpinner = (Spinner) findViewById(R.id.moodFilterSpinner);
+        myFriendsListView = (ListView) findViewById(R.id.myMoodsListView);
+
         testUser = new User("Steve","1");
         testMood = new Mood("Testing");
         testMood.setMoodName("Anger");
@@ -54,6 +76,13 @@ public class MyFriends extends AppCompatActivity {
 
         controller.addToUserList(testUser);
         controller.getCurrentUser().addToMyFollowingList("Steve");
+
+        ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.moods, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        moodSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        moodFilterSpinner.setAdapter(moodSpinnerAdapter);
 
         //Print to list view. For each followed user, print his name and his most recent mood with mood date
         //just print followeduser name if no moods have been recorded
@@ -70,20 +99,15 @@ public class MyFriends extends AppCompatActivity {
             //only display his name
             if (followedUserMoods.size() > 0) {
                 followedUserMoods = controller.sortMoodsByDate(followedUserMoods);
-                sortedFollowingMoods.add(followedUserMoods.get(followedUserMoods.size() - 1));
-                /*String message = followingList.get(i).getName() + " felt " +
-                       followedUserMoods.get(followedUserMoods.size() - 1).getMoodName() + " on " +
-                        followedUserMoods.get(followedUserMoods.size() - 1).getMoodDate();
-                followedUserStringMessage.add(message);*/
-            } else {
-                String message = followingList.get(i).getName();
-                followedUserStringMessage.add(message);
-
+                originalMoodList.add(followedUserMoods.get(followedUserMoods.size() - 1));
             }
         }
+        //make a copy of the following mood list for easy filtering.
+
+        for (int i=0; i < originalMoodList.size(); i++ ){
+            sortedFollowingMoods.add(originalMoodList.get(i));
+        }
         adapter = new MoodAdapter(this, sortedFollowingMoods,controller.getCurrentUser().getName());
-        //adapter = new ArrayAdapter<String>(this,
-          //     R.layout.list_item, followedUserStringMessage);
         myFriendsListView.setAdapter(adapter);
 
     }
@@ -113,6 +137,49 @@ public class MyFriends extends AppCompatActivity {
     public void friendRequests(View view){
         Intent intent = new Intent(this, FriendRequests.class);
         startActivity(intent);
+    }
+
+    //Called when selecting a radio button.
+    public void filter(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.emotionalStateFilterButton:
+                if (checked) {
+                    // Filter by emotional state
+                    sortedFollowingMoods.clear();
+                    adapter.clear();
+                    sortedFollowingMoods = controller.filterByMood(moodFilterSpinner.getSelectedItem().toString(), originalMoodList);
+                    adapter.addAll(sortedFollowingMoods);
+                    adapter.notifyDataSetChanged();
+                    myFriendsListView.setAdapter(adapter);
+                    break;
+                }
+            case R.id.weekFilterButton:
+                if (checked) {
+                    // Filter by last week's moods only
+                    sortedFollowingMoods.clear();
+                    adapter.clear();
+                    sortedFollowingMoods = controller.filterByWeek(originalMoodList);
+                    adapter.addAll(sortedFollowingMoods);
+                    adapter.notifyDataSetChanged();
+                    myFriendsListView.setAdapter(adapter);
+                    break;
+                }
+            case R.id.triggerFilterButton:
+                if (checked) {
+                    // Filter by Moods containing the trigger filter
+                    sortedFollowingMoods.clear();
+                    adapter.clear();
+                    sortedFollowingMoods = controller.filterByTrigger(triggerText.getText().toString(), originalMoodList);
+                    adapter.addAll(sortedFollowingMoods);
+                    adapter.notifyDataSetChanged();
+                    myFriendsListView.setAdapter(adapter);
+                    break;
+                }
+        }
     }
 
     //load the data controller. called at the start of the activity. All data is stored in the controller.
