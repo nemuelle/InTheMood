@@ -175,14 +175,13 @@
 
     <DatePicker
         android:id="@+id/pickedDate"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="64dp"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationSwitch"
-        app:layout_constraintBottom_toTopOf="@+id/addEditMoodSaveButton"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintBottom_toTopOf="@+id/addEditMoodSaveButton" />
 
 </android.support.constraint.ConstraintLayout>
