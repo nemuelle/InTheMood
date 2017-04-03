@@ -61,7 +61,9 @@ public class DataControlerTest {
         //userName correct but password incorrect so funtion returns null
         assertEquals(controler.verifyLogIn("user1", "p2"), null);
     }
+
     */
+
 
     /**
      * Test searchForUserByName

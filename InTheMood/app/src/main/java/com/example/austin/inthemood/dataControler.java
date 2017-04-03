@@ -150,30 +150,6 @@ public class dataControler {
     }
 
     /**
-     * grant user (followerName) follow permission to follow user (owner)
-     *
-     * @param user user being requested to follow by followerName
-     * @param followerName user requesting to follow user (owner)
-     */
-    public void grantFollowPermission(User user, String followerName){
-        user.addToMyFollowersList(followerName);
-        user.removeFollowerRequest(followerName);
-        searchForUserByName(followerName).removeFollowRequest(user.getName());
-        searchForUserByName(followerName).addToMyFollowingList(user.getName());
-    }
-
-    /**
-     * deny user (followerName) requesting follow permission to follow user (owner)
-     *
-     * @param user user being requested to follow by followerName
-     * @param followerName user requesting to follow user (owner)
-     */
-    public void denyFollowPermission(User user, String followerName){
-        user.removeFollowerRequest(followerName);
-        searchForUserByName(followerName).removeFollowRequest(user.getName());
-    }
-
-    /**
      * search userList for a user by name, return null if not found
      *
      * @param name of user being searched for
@@ -345,25 +321,30 @@ public class dataControler {
         return users;
     }
 
-    public ArrayList<Mood> getNearMoods(LatLng currentLocation) {
+    public ArrayList<Mood> getNearMoods(Location currentLocation) {
+        if (currentLocation == null) {
+            return new ArrayList<Mood>();
+        }
         ArrayList<Mood> closeMoods = new ArrayList<>();
         ArrayList<User> users = new ArrayList<>();
         users = ElasticSearchGetAllUsers();
-        Location fromPoint = new Location("from");
-        fromPoint.setLatitude(currentLocation.latitude);
-        fromPoint.setLongitude(currentLocation.longitude);
 
         for (int x = 0; x < users.size(); x++) {
             User user = users.get(x);
             ArrayList<Mood> usersMoods = user.getMyMoodsList();
             ArrayList<Mood> sortedMoods = sortMoodsByDate(usersMoods);
-            Mood mostRecentMood = sortedMoods.get(sortedMoods.size()-1);
+
+            if (sortedMoods.size() == 0) {
+                return sortedMoods;
+            }
+
+            Mood mostRecentMood = sortedMoods.get(sortedMoods.size() - 1);
             if (mostRecentMood.getLatLng() != null) {
                 LatLng moodLocation = mostRecentMood.getLatLng();
                 Location toPoint = new Location("to");
                 toPoint.setLatitude(moodLocation.latitude);
                 toPoint.setLongitude(moodLocation.longitude);
-                if (toPoint.distanceTo(fromPoint) <= 5000) {
+                if (toPoint.distanceTo(currentLocation) <= 5000) {
                     closeMoods.add(mostRecentMood);
                 }
             }

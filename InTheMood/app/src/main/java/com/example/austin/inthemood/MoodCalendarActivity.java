@@ -36,10 +36,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
- * An acvity that shows the which days the user documented a mood and shows them on
- * a MaterialCalendarView. When a day is selected, a ListView will be show the which moods happened.
- *
- * TODO: When a mood is selected from the list, send the user to addEditMood so the user can edit the mood if they choose.
+ * An activity that shows the which days the user documented a mood and shows them on
+ * a MaterialCalendarView. When a day is selected, a ListView will update to show which moods happened.
  */
 public class MoodCalendarActivity extends AppCompatActivity implements OnDateSelectedListener {
 
@@ -65,9 +63,6 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         widget.setOnDateChangedListener(this);
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
-        Calendar instance = Calendar.getInstance();
-        widget.setSelectedDate(instance.getTime());
-
 
         // set the range of the calendar. should be changed to be dynamic or maybe removed completely.
         Calendar instance1 = Calendar.getInstance();
@@ -87,9 +82,21 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         moodForDayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // send to edit mood?
+                editMood(view, position);
             }
         });
+    }
+
+    /**
+     * Launch AddEditMood activity
+     * @param view
+     * @param index
+     */
+    private void editMood(View view, int index) {
+        Intent editMoodIntent = new Intent(this, addEditMood.class);
+        editMoodIntent.putExtra("Mood index", index);
+        startActivity(editMoodIntent);
+        finish();
     }
 
     @Override
@@ -118,12 +125,12 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
         super.onStart();
         moodListForDay = new ArrayList<>();
         moodListForMonth = new ArrayList<>();
+        loadFromFile();
 
         moodArrayAdapter = new MoodAdapter(this, moodListForDay,controller.getCurrentUser().getName());
         moodForDayListView.setAdapter(moodArrayAdapter);
-        moodArrayAdapter.notifyDataSetChanged(); // not sure if needed since its empty
+        moodArrayAdapter.notifyDataSetChanged();
 
-        loadFromFile();
         user = controller.getCurrentUser();
     }
 
@@ -173,7 +180,7 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
                 return;
             }
 
-            widget.addDecorator(new EventDecorator(Color.RED, calendarDays));
+            widget.addDecorator(new EventDecorator(Color.BLACK, calendarDays));
         }
     }
 
@@ -193,27 +200,6 @@ public class MoodCalendarActivity extends AppCompatActivity implements OnDateSel
             User firstUser = new User("admin", "admin");
             controller = new dataControler(firstUser);
         } catch (IOException e) {
-            throw new RuntimeException();
-        }
-    }
-
-    /**
-     * save dataControler to file FILENAME in gson format
-     */
-    private void saveInFile() {
-        try {
-
-            FileOutputStream fos = openFileOutput(FILENAME,0);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            Gson gson = new Gson();
-            gson.toJson(controller, writer);
-            Log.i("gson toJson", gson.toJson(controller));
-            writer.flush();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException();
         }
     }

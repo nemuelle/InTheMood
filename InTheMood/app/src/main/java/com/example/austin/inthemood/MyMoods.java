@@ -78,6 +78,7 @@ public class MyMoods extends AppCompatActivity {
 
 
         ArrayAdapter<CharSequence> moodSpinnerAdapter = ArrayAdapter.createFromResource(this,
+
                 R.array.moods, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         moodSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -252,7 +253,9 @@ public class MyMoods extends AppCompatActivity {
         calendarButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                // send moods to the new activity
+                Intent intent = new Intent(MyMoods.this ,MoodCalendarActivity.class);
+                startActivity(intent);
+                finish();
 
             }
 
@@ -263,7 +266,18 @@ public class MyMoods extends AppCompatActivity {
             public void onClick(View v) {
                 // send moods to the new activity
                 Intent intent = new Intent(MyMoods.this ,MapActivity.class);
+                intent.putExtra("activity", "MyMoods");
+                if (triggerFilterButton.isActivated())
+                    intent.getIntExtra("trigger", 1);
+
+                if (emotionFilterButton.isActivated())
+                    intent.putExtra("emotion", moodFilterSpinner.getSelectedItem().toString());
+
+                if (weekFilterButton.isActivated())
+                    intent.putExtra("lastweek", 2);
+
                 startActivity(intent);
+                finish();
             }
 
         });
